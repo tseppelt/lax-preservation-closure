@@ -85,7 +85,7 @@ instance : LE GraphClass :=
 theorem le_def {𝓕 𝓖 : GraphClass} :
     𝓕 ≤ 𝓖 ↔ ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem _ F → 𝓖.mem _ F := Iff.rfl
 
-variable {𝓕 𝓖 : GraphClass} {α V W : Type*} [Finite α] [Finite V] [Finite W]
+variable {𝓕 𝓖 : GraphClass} {α : Type*} {V W : Type} [Finite α] [Finite V] [Finite W]
   {G : SimpleGraph V} {H : SimpleGraph W}
 
 /-! ### Basic properties of membership -/
@@ -124,7 +124,7 @@ theorem HomIndistinguishable.refl (𝓕 : GraphClass) (G : SimpleGraph V) : G �
 theorem HomIndistinguishable.symm (h : G ≡[𝓕] H) : H ≡[𝓕] G :=
   fun _ F hF => (h F hF).symm
 
-theorem HomIndistinguishable.trans {U : Type*} [Finite U] {K : SimpleGraph U}
+theorem HomIndistinguishable.trans {U : Type} [Finite U] {K : SimpleGraph U}
     (h : G ≡[𝓕] H) (h' : H ≡[𝓕] K) : G ≡[𝓕] K :=
   fun _ F hF => (h F hF).trans (h' F hF)
 
@@ -138,7 +138,7 @@ theorem HomIndistinguishable.mono (hle : 𝓕 ≤ 𝓖) (h : G ≡[𝓖] H) : G 
 
 /-- **`eq:product`, class form**: homomorphism indistinguishability is preserved by taking the
 categorical product with a fixed graph.  This is the key input to `mem_cl_of_determines`. -/
-theorem HomIndistinguishable.catProd (h : G ≡[𝓕] H) {β : Type*} [Finite β]
+theorem HomIndistinguishable.catProd (h : G ≡[𝓕] H) {β : Type} [Finite β]
     (K : SimpleGraph β) : (G ×g K) ≡[𝓕] (H ×g K) := by
   intro _ F hF
   rw [homCount_catProd_right, homCount_catProd_right, h F hF]
