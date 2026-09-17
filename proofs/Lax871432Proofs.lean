@@ -1,3 +1,4 @@
+import Lax871432Proofs.GraphTheory.ConnPart
 import Lax871432Proofs.GraphTheory.LoopGraph
 import Lax871432Proofs.GraphTheory.Minor
 import Lax871432Proofs.GraphTheory.Prod
