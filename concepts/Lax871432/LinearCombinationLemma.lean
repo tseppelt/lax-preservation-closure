@@ -39,7 +39,7 @@ namespace Lax871432.LinearCombinationLemma
 /-- A relaxation preserved under categorical products which determines a linear combination of
 homomorphism counts, over pairwise non-isomorphic graphs and with nonzero coefficients,
 determines each of its constituents. -/
-axiom determines_of_determines_sum (R : Relaxation) (hprod : PreservedUnderCatProd R)
+axiom determines_of_determines_sum (R : GraphIsoRelaxation) (hprod : PreservedUnderCatProd R)
     {ι : Type} [Fintype ι] {size : ι → ℕ} (L : ∀ i, SimpleGraph (Fin (size i)))
     (hL : ∀ i j, i ≠ j → IsEmpty (L i ≃g L j))
     (α : ι → ℚ) (hα : ∀ i, α i ≠ 0)

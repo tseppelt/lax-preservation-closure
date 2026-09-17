@@ -75,7 +75,7 @@ turns it into the statement that a single vector meets the homomorphism matrix o
 same way for the two graphs.  That matrix is invertible, so the vectors agree coordinatewise,
 and dividing by the nonzero coefficient gives the claim.
 -/
-theorem determines_of_determines_sum (R : Relaxation) (hprod : PreservedUnderCatProd R)
+theorem determines_of_determines_sum (R : GraphIsoRelaxation) (hprod : PreservedUnderCatProd R)
     {ι : Type} [Fintype ι] {size : ι → ℕ} (L : ∀ i, SimpleGraph (Fin (size i)))
     (hL : ∀ i j, i ≠ j → IsEmpty (L i ≃g L j))
     (α : ι → ℚ) (hα : ∀ i, α i ≠ 0)

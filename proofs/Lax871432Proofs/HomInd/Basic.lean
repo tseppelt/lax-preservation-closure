@@ -213,7 +213,7 @@ rational coefficient to each of them.  If `R` determines the linear combination
 The proof multiplies the hypothesis by `hom(L i, K)` for all `K` on at most `n` vertices,
 using `hprod` and `SimpleGraph.homCount_catProd_right`, and then inverts the homomorphism
 matrix `SimpleGraph.homMatrix_isUnit`. -/
-theorem determines_of_determines_sum {n : ℕ} {ι : Type} [Fintype ι] (R : Relaxation)
+theorem determines_of_determines_sum {n : ℕ} {ι : Type} [Fintype ι] (R : GraphIsoRelaxation)
     (hprod : PreservedUnderCatProd R)
     (L : GraphFamily n ι) (hL : L.PairwiseNonIso) (α : ι → ℚ) (hα : ∀ i, α i ≠ 0)
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),

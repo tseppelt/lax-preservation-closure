@@ -37,7 +37,7 @@ namespace Lax871432.DistinguishingClosure
 
 /-- The relaxation `R` *determines* the homomorphism counts of `K` if related graphs receive
 equally many homomorphisms from `K`. -/
-structure Determines (R : Relaxation) {m : ℕ} (K : SimpleGraph (Fin m)) : Prop where
+structure Determines (R : GraphIsoRelaxation) {m : ℕ} (K : SimpleGraph (Fin m)) : Prop where
   /-- Graphs related by `R` receive equally many homomorphisms from `K`. -/
   homCount_eq : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
     R.Rel G H → homCount K G = homCount K H

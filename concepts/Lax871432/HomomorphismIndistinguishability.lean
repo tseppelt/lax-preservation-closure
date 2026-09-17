@@ -53,7 +53,7 @@ def GraphClass.Mem (𝓕 : GraphClass) {V : Type*} [Finite V] (G : SimpleGraph V
 
 /-- *Homomorphism indistinguishability over `𝓕`*: the graph isomorphism relaxation relating
 two graphs when they receive the same number of homomorphisms from every graph of `𝓕`. -/
-def homIndRel (𝓕 : GraphClass) : Relaxation where
+def homIndRel (𝓕 : GraphClass) : GraphIsoRelaxation where
   Rel := @fun _ _ _ _ G H =>
     ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem _ F → homCount F G = homCount F H
   rel_of_iso := by
@@ -73,6 +73,6 @@ def homIndRel (𝓕 : GraphClass) : Relaxation where
     exact (h F hF).trans (h' F hF)
 
 @[inherit_doc homIndRel]
-scoped notation:50 G " ≡[" 𝓕 "] " H => Relaxation.Rel (homIndRel 𝓕) G H
+scoped notation:50 G " ≡[" 𝓕 "] " H => GraphIsoRelaxation.Rel (homIndRel 𝓕) G H
 
 end Lax871432.HomomorphismIndistinguishability

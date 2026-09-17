@@ -36,34 +36,34 @@ open scoped Lax871432.GraphProducts
 namespace Lax871432.PreservationProperties
 
 /-- `R` is *preserved under disjoint unions*. -/
-def PreservedUnderDisjointUnion (R : Relaxation) : Prop :=
+def PreservedUnderDisjointUnion (R : GraphIsoRelaxation) : Prop :=
   ∀ {V V' W W' : Type} [Finite V] [Finite V'] [Finite W] [Finite W']
     (G : SimpleGraph V) (G' : SimpleGraph V') (H : SimpleGraph W) (H' : SimpleGraph W'),
     R.Rel G G' → R.Rel H H' → R.Rel (G ⊕g H) (G' ⊕g H')
 
 /-- `R` is *preserved under categorical products*: multiplying both sides by a fixed graph
 keeps them related. -/
-def PreservedUnderCatProd (R : Relaxation) : Prop :=
+def PreservedUnderCatProd (R : GraphIsoRelaxation) : Prop :=
   ∀ {V W X : Type} [Finite V] [Finite W] [Finite X]
     (G : SimpleGraph V) (H : SimpleGraph W) (K : SimpleGraph X),
     R.Rel G H → R.Rel (G ×g K) (H ×g K)
 
 /-- `R` is *preserved under left lexicographic products*: multiplying on the left by a fixed
 graph keeps related graphs related. -/
-def PreservedUnderLeftLexProd (R : Relaxation) : Prop :=
+def PreservedUnderLeftLexProd (R : GraphIsoRelaxation) : Prop :=
   ∀ {V W W' : Type} [Finite V] [Finite W] [Finite W']
     (G : SimpleGraph V) (H : SimpleGraph W) (H' : SimpleGraph W'),
     R.Rel H H' → R.Rel (lexProd G H) (lexProd G H')
 
 /-- `R` is *preserved under right lexicographic products*: multiplying on the right by a fixed
 graph keeps related graphs related. -/
-def PreservedUnderRightLexProd (R : Relaxation) : Prop :=
+def PreservedUnderRightLexProd (R : GraphIsoRelaxation) : Prop :=
   ∀ {V V' W : Type} [Finite V] [Finite V'] [Finite W]
     (G : SimpleGraph V) (G' : SimpleGraph V') (H : SimpleGraph W),
     R.Rel G G' → R.Rel (lexProd G H) (lexProd G' H)
 
 /-- `R` is *preserved under taking complements*. -/
-def PreservedUnderCompl (R : Relaxation) : Prop :=
+def PreservedUnderCompl (R : GraphIsoRelaxation) : Prop :=
   ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
     R.Rel G H → R.Rel Gᶜ Hᶜ
 

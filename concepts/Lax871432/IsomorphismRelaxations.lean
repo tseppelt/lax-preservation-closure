@@ -32,7 +32,7 @@ namespace Lax871432.IsomorphismRelaxations
 
 /-- A *graph isomorphism relaxation*: an equivalence relation on finite simple graphs which
 relates any two isomorphic graphs, and is therefore invariant under isomorphism. -/
-structure Relaxation where
+structure GraphIsoRelaxation where
   /-- The relation itself. -/
   Rel : ∀ ⦃V W : Type⦄ [Finite V] [Finite W], SimpleGraph V → SimpleGraph W → Prop
   /-- Isomorphic graphs are related; in particular the relation is reflexive. -/
