@@ -187,4 +187,21 @@ theorem preservedUnderRightLexProd_iff_cl_isContractionClosed (𝓕 : GraphClass
     PreservedUnderRightLexProd (homIndRel 𝓕) ↔ IsContractionClosed (cl 𝓕) :=
   SimpleGraph.GraphClass.preservedUnderRightLexProd_iff_cl_isContractionClosed 𝓕
 
+/--
+---
+conclusion: Lax871432.InducedSubgraphs.preservedUnderLeftLexProd_iff_cl_isInducedSubgraphClosed
+---
+`prop:lexprod-indsub`, (2) ⇔ (3).  Forwards, take the left factor to be a complete graph on
+the vertices of `F`: every coefficient `hom(F / 𝓡, K)` is then positive, since a quotient of
+`F` has at most as many vertices as `F`.  The formula therefore exhibits a linear combination
+of the counts from the disjoint unions of the classes that `≡[𝓕]` determines, and the lemma on
+determined linear combinations places each such disjoint union in `cl 𝓕`.  Applying this to
+the partition whose classes are those of `F[U]` together with a singleton for each vertex
+outside `U` gives `F[U]` with isolated vertices attached; `lem:minors` strips them off.
+Backwards, (1) ⇒ (2) applied to `cl 𝓕`.
+-/
+theorem preservedUnderLeftLexProd_iff_cl_isInducedSubgraphClosed (𝓕 : GraphClass) :
+    PreservedUnderLeftLexProd (homIndRel 𝓕) ↔ IsInducedSubgraphClosed (cl 𝓕) :=
+  SimpleGraph.GraphClass.preservedUnderLeftLexProd_iff_cl_isInducedSubgraphClosed 𝓕
+
 end Lax871432Proofs

@@ -167,6 +167,128 @@ theorem preservedUnderRightLexProd_iff_cl_isContractionClosed (𝓕 : GraphClass
   ⟨fun h => PreservedUnderRightLexProd.cl_isContractionClosed h,
     PreservedUnderRightLexProd.of_cl_isContractionClosed⟩
 
+/-! ### Two particular partitions -/
+
+theorem mem_of_deleteIncidence_adj {α : Type*} {F : SimpleGraph α} {U : Set α} {a b : α}
+    (h : (F.deleteEdges (incidenceEdges U)).Adj a b) : a ∈ U := by
+  by_contra ha
+  exact (deleteEdges_adj.1 h).2 ⟨a, ha, Sym2.mem_mk_left a b⟩
+
+theorem mem_of_reachable_deleteIncidence {α : Type*} {F : SimpleGraph α} {U : Set α} {u v : α}
+    (h : (F.deleteEdges (incidenceEdges U)).Reachable u v) (hne : u ≠ v) : u ∈ U := by
+  obtain ⟨w⟩ := h
+  cases w with
+  | nil => exact absurd rfl hne
+  | cons hadj _ => exact mem_of_deleteIncidence_adj hadj
+
+/-- Deleting the edges that meet `Uᶜ` leaves the classes of `F[U]` and a singleton for every
+vertex outside `U`; the disjoint union of those classes is what was left. -/
+theorem partsGraph_deleteIncidence {α : Type*} (F : SimpleGraph α) (U : Set α) :
+    (ConnPart.ofSubgraph F (deleteEdges_le (incidenceEdges U))).partsGraph
+      = F.deleteEdges (incidenceEdges U) := by
+  ext u v
+  rw [ConnPart.partsGraph_adj, ConnPart.proj_ofSubgraph_eq_iff]
+  constructor
+  · rintro ⟨hadj, hreach⟩
+    exact deleteEdges_adj.2 ⟨hadj, notMem_incidenceEdges
+      (mem_of_reachable_deleteIncidence hreach hadj.ne)
+      (mem_of_reachable_deleteIncidence hreach.symm hadj.ne.symm)⟩
+  · intro h
+    exact ⟨(deleteEdges_adj.1 h).1, h.reachable⟩
+
+/-- The partition into singletons: the disjoint union of its classes is edgeless. -/
+theorem partsGraph_bot {α : Type*} (F : SimpleGraph α) :
+    (ConnPart.ofSubgraph F (bot_le : (⊥ : SimpleGraph α) ≤ F)).partsGraph = ⊥ := by
+  ext u v
+  rw [ConnPart.partsGraph_adj, ConnPart.proj_ofSubgraph_eq_iff]
+  simp only [bot_adj, iff_false, not_and]
+  intro hadj hreach
+  obtain ⟨w⟩ := hreach
+  cases w with
+  | nil => exact hadj.ne rfl
+  | cons h _ => simp at h
+
+/-! ### `prop:lexprod-indsub`, (2) ⇒ (3) -/
+
+/-- If `≡[𝓕]` is preserved under left lexicographic products then the disjoint union of the
+classes of any partition of a member of `cl 𝓕` into connected parts is again in `cl 𝓕`.
+
+Taking the left factor to be a complete graph on the vertices of `F` makes every coefficient
+`hom(F / 𝓡, K)` positive. -/
+theorem PreservedUnderLeftLexProd.cl_mem_partsGraph
+    (hp : PreservedUnderLeftLexProd (homIndRel 𝓕)) {V : Type} [Finite V] {F : SimpleGraph V}
+    (hF : (cl 𝓕).Mem F) (𝓡 : ConnPart F) : (cl 𝓕).Mem 𝓡.partsGraph := by
+  classical
+  have hLiso : ∀ 𝓢 : ConnPart F,
+      Nonempty (𝓢.partsGraph ≃g SimpleGraph.map (Finite.equivFin V) 𝓢.partsGraph) :=
+    fun 𝓢 => ⟨Iso.map (Finite.equivFin V) _⟩
+  obtain ⟨κ, _, M, β, hMni, hβ, hMhit, hMsum⟩ :=
+    exists_graphFamily_of_pos (n := Nat.card V) (fun _ => le_rfl)
+      (fun 𝓢 : ConnPart F => SimpleGraph.map (Finite.equivFin V) 𝓢.partsGraph)
+      (α := fun 𝓢 => (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ))
+      (fun 𝓢 => by exact_mod_cast homCount_quotientGraph_top_pos 𝓢)
+  have hdet : ∀ {X Y : Type} [Finite X] [Finite Y] (H : SimpleGraph X) (H' : SimpleGraph Y),
+      (H ≡[𝓕] H') →
+        ∑ k, β k * (homCount (M.graph k) H : ℚ) = ∑ k, β k * (homCount (M.graph k) H' : ℚ) := by
+    intro X Y _ _ H H' hHH'
+    rw [← hMsum H, ← hMsum H']
+    have key : homCount F (lexProd (⊤ : SimpleGraph V) H) =
+        homCount F (lexProd (⊤ : SimpleGraph V) H') :=
+      homCount_eq_of_Mem_cl hF (hp (⊤ : SimpleGraph V) H H' hHH')
+    rw [homCount_lexProd, homCount_lexProd] at key
+    have key' : ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
+          (homCount 𝓢.partsGraph H : ℚ) =
+        ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
+          (homCount 𝓢.partsGraph H' : ℚ) := by
+      exact_mod_cast congrArg (Nat.cast (R := ℚ)) key
+    calc ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
+          (homCount (SimpleGraph.map (Finite.equivFin V) 𝓢.partsGraph) H : ℚ)
+        = ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
+            (homCount 𝓢.partsGraph H : ℚ) := by
+          refine Finset.sum_congr rfl fun 𝓢 _ => ?_
+          rw [← homCount_congr_left (hLiso 𝓢).some H]
+      _ = _ := key'
+      _ = ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
+            (homCount (SimpleGraph.map (Finite.equivFin V) 𝓢.partsGraph) H' : ℚ) := by
+          refine Finset.sum_congr rfl fun 𝓢 _ => ?_
+          rw [← homCount_congr_left (hLiso 𝓢).some H']
+  have hMmem : ∀ k, (cl 𝓕).mem _ (M.graph k) := fun k =>
+    mem_cl_of_determines 𝓕 M hMni β hβ (fun G H h => hdet G H h) k
+  obtain ⟨k, hk⟩ := hMhit 𝓡
+  exact (GraphClass.Mem_congr (cl 𝓕) ((hLiso 𝓡).some.trans hk.some)).2
+    ((GraphClass.Mem_fin (cl 𝓕) (M.graph k)).2 (hMmem k))
+
+/-- **`prop:lexprod-indsub`, (2) ⇒ (3)**: the partition into the classes of `F[U]` and
+singletons elsewhere exhibits `F[U]` up to isolated vertices, which `lem:minors` then strips
+off. -/
+theorem PreservedUnderLeftLexProd.cl_isInducedSubgraphClosed
+    (hp : PreservedUnderLeftLexProd (homIndRel 𝓕)) : IsInducedSubgraphClosed (cl 𝓕) := by
+  intro V _ F U hF
+  have hbot : (cl 𝓕).Mem (⊥ : SimpleGraph V) := by
+    have h := PreservedUnderLeftLexProd.cl_mem_partsGraph hp hF
+      (ConnPart.ofSubgraph F (bot_le : (⊥ : SimpleGraph V) ≤ F))
+    rwa [partsGraph_bot] at h
+  have hisol : (cl 𝓕).Mem (F.deleteEdges (incidenceEdges U)) := by
+    have h := PreservedUnderLeftLexProd.cl_mem_partsGraph hp hF
+      (ConnPart.ofSubgraph F (deleteEdges_le (incidenceEdges U)))
+    rwa [partsGraph_deleteIncidence] at h
+  exact GraphClass.mem_induce_of_mem_deleteIncidence (GraphClass.cl_cl 𝓕) hbot hisol
+
+/-- **`prop:lexprod-indsub`, (3) ⇒ (2)**. -/
+theorem PreservedUnderLeftLexProd.of_cl_isInducedSubgraphClosed
+    (h : IsInducedSubgraphClosed (cl 𝓕)) : PreservedUnderLeftLexProd (homIndRel 𝓕) := by
+  intro V W W' _ _ _ G H H' hHH'
+  replace hHH' : H ≡[𝓕] H' := hHH'
+  show (lexProd G H) ≡[𝓕] (lexProd G H')
+  rw [← homIndistinguishable_cl_iff] at hHH' ⊢
+  exact IsInducedSubgraphClosed.preservedUnderLeftLexProd h G H H' hHH'
+
+/-- **`prop:lexprod-indsub`, (2) ⇔ (3)**. -/
+theorem preservedUnderLeftLexProd_iff_cl_isInducedSubgraphClosed (𝓕 : GraphClass) :
+    PreservedUnderLeftLexProd (homIndRel 𝓕) ↔ IsInducedSubgraphClosed (cl 𝓕) :=
+  ⟨fun h => PreservedUnderLeftLexProd.cl_isInducedSubgraphClosed h,
+    PreservedUnderLeftLexProd.of_cl_isInducedSubgraphClosed⟩
+
 end GraphClass
 
 end SimpleGraph

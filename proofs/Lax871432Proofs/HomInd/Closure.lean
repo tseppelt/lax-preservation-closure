@@ -254,29 +254,26 @@ theorem exists_graphFamily {ι : Type} [Fintype ι] {n : ℕ} {size : ι → ℕ
 
 /-! ### `lem:minors` -/
 
-/-- **`lem:minors`**: a homomorphism distinguishing closed graph class which is closed under
-deleting edges is closed under deleting vertices, hence under taking subgraphs.
+/-- Deleting every edge that meets `sᶜ` isolates the vertices outside `s`; if the result and
+the edgeless graph both lie in a homomorphism distinguishing closed class, so does `F[s]`.
 
-Deleting all edges of a member `F` on `n` vertices puts `n • K₁` into the class, so
-`≡[𝓕]` determines the vertex count; splitting off an isolated vertex via
-`SimpleGraph.homCount_sum_left` then transfers membership from `F` to `F - v`. -/
-theorem GraphClass.IsEdgeDeletionClosed.isVertexDeletionClosed
-    (hcl : IsHomDistinguishingClosed 𝓕) (h : IsEdgeDeletionClosed 𝓕) :
-    IsVertexDeletionClosed 𝓕 := by
-  intro α _ F s hF
-  -- Deleting all edges, and deleting all edges meeting `sᶜ`, keeps us inside `𝓕`.
-  have hbot : 𝓕.Mem (⊥ : SimpleGraph α) := by
-    have := h F Set.univ hF; rwa [deleteEdges_univ] at this
-  have hisol : 𝓕.Mem (F.deleteEdges (incidenceEdges s)) := h F _ hF
+The edgeless graph on `α` sees the number of vertices of a target, and splitting off the
+isolated vertices via `SimpleGraph.homCount_deleteIncidence` multiplies the count by a power of
+that number, which may therefore be cancelled. -/
+theorem GraphClass.mem_induce_of_mem_deleteIncidence (hcl : IsHomDistinguishingClosed 𝓕)
+    {α : Type} [Finite α] {F : SimpleGraph α} {s : Set α}
+    (hbot : 𝓕.Mem (⊥ : SimpleGraph α))
+    (hisol : 𝓕.Mem (F.deleteEdges (incidenceEdges s))) : 𝓕.Mem (F.induce s) := by
   refine hcl _ ((GraphClass.Mem_cl_of_forall 𝓕) fun {V W} _ _ G H hGH => ?_)
   have htest : ∀ {β : Type} [Finite β] (F : SimpleGraph β), 𝓕.Mem F →
       homCount F G = homCount F H := (homIndistinguishable_iff_forall_mem 𝓕 G H).1 hGH
   rcases isEmpty_or_nonempty α with hα | ⟨⟨v⟩⟩
   · -- With no vertices at all there is nothing to delete.
     haveI : IsEmpty ↥s := ⟨fun x => hα.elim x.1⟩
-    have e : (F.induce s) ≃g F := ⟨Equiv.equivOfIsEmpty (↥s) α, fun {a _} => isEmptyElim a⟩
+    have e : (F.induce s) ≃g (⊥ : SimpleGraph α) :=
+      ⟨Equiv.equivOfIsEmpty (↥s) α, fun {a _} => isEmptyElim a⟩
     rw [homCount_congr_left e G, homCount_congr_left e H]
-    exact htest F hF
+    exact htest _ hbot
   -- The edgeless graph on `α` sees the number of vertices of the target.
   have hcard : Nat.card V = Nat.card W := by
     have hpow := htest _ hbot
@@ -293,6 +290,20 @@ theorem GraphClass.IsEdgeDeletionClosed.isVertexDeletionClosed
       absurd (Nat.card_pos_iff.2 ⟨hne, ‹Finite V›⟩) (by omega)
     exact homCount_congr_right _ ⟨Equiv.equivOfIsEmpty V W, fun {a _} => isEmptyElim a⟩
   · exact Nat.eq_of_mul_eq_mul_right (Nat.pow_pos hpos) hsplit
+
+/-- **`lem:minors`**: a homomorphism distinguishing closed graph class which is closed under
+deleting edges is closed under deleting vertices, hence under taking subgraphs.
+
+Deleting all edges of a member `F` on `n` vertices puts `n • K₁` into the class, so
+`≡[𝓕]` determines the vertex count; splitting off an isolated vertex via
+`SimpleGraph.homCount_sum_left` then transfers membership from `F` to `F - v`. -/
+theorem GraphClass.IsEdgeDeletionClosed.isVertexDeletionClosed
+    (hcl : IsHomDistinguishingClosed 𝓕) (h : IsEdgeDeletionClosed 𝓕) :
+    IsVertexDeletionClosed 𝓕 := by
+  intro α _ F s hF
+  have hbot : 𝓕.Mem (⊥ : SimpleGraph α) := by
+    have := h F Set.univ hF; rwa [deleteEdges_univ] at this
+  exact GraphClass.mem_induce_of_mem_deleteIncidence hcl hbot (h F _ hF)
 
 /-- `cl 𝓕` version of `lem:minors`: the distinguishing closure is always homomorphism
 distinguishing closed (`SimpleGraph.GraphClass.cl_cl`), so `lem:minors` applies to it. -/
