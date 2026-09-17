@@ -13,7 +13,7 @@ written $G \equiv_{\mathcal{F}} H$, if $\hom(F, G) = \hom(F, H)$ for every
 $F \in \mathcal{F}$.
 
 Since $\hom(F, -)$ is an isomorphism invariant, this is a graph isomorphism relaxation, and
-it is defined as one: `homIndistinguishability 𝓕` is the relaxation itself, and
+it is defined as one: `homIndRel 𝓕` is the relaxation itself, and
 $G \equiv_{\mathcal{F}} H$ is notation for the relation it carries. The theorems below are
 stated for an arbitrary relaxation and applied to this one.
 
@@ -53,7 +53,7 @@ def GraphClass.Mem (𝓕 : GraphClass) {V : Type*} [Finite V] (G : SimpleGraph V
 
 /-- *Homomorphism indistinguishability over `𝓕`*: the graph isomorphism relaxation relating
 two graphs when they receive the same number of homomorphisms from every graph of `𝓕`. -/
-def homIndistinguishability (𝓕 : GraphClass) : Relaxation where
+def homIndRel (𝓕 : GraphClass) : Relaxation where
   Rel := @fun _ _ _ _ G H =>
     ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem _ F → homCount F G = homCount F H
   rel_of_iso := by
@@ -72,7 +72,7 @@ def homIndistinguishability (𝓕 : GraphClass) : Relaxation where
     intro U V W _ _ _ G H K h h' m F hF
     exact (h F hF).trans (h' F hF)
 
-@[inherit_doc homIndistinguishability]
-scoped notation:50 G " ≡[" 𝓕 "] " H => Relaxation.Rel (homIndistinguishability 𝓕) G H
+@[inherit_doc homIndRel]
+scoped notation:50 G " ≡[" 𝓕 "] " H => Relaxation.Rel (homIndRel 𝓕) G H
 
 end Lax871432.HomomorphismIndistinguishability

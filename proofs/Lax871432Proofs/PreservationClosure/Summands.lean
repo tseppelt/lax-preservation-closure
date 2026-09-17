@@ -68,7 +68,7 @@ namespace GraphClass
 /-- **`thm:taking-summands`, (1) ⇒ (2)**: if `𝓕` is closed under taking summands then `≡[𝓕]`
 is preserved under disjoint unions. -/
 theorem IsSummandClosed.preservedUnderDisjointUnion (h : IsSummandClosed 𝓕) :
-    PreservedUnderDisjointUnion (homIndistinguishability 𝓕) := by
+    PreservedUnderDisjointUnion (homIndRel 𝓕) := by
   classical
   intro V V' W W' _ _ _ _ G G' H H' hG hH _ F hF
   haveI : Fintype F.ConnectedComponent := Fintype.ofFinite _
@@ -86,7 +86,7 @@ in `cl 𝓕`, then so does every sub-union.
 This is the technical heart of (2) ⇒ (3): `eq:disjunion` with `H := ∐ i, D i` exhibits a
 linear combination determined by `≡[𝓕]`, whose coefficients are positive by
 `SimpleGraph.homCount_sigmaOn_sigma_pos`. -/
-theorem PreservedUnderDisjointUnion.mem_cl_sigmaOn (hp : PreservedUnderDisjointUnion (homIndistinguishability 𝓕))
+theorem PreservedUnderDisjointUnion.mem_cl_sigmaOn (hp : PreservedUnderDisjointUnion (homIndRel 𝓕))
     {ι : Type} [Fintype ι] {V : ι → Type} [∀ i, Finite (V i)] {D : ∀ i, SimpleGraph (V i)}
     (hD : ∀ i, (D i).Connected) (hmem : (cl 𝓕).Mem (SimpleGraph.sigma D)) (s : Set ι) :
     (cl 𝓕).Mem (sigmaOn s D) := by
@@ -166,7 +166,7 @@ private def sumComponentFamily {V W : Type} (F₁ : SimpleGraph V) (F₂ : Simpl
 
 /-- **`thm:taking-summands`, (2) ⇒ (3)**: if `≡[𝓕]` is preserved under disjoint unions then
 `cl 𝓕` is closed under taking summands. -/
-theorem PreservedUnderDisjointUnion.cl_isSummandClosed (hp : PreservedUnderDisjointUnion (homIndistinguishability 𝓕)) :
+theorem PreservedUnderDisjointUnion.cl_isSummandClosed (hp : PreservedUnderDisjointUnion (homIndRel 𝓕)) :
     IsSummandClosed (cl 𝓕) := by
   classical
   intro V W _ _ F₁ F₂ hmem
@@ -205,7 +205,7 @@ theorem PreservedUnderDisjointUnion.cl_isSummandClosed (hp : PreservedUnderDisjo
 /-- **`thm:taking-summands`, (3) ⇒ (2)**: this follows from (1) ⇒ (2) applied to `cl 𝓕`,
 since `≡[𝓕]` and `≡[cl 𝓕]` coincide. -/
 theorem PreservedUnderDisjointUnion.of_cl_isSummandClosed (h : IsSummandClosed (cl 𝓕)) :
-    PreservedUnderDisjointUnion (homIndistinguishability 𝓕) := by
+    PreservedUnderDisjointUnion (homIndRel 𝓕) := by
   intro V V' W W' _ _ _ _ G G' H H' hG hH
   replace hG : G ≡[𝓕] G' := hG
   replace hH : H ≡[𝓕] H' := hH
@@ -217,7 +217,7 @@ theorem PreservedUnderDisjointUnion.of_cl_isSummandClosed (h : IsSummandClosed (
 `cl 𝓕` is closed under taking summands; and this holds whenever `𝓕` itself is closed under
 taking summands (`SimpleGraph.GraphClass.IsSummandClosed.preservedUnderDisjointUnion`). -/
 theorem preservedUnderDisjointUnion_iff_cl_isSummandClosed (𝓕 : GraphClass) :
-    PreservedUnderDisjointUnion (homIndistinguishability 𝓕) ↔ IsSummandClosed (cl 𝓕) :=
+    PreservedUnderDisjointUnion (homIndRel 𝓕) ↔ IsSummandClosed (cl 𝓕) :=
   ⟨fun h => (GraphClass.PreservedUnderDisjointUnion.cl_isSummandClosed h), PreservedUnderDisjointUnion.of_cl_isSummandClosed⟩
 
 end GraphClass

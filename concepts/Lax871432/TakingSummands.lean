@@ -31,11 +31,11 @@ namespace Lax871432.TakingSummands
 /-- **(1) $\Rightarrow$ (2).** If `𝓕` is closed under taking summands then
 $\equiv_{\mathcal{F}}$ is preserved under disjoint unions. -/
 axiom preservedUnderDisjointUnion_of_isSummandClosed (𝓕 : GraphClass) :
-    IsSummandClosed 𝓕 → PreservedUnderDisjointUnion (homIndistinguishability 𝓕)
+    IsSummandClosed 𝓕 → PreservedUnderDisjointUnion (homIndRel 𝓕)
 
 /-- **(2) $\Leftrightarrow$ (3).** $\equiv_{\mathcal{F}}$ is preserved under disjoint unions
 if and only if $\mathrm{cl}(\mathcal{F})$ is closed under taking summands. -/
 axiom preservedUnderDisjointUnion_iff_cl_isSummandClosed (𝓕 : GraphClass) :
-    PreservedUnderDisjointUnion (homIndistinguishability 𝓕) ↔ IsSummandClosed (cl 𝓕)
+    PreservedUnderDisjointUnion (homIndRel 𝓕) ↔ IsSummandClosed (cl 𝓕)
 
 end Lax871432.TakingSummands

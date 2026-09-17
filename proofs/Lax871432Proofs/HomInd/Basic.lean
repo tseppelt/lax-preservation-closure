@@ -7,6 +7,7 @@ import Lax871432Proofs.Hom.DisjUnion
 import Lax871432Proofs.Lovasz.Basic
 import Lax871432.DistinguishingClosure
 import Lax871432.GraphProducts
+import Lax871432.PreservationProperties
 
 /-!
 # Graph classes, homomorphism indistinguishability, and the distinguishing closure
@@ -69,6 +70,7 @@ open scoped Lax871432.GraphProducts
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
+open Lax871432.IsomorphismRelaxations Lax871432.PreservationProperties
 open scoped Lax871432.HomomorphismIndistinguishability
 
 open Function
@@ -203,20 +205,21 @@ theorem GraphClass.cl_cl (𝓕 : GraphClass) : (cl (cl 𝓕)) ≤ (cl 𝓕) := b
 preservation property of `≡[𝓕]` into a closure property of `cl 𝓕`.
 -/
 
-/-- **`lem:lincomb`**: suppose `L` is a finite family of pairwise non-isomorphic graphs and
-`α` assigns a nonzero rational coefficient to each of them.  If homomorphism
-indistinguishability over `𝓕` implies that the linear combination `∑ i, α i * hom(L i, -)`
-takes equal values, then every member of `L` lies in `cl 𝓕`.
+/-- **`lem:lincomb`, for an arbitrary relaxation**: suppose `R` is preserved under categorical
+products, `L` is a finite family of pairwise non-isomorphic graphs and `α` assigns a nonzero
+rational coefficient to each of them.  If `R` determines the linear combination
+`∑ i, α i * hom(L i, -)`, then it determines each `hom(L i, -)` separately.
 
 The proof multiplies the hypothesis by `hom(L i, K)` for all `K` on at most `n` vertices,
-using `SimpleGraph.HomIndistinguishable.catProd` and `SimpleGraph.homCount_catProd_right`,
-and then inverts the homomorphism matrix `SimpleGraph.homMatrix_isUnit`. -/
-theorem mem_cl_of_determines {n : ℕ} {ι : Type} [Fintype ι] (𝓕 : GraphClass)
+using `hprod` and `SimpleGraph.homCount_catProd_right`, and then inverts the homomorphism
+matrix `SimpleGraph.homMatrix_isUnit`. -/
+theorem determines_of_determines_sum {n : ℕ} {ι : Type} [Fintype ι] (R : Relaxation)
+    (hprod : PreservedUnderCatProd R)
     (L : GraphFamily n ι) (hL : L.PairwiseNonIso) (α : ι → ℚ) (hα : ∀ i, α i ≠ 0)
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
-      (G ≡[𝓕] H) →
+      R.Rel G H →
         ∑ i, α i * (homCount (L.graph i) G : ℚ) = ∑ i, α i * (homCount (L.graph i) H : ℚ))
-    (i : ι) : (cl 𝓕).mem _ (L.graph i) := by
+    (i : ι) : Determines R (L.graph i) := by
   classical
   refine ⟨?_⟩
   intro V W _ _ G H hGH
@@ -255,7 +258,7 @@ theorem mem_cl_of_determines {n : ℕ} {ι : Type} [Fintype ι] (𝓕 : GraphCla
   have hvec : Matrix.vecMul (fun k => α' k * (homCount (M.graph k) G : ℚ)) (homMatrix M) =
       Matrix.vecMul (fun k => α' k * (homCount (M.graph k) H : ℚ)) (homMatrix M) := by
     funext l
-    have key := hdet (G ×g M.graph l) (H ×g M.graph l) ((HomIndistinguishable.catProd hGH) (M.graph l))
+    have key := hdet (G ×g M.graph l) (H ×g M.graph l) (hprod G H (M.graph l) hGH)
     rw [← hreindex (G ×g M.graph l), ← hreindex (H ×g M.graph l)] at key
     simpa [Matrix.vecMul, dotProduct, homCount_catProd_right, mul_assoc] using key
   -- The homomorphism matrix of `M` is invertible, so the two vectors coincide.
@@ -264,6 +267,19 @@ theorem mem_cl_of_determines {n : ℕ} {ι : Type} [Fintype ι] (𝓕 : GraphCla
   rw [hα'ρ] at huv
   rw [homCount_congr_left (hρ i).some G, homCount_congr_left (hρ i).some H]
   exact_mod_cast mul_left_cancel₀ (hα i) huv
+
+/-- **`lem:lincomb`**: the instance of `SimpleGraph.determines_of_determines_sum` for
+homomorphism indistinguishability over a graph class, whose conclusion says that every member
+of `L` lies in `cl 𝓕`. -/
+theorem mem_cl_of_determines {n : ℕ} {ι : Type} [Fintype ι] (𝓕 : GraphClass)
+    (L : GraphFamily n ι) (hL : L.PairwiseNonIso) (α : ι → ℚ) (hα : ∀ i, α i ≠ 0)
+    (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
+      (G ≡[𝓕] H) →
+        ∑ i, α i * (homCount (L.graph i) G : ℚ) = ∑ i, α i * (homCount (L.graph i) H : ℚ))
+    (i : ι) : (cl 𝓕).mem _ (L.graph i) :=
+  determines_of_determines_sum (homIndRel 𝓕)
+    (by intro V W X _ _ _ G H K h; exact HomIndistinguishable.catProd h K)
+    L hL α hα (fun G H h => hdet G H h) i
 
 /-- **`lem:lincomb`, with vanishing coefficients allowed.**  If a linear combination
 `∑ i, α i * hom(L i, -)` over pairwise non-isomorphic graphs is determined by homomorphism

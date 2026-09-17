@@ -8,5 +8,6 @@ import Lax871432.IsomorphismRelaxations
 import Lax871432.LinearCombinationLemma
 import Lax871432.LovaszTheorem
 import Lax871432.PreservationProperties
+import Lax871432.ProductPreservation
 import Lax871432.RobersonConjecture
 import Lax871432.TakingSummands

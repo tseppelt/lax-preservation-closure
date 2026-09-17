@@ -16,6 +16,12 @@ indistinguishability relation.
 
 # Implementation notes
 
+`Determines` is stated for an arbitrary graph isomorphism relaxation, not only for
+homomorphism indistinguishability over a class: whether a relation pins down the homomorphism
+counts from a given graph makes sense for any of them, and the lemma on determined linear
+combinations is proved at that generality. The closure operator is the graph class collecting
+the graphs that $\equiv_{\mathcal{F}}$ determines.
+
 Membership in the closure is packaged as the one-field structure `Determines` rather than
 left as the underlying universally quantified statement. Both carry the same information;
 the structure keeps the quantifier from unfolding when a membership hypothesis is used, which
@@ -23,21 +29,22 @@ would otherwise strand the `Finite` instances of the implicit vertex types.
 -/
 
 open Lax871432.HomomorphismCounts Lax871432.HomomorphismIndistinguishability
+open Lax871432.IsomorphismRelaxations
 
 open scoped Lax871432.HomomorphismIndistinguishability
 
 namespace Lax871432.DistinguishingClosure
 
-/-- The homomorphism counts of `K` are *determined* by homomorphism indistinguishability over
-`𝓕`. -/
-structure Determines (𝓕 : GraphClass) {m : ℕ} (K : SimpleGraph (Fin m)) : Prop where
-  /-- Graphs indistinguishable over `𝓕` receive equally many homomorphisms from `K`. -/
+/-- The relaxation `R` *determines* the homomorphism counts of `K` if related graphs receive
+equally many homomorphisms from `K`. -/
+structure Determines (R : Relaxation) {m : ℕ} (K : SimpleGraph (Fin m)) : Prop where
+  /-- Graphs related by `R` receive equally many homomorphisms from `K`. -/
   homCount_eq : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
-    (G ≡[𝓕] H) → homCount K G = homCount K H
+    R.Rel G H → homCount K G = homCount K H
 
 /-- $\mathrm{cl}(\mathcal{F})$, the homomorphism distinguishing closure of `𝓕`. -/
 def cl (𝓕 : GraphClass) : GraphClass where
-  mem _ K := Determines 𝓕 K
+  mem _ K := Determines (homIndRel 𝓕) K
   mem_congr {_ _ F F'} he := by
     -- Precomposition with the isomorphism is a bijection between the homomorphisms out of
     -- `F` and those out of `F'`, so the two are counted alike into every target.

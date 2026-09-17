@@ -5,6 +5,7 @@ Authors: Tim Seppelt
 -/
 import Lax871432.ForbiddenMinors
 import Lax871432.LinearCombinationLemma
+import Lax871432.ProductPreservation
 import Lax871432.LovaszTheorem
 import Lax871432.TakingSummands
 import Lax871432Proofs.PreservationClosure.Complement
@@ -25,6 +26,7 @@ open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts Lax871432.HomomorphismIndistinguishability
 open Lax871432.DistinguishingClosure
 open Lax871432.ClosureProperties Lax871432.PreservationProperties
+open Lax871432.IsomorphismRelaxations
 
 open scoped Lax871432.HomomorphismIndistinguishability
 
@@ -46,31 +48,45 @@ theorem lovasz {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : Simpl
 
 /--
 ---
-conclusion: Lax871432.LinearCombinationLemma.mem_cl_of_determines
+conclusion: Lax871432.ProductPreservation.preservedUnderCatProd
 ---
-A determined linear combination places its graphs in the distinguishing closure.  The proof
-multiplies the hypothesis by `hom(L i, K)` for every `K` on at most `n` vertices — legitimate
-because `≡[𝓕]` is preserved by the categorical product — and inverts the homomorphism matrix.
-
-The bound `n` does not appear in the statement: the index type is finite, so the number of
-vertices of the members of the family is bounded by the supremum of their sizes.
+Preservation under categorical products.  By the identity
+`hom(F, G ×g K) = hom(F, G) · hom(F, K)`, which expresses that `×g` is the product in the
+category of graphs and graph homomorphisms, both sides of the required equation pick up the
+same factor `hom(F, K)`.
 -/
-theorem mem_cl_of_determines (𝓕 : GraphClass) {ι : Type} [Fintype ι] {size : ι → ℕ}
-    (L : ∀ i, SimpleGraph (Fin (size i)))
+theorem preservedUnderCatProd (𝓕 : GraphClass) :
+    PreservedUnderCatProd (homIndRel 𝓕) := by
+  intro V W X _ _ _ G H K h
+  exact SimpleGraph.HomIndistinguishable.catProd h K
+
+/--
+---
+conclusion: Lax871432.LinearCombinationLemma.determines_of_determines_sum
+---
+A determined linear combination determines its constituents.  Enlarge the family to a family
+`M` of representatives of *all* graphs on at most `n` vertices, `n` being the supremum of the
+sizes of the members, and extend the coefficients by zero.  Multiplying the hypothesis by
+`hom(-, M k)` for each `k` — legitimate because `R` is preserved under categorical products —
+turns it into the statement that a single vector meets the homomorphism matrix of `M` in the
+same way for the two graphs.  That matrix is invertible, so the vectors agree coordinatewise,
+and dividing by the nonzero coefficient gives the claim.
+-/
+theorem determines_of_determines_sum (R : Relaxation) (hprod : PreservedUnderCatProd R)
+    {ι : Type} [Fintype ι] {size : ι → ℕ} (L : ∀ i, SimpleGraph (Fin (size i)))
     (hL : ∀ i j, i ≠ j → IsEmpty (L i ≃g L j))
     (α : ι → ℚ) (hα : ∀ i, α i ≠ 0)
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
-      (G ≡[𝓕] H) →
+      R.Rel G H →
         ∑ i, α i * (homCount (L i) G : ℚ) = ∑ i, α i * (homCount (L i) H : ℚ))
-    (i : ι) : (cl 𝓕).Mem (L i) := by
+    (i : ι) : Determines R (L i) := by
   classical
   let M : SimpleGraph.GraphFamily (Finset.univ.sup size) ι :=
     { size := size
       size_le := fun i => Finset.le_sup (Finset.mem_univ i)
       graph := L }
   have hni : M.PairwiseNonIso := fun i j hij ⟨e⟩ => (hL i j hij).false e
-  exact (SimpleGraph.GraphClass.Mem_fin (cl 𝓕) (L i)).2
-    (SimpleGraph.mem_cl_of_determines 𝓕 M hni α hα (fun G H h => hdet G H h) i)
+  exact SimpleGraph.determines_of_determines_sum R hprod M hni α hα (fun G H h => hdet G H h) i
 
 /--
 ---
@@ -82,7 +98,7 @@ components turns `hom(F, G + H)` into a sum, over the subsets of the components,
 `F`, hence in `𝓕`, so both sides are determined by `≡[𝓕]`.
 -/
 theorem preservedUnderDisjointUnion_of_isSummandClosed (𝓕 : GraphClass) :
-    IsSummandClosed 𝓕 → PreservedUnderDisjointUnion (homIndistinguishability 𝓕) :=
+    IsSummandClosed 𝓕 → PreservedUnderDisjointUnion (homIndRel 𝓕) :=
   fun h => SimpleGraph.GraphClass.IsSummandClosed.preservedUnderDisjointUnion h
 
 /--
@@ -96,7 +112,7 @@ combinations places every sub-union in `cl 𝓕`.  Backwards, (1) ⇒ (2) applie
 suffices, since `≡[𝓕]` and `≡[cl 𝓕]` are the same relation.
 -/
 theorem preservedUnderDisjointUnion_iff_cl_isSummandClosed (𝓕 : GraphClass) :
-    PreservedUnderDisjointUnion (homIndistinguishability 𝓕) ↔ IsSummandClosed (cl 𝓕) :=
+    PreservedUnderDisjointUnion (homIndRel 𝓕) ↔ IsSummandClosed (cl 𝓕) :=
   SimpleGraph.GraphClass.preservedUnderDisjointUnion_iff_cl_isSummandClosed 𝓕
 
 /--
@@ -109,7 +125,7 @@ obtained from `F` by deleting a set of edges and contracting another, all of whi
 of `F`.
 -/
 theorem preservedUnderCompl_of_isMinorClosed (𝓕 : GraphClass) :
-    IsMinorClosed 𝓕 → PreservedUnderCompl (homIndistinguishability 𝓕) := fun h =>
+    IsMinorClosed 𝓕 → PreservedUnderCompl (homIndRel 𝓕) := fun h =>
   SimpleGraph.GraphClass.IsEdgeContractionClosed.preservedUnderCompl
     (SimpleGraph.GraphClass.IsMinorClosed.isEdgeDeletionClosed h)
     (SimpleGraph.GraphClass.IsMinorClosed.isEdgeContractionClosed h)
@@ -125,7 +141,7 @@ is closed under deleting an edge and under contracting an edge, and these two op
 already generate all minors.  Backwards, (1) ⇒ (2) applied to `cl 𝓕`.
 -/
 theorem preservedUnderCompl_iff_cl_isMinorClosed (𝓕 : GraphClass) :
-    PreservedUnderCompl (homIndistinguishability 𝓕) ↔ IsMinorClosed (cl 𝓕) :=
+    PreservedUnderCompl (homIndRel 𝓕) ↔ IsMinorClosed (cl 𝓕) :=
   SimpleGraph.GraphClass.preservedUnderCompl_iff_cl_isMinorClosed 𝓕
 
 end Lax871432Proofs

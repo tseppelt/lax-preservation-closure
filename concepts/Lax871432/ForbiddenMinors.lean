@@ -35,11 +35,11 @@ namespace Lax871432.ForbiddenMinors
 /-- **(1) $\Rightarrow$ (2).** If `𝓕` is minor-closed then $\equiv_{\mathcal{F}}$ is
 preserved under taking complements. -/
 axiom preservedUnderCompl_of_isMinorClosed (𝓕 : GraphClass) :
-    IsMinorClosed 𝓕 → PreservedUnderCompl (homIndistinguishability 𝓕)
+    IsMinorClosed 𝓕 → PreservedUnderCompl (homIndRel 𝓕)
 
 /-- **(2) $\Leftrightarrow$ (3).** $\equiv_{\mathcal{F}}$ is preserved under taking
 complements if and only if $\mathrm{cl}(\mathcal{F})$ is minor-closed. -/
 axiom preservedUnderCompl_iff_cl_isMinorClosed (𝓕 : GraphClass) :
-    PreservedUnderCompl (homIndistinguishability 𝓕) ↔ IsMinorClosed (cl 𝓕)
+    PreservedUnderCompl (homIndRel 𝓕) ↔ IsMinorClosed (cl 𝓕)
 
 end Lax871432.ForbiddenMinors
