@@ -1,5 +1,4 @@
 import Mathlib.SetTheory.Cardinal.NatCard
-import Lax199508.GraphClasses
 import Lax871432.HomomorphismCounts
 import Lax871432.IsomorphismRelaxations
 
@@ -20,17 +19,19 @@ stated for an arbitrary relaxation and applied to this one.
 # Implementation notes
 
 A class of finite simple graphs cannot be a `Set` of graphs, since graphs live over arbitrary
-vertex types in arbitrary universes. The underlying datum is therefore a predicate on the
-concrete graphs `SimpleGraph (Fin n)`, one for each `n` — which is exactly
-`Lax199508.GraphClasses.GraphClass`, the notion of a graph class of the *Sparsity Lectures*
-submission. It is imported and used as is, so a graph class here is one of those together
-with a proof that it is invariant under isomorphism.
+vertex types. The underlying datum is therefore a predicate on the finite simple graphs over
+an arbitrary vertex type, together with a proof that it is invariant under isomorphism.
 
 The results below need that invariance — the homomorphism distinguishing closure is defined
 by a condition on all graphs of a given isomorphism type — so it is carried in the structure
-rather than assumed afresh in every statement. `GraphClass.Mem` extends a class to a graph
-over an arbitrary finite vertex type by transporting along `Finite.equivFin`; this is no loss
-of generality, since every finite graph is isomorphic to a graph on some `Fin n`.
+rather than assumed afresh in every statement.
+
+The vertex types range over `Type` rather than over an arbitrary universe, matching the
+quantifiers of `GraphIsoRelaxation`. A universe-polymorphic `Mem` is not available here: a
+`Type*` in a structure field is not quantified inside the field, it becomes a parameter of
+`GraphClass` itself, so a class would be tied to one fixed universe instead of covering them
+all. Fixing `Type` is no loss of generality either, since every finite graph is isomorphic to
+a graph on some `Fin n` and membership is invariant under isomorphism.
 -/
 
 open Lax871432.HomomorphismCounts Lax871432.IsomorphismRelaxations
@@ -38,24 +39,19 @@ open Lax871432.HomomorphismCounts Lax871432.IsomorphismRelaxations
 namespace Lax871432.HomomorphismIndistinguishability
 
 /-- A class of finite simple graphs, given by an isomorphism-invariant predicate on the
-graphs `SimpleGraph (Fin m)`. -/
+finite simple graphs. -/
 structure GraphClass where
-  /-- The graphs of the class with vertex type `Fin m`. -/
-  mem : Lax199508.GraphClasses.GraphClass
+  /-- The graphs of the class. -/
+  Mem : ∀ {V : Type} [Finite V], SimpleGraph V → Prop
   /-- The class is invariant under isomorphism. -/
-  mem_congr : ∀ {m m' : ℕ} {F : SimpleGraph (Fin m)} {F' : SimpleGraph (Fin m')},
-    Nonempty (F ≃g F') → (mem _ F ↔ mem _ F')
-
-/-- A graph over an arbitrary finite vertex type belongs to `𝓕` if the corresponding graph
-on `Fin (Nat.card V)` does. -/
-def GraphClass.Mem (𝓕 : GraphClass) {V : Type*} [Finite V] (G : SimpleGraph V) : Prop :=
-  𝓕.mem _ (SimpleGraph.map (Finite.equivFin V) G)
+  mem_congr : ∀ {V W : Type} [Finite V] [Finite W] {F : SimpleGraph V} {F' : SimpleGraph W},
+    Nonempty (F ≃g F') → (Mem F ↔ Mem F')
 
 /-- *Homomorphism indistinguishability over `𝓕`*: the graph isomorphism relaxation relating
 two graphs when they receive the same number of homomorphisms from every graph of `𝓕`. -/
 def homIndRel (𝓕 : GraphClass) : GraphIsoRelaxation where
   Rel := @fun _ _ _ _ G H =>
-    ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem _ F → homCount F G = homCount F H
+    ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.Mem F → homCount F G = homCount F H
   rel_of_iso := by
     -- Postcomposing with the isomorphism is a bijection between the two hom-sets, so
     -- isomorphic graphs receive equally many homomorphisms from every graph.

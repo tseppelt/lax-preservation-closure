@@ -72,13 +72,12 @@ theorem IsSummandClosed.preservedUnderDisjointUnion (h : IsSummandClosed 𝓕) :
   classical
   intro V V' W W' _ _ _ _ G G' H H' hG hH _ F hF
   haveI : Fintype F.ConnectedComponent := Fintype.ofFinite _
-  have hFmem : 𝓕.Mem F := (GraphClass.Mem_fin 𝓕 F).2 hF
   rw [homCount_sum_right_eq_sum_powerset F G H, homCount_sum_right_eq_sum_powerset F G' H']
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [(homIndistinguishable_iff_forall_mem 𝓕 G G').1 hG _
-      ((GraphClass.IsSummandClosed.mem_sigmaOn_connectedComponent h) hFmem _),
+      ((GraphClass.IsSummandClosed.mem_sigmaOn_connectedComponent h) hF _),
     (homIndistinguishable_iff_forall_mem 𝓕 H H').1 hH _
-      ((GraphClass.IsSummandClosed.mem_sigmaOn_connectedComponent h) hFmem _)]
+      ((GraphClass.IsSummandClosed.mem_sigmaOn_connectedComponent h) hF _)]
 
 /-- If `≡[𝓕]` is preserved under disjoint unions and a disjoint union of connected graphs lies
 in `cl 𝓕`, then so does every sub-union.
@@ -142,7 +141,7 @@ theorem PreservedUnderDisjointUnion.mem_cl_sigmaOn (hp : PreservedUnderDisjointU
           refine Finset.sum_congr rfl fun t _ => ?_
           rw [← homCount_congr_left (hLiso t).some H, mul_comm]
   -- Hence every member of the grouped family lies in `cl 𝓕`, and so does every sub-union.
-  have hMmem : ∀ k, (cl 𝓕).mem _ (M.graph k) := by
+  have hMmem : ∀ k, (cl 𝓕).Mem (M.graph k) := by
     intro k
     refine mem_cl_of_determines 𝓕 M hMni β hβ ?_ k
     intro X Y _ _ G H hGH
@@ -151,9 +150,8 @@ theorem PreservedUnderDisjointUnion.mem_cl_sigmaOn (hp : PreservedUnderDisjointU
   have hiso : sigmaOn s D ≃g M.graph k := by
     have h1 : sigmaOn (↑s.toFinset) D ≃g M.graph k := (hLiso s.toFinset).some.trans hk.some
     rwa [Set.coe_toFinset] at h1
-  have h2 : (cl 𝓕).Mem (M.graph k) := ((GraphClass.Mem_fin (cl 𝓕)) (M.graph k)).2 (hMmem k)
   rw [(GraphClass.Mem_congr (cl 𝓕)) hiso]
-  exact h2
+  exact hMmem k
 
 /-- The family of connected components of `F₁ ⊕g F₂`, indexed by the components of `F₁` and
 of `F₂` separately. -/

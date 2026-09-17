@@ -37,15 +37,16 @@ namespace Lax871432.DistinguishingClosure
 
 /-- The relaxation `R` *determines* the homomorphism counts of `K` if related graphs receive
 equally many homomorphisms from `K`. -/
-structure Determines (R : GraphIsoRelaxation) {m : ℕ} (K : SimpleGraph (Fin m)) : Prop where
+structure Determines (R : GraphIsoRelaxation) {U : Type} [Finite U] (K : SimpleGraph U) :
+    Prop where
   /-- Graphs related by `R` receive equally many homomorphisms from `K`. -/
   homCount_eq : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
     R.Rel G H → homCount K G = homCount K H
 
 /-- $\mathrm{cl}(\mathcal{F})$, the homomorphism distinguishing closure of `𝓕`. -/
 def cl (𝓕 : GraphClass) : GraphClass where
-  mem _ K := Determines (homIndRel 𝓕) K
-  mem_congr {_ _ F F'} he := by
+  Mem K := Determines (homIndRel 𝓕) K
+  mem_congr {_ _ _ _ F F'} he := by
     -- Precomposition with the isomorphism is a bijection between the homomorphisms out of
     -- `F` and those out of `F'`, so the two are counted alike into every target.
     obtain ⟨e⟩ := he
@@ -62,6 +63,6 @@ def cl (𝓕 : GraphClass) : GraphClass where
 /-- `𝓕` is *homomorphism distinguishing closed* if it contains its own closure, i.e. if
 adding any graph to `𝓕` strictly refines $\equiv_{\mathcal{F}}$. -/
 def IsHomDistinguishingClosed (𝓕 : GraphClass) : Prop :=
-  ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), (cl 𝓕).mem _ F → 𝓕.mem _ F
+  ∀ ⦃V : Type⦄ [Finite V] (F : SimpleGraph V), (cl 𝓕).Mem F → 𝓕.Mem F
 
 end Lax871432.DistinguishingClosure

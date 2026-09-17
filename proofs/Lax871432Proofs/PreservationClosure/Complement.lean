@@ -188,7 +188,6 @@ theorem IsEdgeContractionClosed.preservedUnderCompl (hd : IsEdgeDeletionClosed �
   classical
   intro V W _ _ G H hGH m F hF
   haveI : Fintype F.edgeSet := Fintype.ofFinite _
-  have hFmem : 𝓕.Mem F := (GraphClass.Mem_fin 𝓕 F).2 hF
   -- Each summand of `eq:del-contr` is a homomorphism count from a member of `𝓕`, unless it
   -- vanishes on both sides.
   have key : ∀ s L : Finset F.edgeSet, L ⊆ s →
@@ -201,7 +200,7 @@ theorem IsEdgeContractionClosed.preservedUnderCompl (hd : IsEdgeDeletionClosed �
     · -- `X` is a simple graph, obtained from `F` by deleting and then contracting edges.
       have hmem : 𝓕.Mem (X.toSimpleGraph hloop) :=
         hc ((edgeSetOf_subset_edgeSet_spanningSubgraph F) hL)
-          (hd.mem_spanningSubgraph F _ hFmem) _ ⟨RelIso.refl _⟩
+          (hd.mem_spanningSubgraph F _ hF) _ ⟨RelIso.refl _⟩
       have heq := (homIndistinguishable_iff_forall_mem 𝓕 G H).1 hGH (X.toSimpleGraph hloop) hmem
       rw [← homCount_toLoopGraph, ← homCount_toLoopGraph] at heq
       simpa using heq
@@ -298,12 +297,12 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
     refine mul_ne_zero (Nat.cast_ne_zero.2 ?_) (pow_ne_zero _ (by norm_num))
     exact Finset.card_ne_zero_of_mem (Finset.mem_filter.2 ⟨Finset.mem_univ _, rfl⟩)
   -- Conclude by `lem:lincomb`.
-  have hmem : (cl 𝓕).mem _ (M.graph (ρ i₀)) := by
+  have hmem : (cl 𝓕).Mem (M.graph (ρ i₀)) := by
     refine mem_cl_of_determines_of_ne_zero 𝓕 M hMni β ?_ hβ
     intro X Y _ _ G H hGH
     exact hdet G H hGH
   rw [(GraphClass.Mem_congr (cl 𝓕)) hKiso.some]
-  exact ((GraphClass.Mem_fin (cl 𝓕)) (M.graph (ρ i₀))).2 hmem
+  exact hmem
 
 /-- **`thm:complement`, (2) ⇒ (3), edge deletion**: deleting a set of edges one at a time. -/
 theorem PreservedUnderCompl.cl_isEdgeDeletionClosed (hp : PreservedUnderCompl (homIndRel 𝓕)) :
@@ -422,12 +421,12 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
       Finset.sum_const, nsmul_eq_mul]
     refine mul_ne_zero (Nat.cast_ne_zero.2 ?_) (pow_ne_zero _ (by norm_num))
     exact Finset.card_ne_zero_of_mem (Finset.mem_filter.2 ⟨Finset.mem_univ _, rfl⟩)
-  have hmem : (cl 𝓕).mem _ (M.graph (ρ i₀)) := by
+  have hmem : (cl 𝓕).Mem (M.graph (ρ i₀)) := by
     refine mem_cl_of_determines_of_ne_zero 𝓕 M hMni β ?_ hβ
     intro X Y _ _ G H hGH
     exact hdet G H hGH
   rw [(GraphClass.Mem_congr (cl 𝓕)) hKiso.some]
-  exact ((GraphClass.Mem_fin (cl 𝓕)) (M.graph (ρ i₀))).2 hmem
+  exact hmem
 
 /-- **`thm:complement`, (2) ⇒ (3), edge contraction**, in single-edge form. -/
 theorem PreservedUnderCompl.cl_isSingleEdgeContractionClosed (hp : PreservedUnderCompl (homIndRel 𝓕)) :

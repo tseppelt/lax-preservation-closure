@@ -45,11 +45,10 @@ lies in `𝓕`, so none of them tells `H` from `H'`. -/
 theorem IsInducedSubgraphClosed.preservedUnderLeftLexProd (h : IsInducedSubgraphClosed 𝓕) :
     PreservedUnderLeftLexProd (homIndRel 𝓕) := by
   intro V W W' _ _ _ G H H' hHH' m F hF
-  have hFmem : 𝓕.Mem F := (GraphClass.Mem_fin 𝓕 F).2 hF
   rw [homCount_lexProd, homCount_lexProd]
   refine Finset.sum_congr rfl fun 𝓡 _ => ?_
   rw [homCount_partsGraph_congr 𝓡 H H' fun a =>
-    (homIndistinguishable_iff_forall_mem 𝓕 H H').1 hHH' _ (h F _ hFmem)]
+    (homIndistinguishable_iff_forall_mem 𝓕 H H').1 hHH' _ (h F _ hF)]
 
 /-- **`prop:lexprod-contract`, (1) ⇒ (2)**: if `𝓕` is closed under contracting edges then
 `≡[𝓕]` is preserved under right lexicographic products.
@@ -59,11 +58,10 @@ of a quotient `F / 𝓡`, which is a contraction of `F` and so lies in `𝓕`. -
 theorem IsContractionClosed.preservedUnderRightLexProd (h : IsContractionClosed 𝓕) :
     PreservedUnderRightLexProd (homIndRel 𝓕) := by
   intro V V' W _ _ _ G G' H hGG' m F hF
-  have hFmem : 𝓕.Mem F := (GraphClass.Mem_fin 𝓕 F).2 hF
   rw [homCount_lexProd, homCount_lexProd]
   refine Finset.sum_congr rfl fun 𝓡 _ => ?_
   rw [(homIndistinguishable_iff_forall_mem 𝓕 G G').1 hGG' _
-    (h 𝓡.quotientGraph (ConnPart.isContraction 𝓡) hFmem)]
+    (h 𝓡.quotientGraph (ConnPart.isContraction 𝓡) hF)]
 
 /-! ### The coefficient analyses -/
 
@@ -137,11 +135,11 @@ theorem PreservedUnderRightLexProd.cl_mem_quotientGraph
             (homCount (SimpleGraph.map (Finite.equivFin (Quotient 𝓢.setoid)) 𝓢.quotientGraph) G' : ℚ) := by
           refine Finset.sum_congr rfl fun 𝓢 _ => ?_
           rw [← homCount_congr_left (hLiso 𝓢).some G', mul_comm]
-  have hMmem : ∀ k, (cl 𝓕).mem _ (M.graph k) := fun k =>
+  have hMmem : ∀ k, (cl 𝓕).Mem (M.graph k) := fun k =>
     mem_cl_of_determines 𝓕 M hMni β hβ (fun G H h => hdet G H h) k
   obtain ⟨k, hk⟩ := hMhit 𝓡
   exact (GraphClass.Mem_congr (cl 𝓕) ((hLiso 𝓡).some.trans hk.some)).2
-    ((GraphClass.Mem_fin (cl 𝓕) (M.graph k)).2 (hMmem k))
+    (hMmem k)
 
 /-- **`prop:lexprod-contract`, (2) ⇒ (3)**: every contraction is a quotient by a partition
 into connected parts, and those stay in `cl 𝓕`. -/
@@ -253,11 +251,11 @@ theorem PreservedUnderLeftLexProd.cl_mem_partsGraph
             (homCount (SimpleGraph.map (Finite.equivFin V) (ConnPart.partsGraph 𝓢)) H' : ℚ) := by
           refine Finset.sum_congr rfl fun 𝓢 _ => ?_
           rw [← homCount_congr_left (hLiso 𝓢).some H']
-  have hMmem : ∀ k, (cl 𝓕).mem _ (M.graph k) := fun k =>
+  have hMmem : ∀ k, (cl 𝓕).Mem (M.graph k) := fun k =>
     mem_cl_of_determines 𝓕 M hMni β hβ (fun G H h => hdet G H h) k
   obtain ⟨k, hk⟩ := hMhit 𝓡
   exact (GraphClass.Mem_congr (cl 𝓕) ((hLiso 𝓡).some.trans hk.some)).2
-    ((GraphClass.Mem_fin (cl 𝓕) (M.graph k)).2 (hMmem k))
+    (hMmem k)
 
 /-- **`prop:lexprod-indsub`, (2) ⇒ (3)**: the partition into the classes of `F[U]` and
 singletons elsewhere exhibits `F[U]` up to isolated vertices, which `lem:minors` then strips

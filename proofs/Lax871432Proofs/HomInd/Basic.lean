@@ -23,15 +23,12 @@ the largest class with the same homomorphism indistinguishability relation as `�
 
 ## Implementation notes
 
-A class of graphs cannot be a `Set` of graphs: graphs live over arbitrary vertex types in
-arbitrary universes.  Instead a `GraphClass` is an isomorphism-invariant predicate on the
-concrete graphs `SimpleGraph (Fin m)`, and `GraphClass.Mem` extends it to an arbitrary finite
-graph by transporting along `Finite.equivFin`.  This is no loss of generality — every finite
-graph is isomorphic to one of the form `SimpleGraph (Fin m)` — and it makes isomorphism
-invariance structural rather than a hypothesis carried around.
-
-For the same reason, the quantifiers inside `GraphClass.cl` range over `Type` only.
-`SimpleGraph.homCount_eq_of_mem_cl` recovers the statement for graphs in an arbitrary
+A class of graphs cannot be a `Set` of graphs: graphs live over arbitrary vertex types.
+Instead a `GraphClass` is an isomorphism-invariant predicate on the finite simple graphs over
+a vertex type in `Type`, which makes isomorphism invariance structural rather than a
+hypothesis carried around.  Fixing `Type` is no loss of generality — every finite graph is
+isomorphic to one of the form `SimpleGraph (Fin m)` — and it is forced: a `Type*` in a
+structure field becomes a parameter of `GraphClass`, which would tie a class to a single
 universe.
 
 Coefficients are taken in `ℚ` rather than `ℝ`; since homomorphism counts are natural numbers
@@ -79,32 +76,25 @@ namespace SimpleGraph
 
 /-! ### Graph classes
 
-`GraphClass`, `GraphClass.Mem` and `HomIndistinguishable` are the concept
+`GraphClass` and `HomIndistinguishable` are the concept
 `Lax871432.HomomorphismIndistinguishability`; only the order on graph classes is added here.
 -/
 
 /-- One graph class is contained in another. -/
 instance : LE GraphClass :=
-  ⟨fun 𝓕 𝓖 => ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem _ F → 𝓖.mem _ F⟩
+  ⟨fun 𝓕 𝓖 => ∀ ⦃V : Type⦄ [Finite V] (F : SimpleGraph V), 𝓕.Mem F → 𝓖.Mem F⟩
 
 theorem le_def {𝓕 𝓖 : GraphClass} :
-    𝓕 ≤ 𝓖 ↔ ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem _ F → 𝓖.mem _ F := Iff.rfl
+    𝓕 ≤ 𝓖 ↔ ∀ ⦃V : Type⦄ [Finite V] (F : SimpleGraph V), 𝓕.Mem F → 𝓖.Mem F := Iff.rfl
 
-variable {𝓕 𝓖 : GraphClass} {α : Type*} {V W : Type} [Finite α] [Finite V] [Finite W]
+variable {𝓕 𝓖 : GraphClass} {α V W : Type} [Finite α] [Finite V] [Finite W]
   {G : SimpleGraph V} {H : SimpleGraph W}
 
 /-! ### Basic properties of membership -/
 
 /-- Membership in a graph class is invariant under isomorphism. -/
 theorem GraphClass.Mem_congr (𝓕 : GraphClass) (e : G ≃g H) : 𝓕.Mem G ↔ 𝓕.Mem H :=
-  𝓕.mem_congr
-    ⟨(Iso.map (Finite.equivFin V) G).symm.trans (e.trans (Iso.map (Finite.equivFin W) H))⟩
-
-/-- For a graph already given over `Fin m`, `Mem` agrees with the defining predicate. -/
-@[simp]
-theorem GraphClass.Mem_fin (𝓕 : GraphClass) {m : ℕ} (F : SimpleGraph (Fin m)) :
-    𝓕.Mem F ↔ 𝓕.mem _ F :=
-  (𝓕.mem_congr ⟨Iso.map (Finite.equivFin (Fin m)) F⟩).symm
+  𝓕.mem_congr ⟨e⟩
 
 /-! ### Basic properties of homomorphism indistinguishability -/
 
@@ -118,9 +108,9 @@ theorem homIndistinguishable_iff_forall_mem (𝓕 : GraphClass) (G : SimpleGraph
   · intro h β _ F hF
     rw [homCount_congr_left (Iso.map (Finite.equivFin β) F) G,
       homCount_congr_left (Iso.map (Finite.equivFin β) F) H]
-    exact h _ hF
+    exact h _ ((GraphClass.Mem_congr 𝓕 (Iso.map (Finite.equivFin β) F)).1 hF)
   · intro h _ F hF
-    exact h F ((GraphClass.Mem_fin 𝓕 F).2 hF)
+    exact h F hF
 
 @[refl]
 theorem HomIndistinguishable.refl (𝓕 : GraphClass) (G : SimpleGraph V) : G ≡[𝓕] G :=
@@ -150,53 +140,38 @@ theorem HomIndistinguishable.catProd (h : G ≡[𝓕] H) {β : Type} [Finite β]
 
 /-! ### The homomorphism distinguishing closure -/
 
-/-- Membership in `cl 𝓕` may be used against graphs in an arbitrary universe. -/
-theorem homCount_eq_of_mem_cl {m : ℕ} {K : SimpleGraph (Fin m)} (h : (cl 𝓕).mem _ K)
-    (hGH : G ≡[𝓕] H) : homCount K G = homCount K H := by
-  -- Transport `G` and `H` to graphs over `Fin _`, where `h` applies.
-  set eG := Iso.map (Finite.equivFin V) G with heG
-  set eH := Iso.map (Finite.equivFin W) H with heH
-  rw [homCount_congr_right K eG, homCount_congr_right K eH]
-  exact h.homCount_eq _ _ ((HomIndistinguishable.trans ((HomIndistinguishable.trans (HomIndistinguishable.symm (HomIndistinguishable.of_iso 𝓕 eG))) hGH))
-    (HomIndistinguishable.of_iso 𝓕 eH))
-
 /-- To place a graph in `cl 𝓕` it suffices to determine its homomorphism counts into graphs
 over arbitrary finite vertex types.  Converse of `SimpleGraph.homCount_eq_of_Mem_cl`. -/
 theorem GraphClass.Mem_cl_of_forall (𝓕 : GraphClass) {K : SimpleGraph α}
     (h : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
       (G ≡[𝓕] H) → homCount K G = homCount K H) :
-    (cl 𝓕).Mem K := by
-  refine ⟨fun G H hGH => ?_⟩
-  rw [← homCount_congr_left (Iso.map (Finite.equivFin α) K) G,
-    ← homCount_congr_left (Iso.map (Finite.equivFin α) K) H]
-  exact h G H hGH
+    (cl 𝓕).Mem K :=
+  ⟨fun G H hGH => h G H hGH⟩
 
-/-- `Mem` form of `SimpleGraph.homCount_eq_of_mem_cl`. -/
+/-- Membership in `cl 𝓕` determines homomorphism counts into any two related graphs. -/
 theorem homCount_eq_of_Mem_cl {K : SimpleGraph α} (h : (cl 𝓕).Mem K) (hGH : G ≡[𝓕] H) :
-    homCount K G = homCount K H := by
-  rw [homCount_congr_left (Iso.map (Finite.equivFin α) K) G,
-    homCount_congr_left (Iso.map (Finite.equivFin α) K) H]
-  exact homCount_eq_of_mem_cl h hGH
+    homCount K G = homCount K H :=
+  h.homCount_eq G H hGH
 
 /-- `cl` is extensive. -/
 theorem GraphClass.le_cl (𝓕 : GraphClass) : 𝓕 ≤ (cl 𝓕) := by
-  intro _ F hF
-  exact ⟨fun _ _ hGH => hGH F hF⟩
+  intro _ _ F hF
+  exact ⟨fun G H hGH => (homIndistinguishable_iff_forall_mem 𝓕 G H).1 hGH F hF⟩
 
 /-- `cl` is monotone. -/
 theorem GraphClass.cl_mono (h : 𝓕 ≤ 𝓖) : (cl 𝓕) ≤ (cl 𝓖) := by
-  intro _ K hK
+  intro _ _ K hK
   exact ⟨fun G H hGH => hK.homCount_eq G H (HomIndistinguishable.mono h hGH)⟩
 
 /-- `≡[𝓕]` and `≡[cl 𝓕]` are the same relation: this is the sense in which `cl 𝓕` is the
 largest class with the same homomorphism indistinguishability relation as `𝓕`. -/
 theorem homIndistinguishable_cl_iff (𝓕 : GraphClass) (G : SimpleGraph V) (H : SimpleGraph W) :
     (G ≡[(cl 𝓕)] H) ↔ (G ≡[𝓕] H) :=
-  ⟨fun h => HomIndistinguishable.mono (GraphClass.le_cl 𝓕) h, fun h _ _ hF => homCount_eq_of_mem_cl hF h⟩
+  ⟨fun h => HomIndistinguishable.mono (GraphClass.le_cl 𝓕) h, fun h _ _ hF => homCount_eq_of_Mem_cl hF h⟩
 
 /-- `cl` is idempotent. -/
 theorem GraphClass.cl_cl (𝓕 : GraphClass) : (cl (cl 𝓕)) ≤ (cl 𝓕) := by
-  intro _ K hK
+  intro _ _ K hK
   exact ⟨fun G H hGH => hK.homCount_eq G H ((homIndistinguishable_cl_iff 𝓕 G H).2 hGH)⟩
 
 /-! ### Determined linear combinations
@@ -276,7 +251,7 @@ theorem mem_cl_of_determines {n : ℕ} {ι : Type} [Fintype ι] (𝓕 : GraphCla
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
       (G ≡[𝓕] H) →
         ∑ i, α i * (homCount (L.graph i) G : ℚ) = ∑ i, α i * (homCount (L.graph i) H : ℚ))
-    (i : ι) : (cl 𝓕).mem _ (L.graph i) :=
+    (i : ι) : (cl 𝓕).Mem (L.graph i) :=
   determines_of_determines_sum (homIndRel 𝓕)
     (by intro V W X _ _ _ G H K h; exact HomIndistinguishable.catProd h K)
     L hL α hα (fun G H h => hdet G H h) i
@@ -293,7 +268,7 @@ theorem mem_cl_of_determines_of_ne_zero {n : ℕ} {ι : Type} [Fintype ι] (𝓕
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
       (G ≡[𝓕] H) →
         ∑ i, α i * (homCount (L.graph i) G : ℚ) = ∑ i, α i * (homCount (L.graph i) H : ℚ))
-    {i : ι} (hi : α i ≠ 0) : (cl 𝓕).mem _ (L.graph i) := by
+    {i : ι} (hi : α i ≠ 0) : (cl 𝓕).Mem (L.graph i) := by
   classical
   haveI : Fintype {k : ι // α k ≠ 0} := Fintype.ofFinite _
   set M : GraphFamily n {k : ι // α k ≠ 0} :=
@@ -313,7 +288,7 @@ theorem mem_cl_of_determines_of_ne_zero {n : ℕ} {ι : Type} [Fintype ι] (𝓕
     rw [h1, Finset.sum_subtype (p := fun i => α i ≠ 0) _ (fun x => by simp)
       (fun i => α i * (homCount (L.graph i) G : ℚ))]
   have hM : M.PairwiseNonIso := fun k k' hne hiso => hne (Subtype.ext (GraphFamily.PairwiseNonIso.eq hL hiso))
-  have key : (cl 𝓕).mem _ (M.graph ⟨i, hi⟩) := by
+  have key : (cl 𝓕).Mem (M.graph ⟨i, hi⟩) := by
     refine mem_cl_of_determines 𝓕 M hM (fun k => α k.1) (fun k => k.2) ?_ ⟨i, hi⟩
     intro X Y _ _ G H hGH
     rw [← hdrop G, ← hdrop H]
