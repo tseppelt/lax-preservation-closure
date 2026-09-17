@@ -98,7 +98,9 @@
 	
 
 
+% lax begin Lax871432.LovaszTheorem
 	In 1967, Lovász~\cite{lovasz_operations_1967} proved that two graphs $G$ and $H$ are isomorphic if and only if they are \emph{homomorphism indistinguishable} over all graphs, i.e.\@ for every graph $F$, the number of homomorphisms from~$F$ to~$G$ is equal to the number of homomorphisms from~$F$ to~$H$.
+% lax end
 	Since then, homomorphism indistinguishability over restricted graph classes has emerged as a powerful framework for capturing a wide range of equivalence relations comparing graphs.
 	For example, two graphs have cospectral adjacency matrices iff they are homomorphism indistinguishable over all cycles, cf.\@ \cite{dell_lovasz_2018}.
 	They are quantum isomorphic iff they are homomorphism indistinguishable over all planar graphs \cite{mancinska_quantum_2019}.
@@ -154,17 +156,21 @@
 		\label{tab:overview}
 	\end{table}
 	
+% lax begin Lax871432.ForbiddenMinors
 	\begin{theorem} \label{thm:main2}
 		Let $\mathcal{F}$ be a homomorphism distinguishing closed graph class.
 		Then $\mathcal{F}$ is minor-closed if and only if $\equiv_{\mathcal{F}}$ is preserved under taking complements, i.e.\@ for all simple graphs $G$ and $H$ it holds that $G \equiv_{\mathcal{F}} H$ if and only if $\overline{G} \equiv_{\mathcal{F}} \overline{H}$.
 	\end{theorem}
+% lax end
 	
 	Here, the graph class $\mathcal{F}$ is \emph{homomorphism distinguishing closed} \cite{roberson_oddomorphisms_2022} if for every $K \not\in \mathcal{F}$ there exist graphs $G$ and $H$ which are homomorphism indistinguishable over $\mathcal{F}$ but differ in the number of homomorphisms from~$K$. In other words, adding even a single graph to $\mathcal{F}$ would change its homomorphism indistinguishability relation.
 	
 	Proving that a graph class is homomorphism distinguishing closed is a pathway to separating equivalence relations comparing graphs \cite{roberson_lasserre_2023}.
 	However, establishing this property is a notoriously hard task.
 	Thus, a general result establishing the homomorphism distinguishing closedness of a wide range of graph classes would be desirable.
+% lax begin Lax871432.RobersonConjecture
 	In \cite{roberson_oddomorphisms_2022}, Roberson conjectured that \emph{every graph class closed under taking minors and disjoint unions is homomorphism distinguishing closed}.
+% lax end
 	At present, this conjecture has only been  verified for few graph classes~\cite{roberson_oddomorphisms_2022,neuen_homomorphism-distinguishing_2023}.
 	
 	
@@ -208,15 +214,21 @@
 	
 	All graphs in this article are finite, undirected, and without multiple edges. 
 	A \emph{simple graph} is a graph without loops.
+% lax begin Lax871432.HomomorphismCounts
 	A \emph{homomorphism} from a graph $F$ to a graph $G$ is a map $h \colon V(F) \to V(G)$ such that $h(u)h(v) \in E(G)$ whenever $uv \in E(F)$ and vertices carrying a loop are mapped to vertices carrying a loop. Write $\hom(F, G)$ for the number of homomorphisms from $F$ to $G$. 
+% lax end
+% lax begin Lax871432.HomomorphismIndistinguishability
 	For a class of graphs $\mathcal{F}$ and graphs $G$ and $H$, write $G \equiv_{\mathcal{F}} H$ if $\hom(F, G) = \hom(F, H)$ for all $F \in \mathcal{F}$, i.e.\@ $G$ and $H$ are \emph{homomorphism indistinguishable over $\mathcal{F}$}.
+% lax end
 	With the exception of \cref{sec:full-complements}, the graphs in $\mathcal{F}$ as well as $G$ and $H$ will be simple.
+% lax begin Lax871432.DistinguishingClosure
 	Following \cite{roberson_oddomorphisms_2022}, the \emph{homomorphism distinguishing closure} of $\mathcal{F}$ is
 	\[
 		\cl(\mathcal{F}) \coloneqq \{K \text{ simple graph} \mid \forall  \text{ simple graphs } G, H.\quad G \equiv_{\mathcal{F}} H \Rightarrow \hom(K, G) = \hom(K, H) \}.
 	\]
 	Intuitively, $\cl(\mathcal{F})$ is the \enquote{largest} graph class whose homomorphism indistinguishability relation coincides with the one of $\mathcal{F}$.
 	A graph class $\mathcal{F}$ is \emph{homomorphism distinguishing closed} if $\cl(\mathcal{F}) = \mathcal{F}$. Note that $\cl$ is a closure operator in the sense that $\cl(\mathcal{F}) \subseteq \cl(\mathcal{F}')$ if $\mathcal{F} \subseteq \mathcal{F}'$ and $\cl(\cl(\mathcal{F})) = \cl(\mathcal{F})$ for all graph classes $\mathcal{F}$ and $\mathcal{F}'$.
+% lax end
 	Furthermore, the following inclusions hold (and cannot be reversed, cf.\@ \cref{ex1}):
 	
 	\begin{lemma} \label{lem:intersection}
@@ -234,6 +246,7 @@
 	
 	For graphs $F$ and $K$, $F$ is said to be \emph{$K$-colourable} if there is a homomorphisms $F \to K$. $F$ and $K$ are \emph{homomorphically equivalent} if there are homomorphisms $F \to K$ and $K \to F$.
 	
+% lax begin Lax871432.GraphProducts
 	For graphs $G$ and $H$, write $G + H$ for their \emph{disjoint union} and $\coprod_{i \in [n]} G_i \coloneqq G_1 + \dots + G_n$ for graphs $G_1, \dots, G_n$.
 We write $G \times H$ for the \emph{categorical product} of $G$ and $H$, i.e.\@ $V(G \times H) \coloneqq V(G) \times V(H)$ and $gh$ and $g'h'$ are adjacent in $G \times H$ iff $gg' \in E(G)$ and $hh' \in E(H)$. The \emph{lexicographic product} $G \cdot H$ is defined as the graph with vertex set $V(G) \times V(H)$ and edges between $gh$ and $g'h'$ iff $g = g'$ and $hh' \in E(H)$ or $gg' \in E(G)$. It is well-known, cf.\@ e.g.\@ \cite[(5.28)--(5.30)]{lovasz_large_2012}, that
 	for all graphs $F_1, F_2, G_1, G_2$, and all connected graphs $K$, the following equalities hold:
@@ -242,18 +255,27 @@ We write $G \times H$ for the \emph{categorical product} of $G$ and $H$, i.e.\@ 
 		\hom(F, G_1 \times G_2) &= \hom(F, G_1) \hom(F, G_2), \text{ and }\label{eq:product} \\
 		\hom(K, G_1 + G_2) &= \hom(K, G_1) + \hom(K, G_2). \label{eq:disjoint}
 	\end{align}
+% lax end
 		
+% lax begin Lax871432.LoopGraphs
 	The \emph{complement} of a simple graph $F$ is the simple graph $\overline{F}$ with $V(\overline{F}) = V(F)$ and $E(\overline{F}) = \binom{V(F)}{2} \setminus E(F)$.
 	Observe that $\overline{\overline{F}} = F$ for all simple graphs $F$.
 	The \emph{full complement} of a  graph $G$ is the graph $\widehat{G}$ obtained from $G$ by replacing every edge with a non-edge and every loop with a non-loop, and vice-versa.
+% lax end
 	
+% lax begin Lax871432.ConnectedPartitions
 	The \emph{quotient} $F/\mathcal{P}$ of a simple graph $F$ by a partition $\mathcal{P}$ of $V(F)$ is the simple graph with vertex set $\mathcal{P}$ and edges $PQ$ for $P \neq Q$ iff there exist vertices $p \in P$ and $q \in Q$ such that $pq \in E(F)$. 
 For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.	
+% lax end
+% lax begin Lax871432.Contractions
 	A graph $F'$ can be obtained from a simple graph $F$ by \emph{contracting edges} if there is a partition $\mathcal{P} \in \Pi(V(F))$ such that $F[P]$ is connected for all $P \in \mathcal{P}$ and $F' \cong F/\mathcal{P}$.
+% lax end
 	
+% lax begin Lax871432.ClosureProperties
 	For a graph $F$ and a set $P \subseteq V(F)$, write $F[P]$ for the \emph{subgraph induced by $P$}, i.e.\@ the graph with vertex set $P$ and edges $uv$ if $u,v \in P$ and $uv \in E(F)$.
 	A graph $F'$ is a \emph{subgraph} of $F$, in symbols $F' \subseteq F$ if $V(F') \subseteq V(F)$ and $E(F') \subseteq E(F)$.
 	A \emph{minor} of a simple graph $F$ is a subgraph of a graph which can be obtained from $F$ by contracting edges. 
+% lax end
 	
 	Let $F$ be a simple graph with edge $uv \in E(F)$. 
 	The graph obtained from $F$ by \emph{subdividing} $uv$ is the graph $F'$ with vertex set $V(F') \coloneqq V(F) \sqcup \{w\}$ and $E(F') \coloneqq (E(F) \setminus \{uv\}) \cup \{uw, wv\}$.
@@ -272,12 +294,17 @@ For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.
 	\label{sec:syntax-semantics}
 	
 	
+% lax begin Lax871432.PreservationProperties
 	This section is concerned with the interplay of closure properties of a graph class $\mathcal{F}$ and preservation properties of its homomorphism indistinguishability relation $\equiv_{\mathcal{F}}$. The central results of this section are \cref{thm:main2} and the other results listed in \cref{tab:overview}.  
+% lax end
 	
+% lax begin Lax871432.IsomorphismRelaxations
 	The relevance of the results is twofold: On the one hand, they yield that if a graph class $\mathcal{F}$ has a certain closure property then so does $\cl(\mathcal{F})$. In the case of minor-closed graph families, this provides evidence for Roberson's conjecture \cite{roberson_oddomorphisms_2022}. On the other hand, they establish that equivalence relations comparing graphs which are preserved under certain operations coincide with the homomorphism indistinguishability relation over a graph class with a certain closure property, if they are homomorphism indistinguishability relations at all. 
+% lax end
 	Further consequences are discussed in \cref{sec:applications,sec:logic}.
 	Essential to all proofs is the following \cref{lem:lincomb}:
 	
+% lax begin Lax871432.LinearCombinationLemma
 	\begin{lemma} \label{lem:lincomb}
 		Let $\mathcal{F}$ and $\mathcal{L}$ be classes of simple graphs.
 		Suppose $\mathcal{L}$ is finite 
@@ -288,12 +315,15 @@ For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.
 		\]
 		then $\mathcal{L} \subseteq \cl(\mathcal{F})$.
 	\end{lemma}
+% lax end
 
 	\begin{proof}
 		The following argument is due to \cite[Lemma~3.6]{curticapean_homomorphisms_2017}. 
 		Let $n$ be an upper bound on the number of vertices of graphs in $\mathcal{L}$ and let $\mathcal{L}'$ denote the class of all graphs on at most $n$~vertices. 
 		By classical arguments~\cite{lovasz_operations_1967}, cf.\@ \cite[Proposition~5.44(b)]{lovasz_large_2012}, the matrix $M \coloneqq (\hom(K, L))_{K, L \in \mathcal{L}'}$ is invertible. Extend $\alpha$ to a function $\alpha' \colon \mathcal{L}' \to \mathbb{R}$ by setting $\alpha'(L) \coloneqq \alpha(L)$ for all $L \in \mathcal{L}$ and $\alpha'(L') \coloneqq 0$ for all $L' \in \mathcal{L}' \setminus \mathcal{L}$.
+% lax begin Lax871432.ProductPreservation
 		By \cref{eq:product}, if $G \equiv_{\mathcal{F}} H$ then $G \times K \equiv_{\mathcal{F}} H \times K$ for all graphs~$K$. Hence, by \cref{eq:product},
+% lax end
 		\[
 		\sum_{L \in \mathcal{L'}} \hom(L, K) \alpha_L \hom(L, G) = \sum_{L \in \mathcal{L'}} \hom(L, K) \alpha_L \hom(L, H).
 		\]
@@ -334,6 +364,7 @@ For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.
 	This closure property is often assumed in the context of homomorphism indistinguishability \cite{abramsky_discrete_2022,roberson_oddomorphisms_2022} and fairly mild. It is the most general property among those studied here, cf.\@ \cref{fig:relationship}.
 	\cref{thm:taking-summands} answers a question from~\cite[p.\@~7]{roberson_oddomorphisms_2022} affirmatively: Is it true that if $\equiv_{\mathcal{F}}$ is preserved under disjoint unions then $\cl(\mathcal{F})$ is closed under taking summands?
 	
+% lax begin Lax871432.TakingSummands
 	\begin{theorem}  \label{thm:taking-summands}
 		For a graph class $\mathcal{F}$ and the assertions
 		\begin{enumerate}
@@ -343,6 +374,7 @@ For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.
 		\end{enumerate}
 		the implications \ref{ts1} $\Rightarrow$ \ref{ts2} $\Leftrightarrow$ \ref{ts3} hold.
 	\end{theorem}
+% lax end
 	\begin{proof}
 		The central idea is to write, given graphs $F$, $G$, and $H$, the quantity $\hom(F, G + H)$ as expression in $\hom(F', G)$ and $\hom(F', H)$ where the $F'$ range over summands of $F$.
 		To this end, write $F = C_1 + \dots + C_r$ as disjoint union of its connected components. Then,
@@ -390,6 +422,7 @@ For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.
 	In particular, as noted in \cite[p.\@~2]{roberson_oddomorphisms_2022}, there was little reason to believe that minor-closed graph families should play a distinct role in the theory of homomorphism indistinguishability. \cref{thm:complement} indicates that this might be the case.
 	Indeed, while Roberson's conjecture asserts that $\cl(\mathcal{F})$ coincides with~$ \mathcal{F}$ for every minor-closed and union-closed graph class~$\mathcal{F}$, \cref{thm:complement} yields unconditionally that $\cl(\mathcal{F})$ is a minor-closed graph class itself.
 	
+% lax begin Lax871432.ForbiddenMinors
 	\begin{theorem}
 		\label{thm:complement}
 		For a graph class $\mathcal{F}$ and the assertions
@@ -400,17 +433,20 @@ For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.
 		\end{enumerate}
 		the implications \ref{rcl1} $\Rightarrow$ \ref{rcl2} $\Leftrightarrow$ \ref{rcl4} hold.
 	\end{theorem}
+% lax end
 
 	The strategy is to write $\hom(F, \overline{G})$ as a linear combination of $\hom(F', G)$ for minors $F'$ of $F$.
 	This is accomplished in two steps: First, we consider the full complement $\widehat{G}$ of $G$ in which not only every edge of~$G$ is replaced by a non-edge (and vice versa) but also every loop is replaced by a non-loop (and vice versa). Secondly, we consider for a simple graph $G$ the looped graph $G^\circ$ obtained from $G$ by adding a loop to every vertex.
 	The fact that $\widehat{G^\circ} \cong \overline{G}$ motivates this two-step approach. 
 	
+% lax begin Lax871432.HomomorphismCountIdentities
 	\begin{lemma}[{\cite[Equation~(5.23)]{lovasz_large_2012}}] \label{eq:complement}
 		For every  graph $G$ and every simple graph $F$,
 		\[
 		\hom(F, \widehat{G}) = \sum_{F' \subseteq F \text{ s.t.\@ }V(F') = V(F)} (-1)^{|E(F')|} \hom(F', G).
 		\]
 	\end{lemma}
+% lax end
 	\begin{proof}Write $S$ for the set of all maps $V(F) \to V(G)$. For $e \in E(F)$, write $A_e \subseteq S$ for set of all maps $h$ such that the image of $e$ under $h$ is an edge or a loop in $G$.
 		It holds that $h \not\in A_e$ if and only if $e$ is mapped under $h$ either to two non-adjacent vertices or to a single vertex without a loop.
 		Hence, $\hom(F, \widehat{G}) = \left\lvert \bigcap_{e \in E(F)} \overline{A_e} \right\rvert$.
@@ -419,6 +455,7 @@ For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.
 	
 	
 	In light of \cref{eq:complement}, it suffices to write $\hom(F, G^\circ)$ as a linear combination of $\hom(F', G)$ for minors $F'$ of $F$.
+% lax begin Lax871432.LoopGraphs
 	To ease bookkeeping, we consider a particular type of quotient graphs.
 	For a simple graph $F$ and a set of edges $L \subseteq E(F)$, define the \emph{contraction relation}~$\sim_L$ on $V(F)$ by declaring $v \sim_L w$ if
 	$v$ and $w$ lie in the same connected component of the subgraph of $F$ with vertex set $V(F)$ and edge set $L$.
@@ -426,16 +463,19 @@ For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.
 	
 	The \emph{contraction quotient} $F \oslash L$ is the graph whose vertex set is the set of equivalence classes under $\sim_L$ and with an edge between $[v]_L$ and $[w]_L$ if and only if there is an edge $xy \in E(F) \setminus L$ such that $x \sim_L v$ and $y \sim_L w$. 
 	In general, $F \oslash L$ may contain loops, cf.\@ \cref{ex:contr}. However, if it is simple then it is equal to $F/\mathcal{P}$ where $\mathcal{P}$ is the partition of $V(F)$ into equivalence classes under $\sim_L$, i.e.\@ $\mathcal{P} \coloneqq \{[v]_L \mid v \in V(F)\}$. In this case, $F \oslash L$ is a graph obtained from $F$ by edge contractions.
+% lax end
 	
 	With this notation, the quantity $\hom(F, G^\circ)$ can be succinctly written as a linear combination.
 	Using \cref{eq:complement,lem:looping}, \cref{thm:complement} can be proven by the strategy described in \cref{sec:summands}.
 	
+% lax begin Lax871432.HomomorphismCountIdentities
 	\begin{theorem} \label{lem:looping}
 		Let $F$ and $G$ be simple graphs. Then
 		\[
 		\hom(F, G^\circ) = \sum_{L \subseteq E(F)} \hom(F \oslash L, G).
 		\]
 	\end{theorem}
+% lax end
 	\begin{proof}The proof is by establishing a bijection between the set of homomorphisms $h \colon F \to G^\circ$ and the set $X$ of pairs $(L, \phi)$ where $L \subseteq E(F)$ and $\phi \colon F \oslash L \to G$ is a homomorphism.	
 	
 	\begin{claim} \label{cl:looping-map}
@@ -652,6 +692,7 @@ Since \cref{lem:lincomb} is not directly applicable since the condition in \ref{
 	
 	A correspondence between taking induced subgraphs and left lexicographic products is established by the following \cref{prop:lexprod-indsub}:
 	
+% lax begin Lax871432.InducedSubgraphs
 	\begin{theorem} \label{prop:lexprod-indsub}
 		For a graph class $\mathcal{F}$ and the assertions
 		\begin{enumerate}
@@ -661,12 +702,14 @@ Since \cref{lem:lincomb} is not directly applicable since the condition in \ref{
 		\end{enumerate}
 		the implications \ref{indsub1} $\Rightarrow$ \ref{indsub2} $\Leftrightarrow$ \ref{indsub3} hold.
 	\end{theorem}
+% lax end
 	
 
 	An example for a lexicographic product from the right is the \emph{$n$-blow-up} $G \cdot \overline{K_n}$ of a graph~$G$.
 	It is well-known \cite{lovasz_large_2012} that every homomorphism indistinguishability relation is preserved under blow-ups. 
 	Preservation under arbitrary lexicographic products from the right, however, is a non-trivial property corresponding to the associated graph class being closed under edge contractions:
 
+% lax begin Lax871432.EdgeContractions
 	\begin{theorem} \label{prop:lexprod-contract}
 		For a graph class $\mathcal{F}$ and the assertions
 		\begin{enumerate}
@@ -676,11 +719,13 @@ Since \cref{lem:lincomb} is not directly applicable since the condition in \ref{
 		\end{enumerate}
 		the implications \ref{contr1} $\Rightarrow$ \ref{contr2} $\Leftrightarrow$ \ref{contr3} hold.
 	\end{theorem}
+% lax end
 
 
 	For the proofs of \cref{prop:lexprod-contract,prop:lexprod-indsub}, homomorphism counts $\hom(F, G \cdot H)$ are written as linear combinations of homomorphism counts $\hom(F', H)$ where $F'$ ranges over induced subgraphs of $F$ in the case of \cref{prop:lexprod-indsub} and over graphs obtained from $F'$ by contracting edges in the case of \cref{prop:lexprod-contract}.
 	The following succinct formula for counts of homomorphisms into a lexicographic product may  be of independent interest.
 	
+% lax begin Lax871432.HomomorphismCountIdentities
 	\begin{theorem} \label{thm:lexprod-hom}
 		Let $F$, $G$, and $H$ be simple graphs. Then
 		\[
@@ -689,6 +734,7 @@ Since \cref{lem:lincomb} is not directly applicable since the condition in \ref{
 		\]
 		where the outer sum ranges over all $\mathcal{R} \in \Pi(V(F))$ such that $F[R]$ is connected for all $R \in \mathcal{R}$.
 	\end{theorem}
+% lax end
 	\begin{proof}The proof is by constructing a bijection between the set of homomorphisms $F \to G \cdot H$ and the set of triples $(\mathcal{R}, g, h)$ where $\mathcal{R} \in \Pi(V(F))$ is such that all $F[R]$, $R \in \mathcal{R}$, are connected, and $g \colon F/\mathcal{R} \to G$ and $h \colon \coprod_{R \in \mathcal{R}} F[R] \to H$ are homomorphisms.
 		To that end, write $\pi_G \colon V(G \cdot H) \to V(G)$ and $\pi_H \colon V(G \cdot H) \to V(H)$ for the projection maps. 
 		

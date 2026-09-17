@@ -6,6 +6,9 @@ title: "Logical Equivalences, Homomorphism Indistinguishability, and Forbidden M
 authors:
   - name: "Tim Seppelt"
     github: tseppelt
+paper:
+  folder: "paper"
+  main: "main.tex"
 bibEntries:
   - |
     @article{seppelt_logical_2024,
