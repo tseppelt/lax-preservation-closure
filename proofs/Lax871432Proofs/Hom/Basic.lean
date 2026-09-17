@@ -6,6 +6,7 @@ Authors: Tim Seppelt
 import Lax871432Proofs.GraphTheory.Prod
 import Lax871432Proofs.GraphTheory.Sum
 import Lax871432Proofs.Hom.Count
+import Lax871432.GraphProducts
 
 /-!
 # Homomorphism counts of sums and categorical products
@@ -30,6 +31,8 @@ Here `⊕g` is Mathlib's disjoint sum of graphs and `×g` is the categorical pro
 -/
 
 namespace Lax871432Proofs
+
+open scoped Lax871432.GraphProducts
 
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts

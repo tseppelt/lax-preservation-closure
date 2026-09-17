@@ -6,6 +6,7 @@ Authors: Tim Seppelt
 import Lax871432Proofs.Hom.DisjUnion
 import Lax871432Proofs.Lovasz.Basic
 import Lax871432.DistinguishingClosure
+import Lax871432.GraphProducts
 
 /-!
 # Graph classes, homomorphism indistinguishability, and the distinguishing closure
@@ -62,6 +63,8 @@ structure application is never a `Pi`, so the reduction stops and all of that di
 -/
 
 namespace Lax871432Proofs
+
+open scoped Lax871432.GraphProducts
 
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts

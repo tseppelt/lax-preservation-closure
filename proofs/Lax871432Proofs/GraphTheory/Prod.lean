@@ -4,55 +4,30 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
 import Mathlib.Combinatorics.SimpleGraph.Prod
+import Lax871432.GraphProducts
 
 /-!
 # The categorical product of graphs
 
-This file defines the categorical product of graphs. The categorical product of `G` and `H` is
-the graph on the product of the vertices such that `x` and `y` are related iff their first
-components are related via `G` *and* their second components are related via `H`. For example,
-the categorical product of two edges is a pair of disjoint edges.
+The categorical product `×g` itself is the concept `Lax871432.GraphProducts`; this file adds
+the API for it, following the organisation of Mathlib's
+`Mathlib/Combinatorics/SimpleGraph/Prod.lean`, which so far provides only the box product `□`.
 
-It is also known as the tensor, Kronecker, weak, or conjunction product, and it is the product
-in the category of graphs and graph homomorphisms; see `SimpleGraph.Hom.catProdEquiv` in
-`Hom/Basic.lean` for the universal property.
-
-This file complements Mathlib's `Mathlib/Combinatorics/SimpleGraph/Prod.lean`, which so far
-only provides the box product `□`, and whose organisation it follows.
-
-## Main declarations
-
-* `SimpleGraph.catProd`: the categorical product.
-
-## Notation
-
-* `G ×g H`: the categorical product of `G` and `H`.
-
-## TODO
-
-Define the lexicographic and strong products too.
+It is the product in the category of graphs and graph homomorphisms; see
+`SimpleGraph.Hom.catProdEquiv` in `Hom/Basic.lean` for the universal property.
 -/
 
 variable {α β γ : Type*}
 
 namespace Lax871432Proofs
 
+open scoped Lax871432.GraphProducts
+
 open _root_.SimpleGraph
 
 namespace SimpleGraph
 
 variable {G : SimpleGraph α} {H : SimpleGraph β}
-
-/-- Categorical product of simple graphs. It relates `(a₁, b₁)` and `(a₂, b₂)` if `G` relates
-`a₁` and `a₂` and `H` relates `b₁` and `b₂`. Contrast with `SimpleGraph.boxProd`. -/
-def catProd (G : SimpleGraph α) (H : SimpleGraph β) : SimpleGraph (α × β) where
-  Adj x y := G.Adj x.1 y.1 ∧ H.Adj x.2 y.2
-  symm := ⟨fun _ _ h => ⟨h.1.symm, h.2.symm⟩⟩
-  loopless := ⟨fun _ h => G.irrefl h.1⟩
-
-/-- Categorical product of simple graphs. It relates `(a₁, b₁)` and `(a₂, b₂)` if `G` relates
-`a₁` and `a₂` and `H` relates `b₁` and `b₂`. -/
-infixl:70 " ×g " => catProd
 
 @[simp]
 theorem catProd_adj {x y : α × β} :

@@ -1,6 +1,7 @@
 import Lax871432.ClosureProperties
 import Lax871432.DistinguishingClosure
 import Lax871432.ForbiddenMinors
+import Lax871432.GraphProducts
 import Lax871432.HomomorphismCounts
 import Lax871432.HomomorphismIndistinguishability
 import Lax871432.IsomorphismRelaxations
