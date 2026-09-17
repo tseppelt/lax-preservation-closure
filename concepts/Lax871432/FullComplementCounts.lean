@@ -7,16 +7,9 @@ title: Homomorphism counts into a full complement
 type: theorem
 ---
 For a simple graph $F$ with finitely many edges and a graph $X$,
-$$\hom(F, \widehat{X}) = \sum_{s \subseteq E(F)} (-1)^{|s|} \hom(F_s, X),$$
-where $F_s$ is the spanning subgraph of $F$ with edge set $s$ (Lovász, *Large Networks and
+$$\hom(F, \widehat{X}) = \sum_{S \subseteq E(F)} (-1)^{|S|} \hom(F_S, X),$$
+where $F_S$ is the spanning subgraph of $F$ with edge set $S$ (Lovász, *Large Networks and
 Graph Limits*, equation (5.23)).
-
-A map $V(F) \to V(X)$ is a homomorphism into the full complement exactly when it avoids, for
-every edge of $F$, the event that the edge's endpoints are sent to an adjacent pair;
-inclusion–exclusion over those events gives the alternating sum, the maps satisfying the
-events of a set $s$ of edges being the homomorphisms out of $F_s$.
-
-This is the first of the two steps expanding homomorphism counts into a complement.
 -/
 
 open Lax871432.LoopGraphs

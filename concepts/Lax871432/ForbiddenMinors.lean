@@ -14,17 +14,6 @@ For a graph class $\mathcal{F}$ and the assertions
 3. $\mathrm{cl}(\mathcal{F})$ is minor-closed,
 
 the implications (1) $\Rightarrow$ (2) $\Leftrightarrow$ (3) hold.
-
-This answers Question 8 of Roberson (2022) affirmatively: if $\equiv_{\mathcal{F}}$ is
-preserved under taking complements then $\equiv_{\mathcal{F}}$ coincides with
-$\equiv_{\mathcal{F}'}$ for a minor-closed class $\mathcal{F}'$, namely
-$\mathcal{F}' = \mathrm{cl}(\mathcal{F})$. Whereas Roberson's conjecture asserts that
-$\mathrm{cl}(\mathcal{F})$ coincides with $\mathcal{F}$ for every minor-closed and
-union-closed $\mathcal{F}$, assertion (3) holds unconditionally.
-
-The proof writes $\hom(F, \overline{G})$ as a linear combination of $\hom(F', G)$ over the
-minors $F'$ of $F$ obtained by deleting and contracting edges, and applies the lemma on
-determined linear combinations.
 -/
 
 open Lax871432.ClosureProperties Lax871432.DistinguishingClosure

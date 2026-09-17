@@ -54,3 +54,15 @@ bibEntries:
       year = {2017},
       doi = {10.1145/3055399.3055502}
     }
+  - |
+    @book{lovasz_large_2012,
+      address = {Providence, Rhode Island},
+      series = {American {Mathematical} {Society} colloquium publications},
+      title = {Large networks and graph limits},
+      isbn = {978-0-8218-9085-1},
+      number = {volume 60},
+      publisher = {American Mathematical Society},
+      author = {Lovász, László},
+      year = {2012},
+      doi = {10.1090/coll/060}
+    }

@@ -13,12 +13,7 @@ homomorphisms, whence $\hom(F, G \times H) = \hom(F, G)\hom(F, H)$; it also goes
 Kronecker, weak or conjunction product.
 
 In the *lexicographic product* $G \cdot H$, the pairs $gh$ and $g'h'$ are adjacent when
-$gg' \in E(G)$, or else $g = g'$ and $hh' \in E(H)$. It replaces every vertex of $G$ by a copy
-of $H$ and joins two copies completely whenever the corresponding vertices of $G$ are adjacent.
-
-Mathlib supplies a third product on the same vertex set, the box product $G \square H$, in
-which $gh$ and $g'h'$ are adjacent when they agree in one component and are adjacent in the
-other. It is not used here, but it is what makes these two worth naming apart.
+$gg' \in E(G)$, or else $g = g'$ and $hh' \in E(H)$.
 -/
 
 namespace Lax871432.GraphProducts

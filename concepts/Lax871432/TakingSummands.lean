@@ -14,13 +14,6 @@ For a graph class $\mathcal{F}$ and the assertions
 3. $\mathrm{cl}(\mathcal{F})$ is closed under taking summands,
 
 the implications (1) $\Rightarrow$ (2) $\Leftrightarrow$ (3) hold.
-
-This answers a question of Roberson (2022, p. 7) affirmatively. Closure under taking
-summands is the mildest of the closure properties considered in this context, and the
-equivalence (2) $\Leftrightarrow$ (3) is the first instance of the general correspondence
-between closure properties of a graph class and preservation properties of the relaxation it
-induces. Read from right to left it says which relations can be homomorphism
-indistinguishability over a summand-closed class at all.
 -/
 
 open Lax871432.ClosureProperties Lax871432.DistinguishingClosure

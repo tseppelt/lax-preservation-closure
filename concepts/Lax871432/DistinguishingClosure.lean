@@ -5,7 +5,7 @@ import Lax871432.HomomorphismIndistinguishability
 title: The homomorphism distinguishing closure
 type: definition
 ---
-Following Roberson (2022), the *homomorphism distinguishing closure* of a graph class
+The *homomorphism distinguishing closure* of a graph class
 $\mathcal{F}$ is
 $$\mathrm{cl}(\mathcal{F}) \coloneqq \{K \mid \forall G, H.\ G \equiv_{\mathcal{F}} H
 \Rightarrow \hom(K, G) = \hom(K, H)\},$$
@@ -13,19 +13,6 @@ the largest graph class whose homomorphism indistinguishability relation coincid
 of $\mathcal{F}$. A class is *homomorphism distinguishing closed* if it equals its own
 closure, i.e. if adding any further graph strictly refines its homomorphism
 indistinguishability relation.
-
-# Implementation notes
-
-`Determines` is stated for an arbitrary graph isomorphism relaxation, not only for
-homomorphism indistinguishability over a class: whether a relation pins down the homomorphism
-counts from a given graph makes sense for any of them, and the lemma on determined linear
-combinations is proved at that generality. The closure operator is the graph class collecting
-the graphs that $\equiv_{\mathcal{F}}$ determines.
-
-Membership in the closure is packaged as the one-field structure `Determines` rather than
-left as the underlying universally quantified statement. Both carry the same information;
-the structure keeps the quantifier from unfolding when a membership hypothesis is used, which
-would otherwise strand the `Finite` instances of the implicit vertex types.
 -/
 
 open Lax871432.HomomorphismCounts Lax871432.HomomorphismIndistinguishability

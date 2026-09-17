@@ -19,14 +19,7 @@ the biconditional of the paper.
 
 It is *preserved under left lexicographic products* if $H \equiv H'$ implies
 $G \cdot H \equiv G \cdot H'$ for every graph $G$, and *preserved under right lexicographic
-products* if $G \equiv G'$ implies $G \cdot H \equiv G' \cdot H$ for every graph $H$. The
-special case $H = \overline{K_n}$ of the latter is preservation under blow-ups, which every
-homomorphism indistinguishability relation enjoys; arbitrary right lexicographic products are
-a genuine restriction.
-
-No property refers to a graph class. Their interest is that for a relation which happens
-to be homomorphism indistinguishability over some class, each corresponds exactly to a closure
-property of that class.
+products* if $G \equiv G'$ implies $G \cdot H \equiv G' \cdot H$ for every graph $H$.
 -/
 
 open Lax871432.GraphProducts Lax871432.IsomorphismRelaxations

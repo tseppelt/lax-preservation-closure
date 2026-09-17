@@ -14,21 +14,6 @@ $\alpha_L \neq 0$ for every $L \in \mathcal{L}$. If $\equiv$ determines the line
 $\sum_{L \in \mathcal{L}} \alpha_L \hom(L, -)$ — that is, if $G \equiv H$ implies
 $$\sum_{L \in \mathcal{L}} \alpha_L \hom(L, G) = \sum_{L \in \mathcal{L}} \alpha_L \hom(L, H)$$
 — then it determines each constituent $\hom(L, -)$ separately.
-
-Both hypotheses on $\mathcal{L}$ are essential: the members must be pairwise non-isomorphic
-and no coefficient may vanish. The proof multiplies the hypothesis by $\hom(L, K)$ for every
-graph $K$ on at most as many vertices as the members of $\mathcal{L}$ — which is where
-preservation under categorical products is used — and inverts the resulting homomorphism
-matrix, invertible by Lovász's theorem.
-
-Applied to $\equiv_{\mathcal{F}}$, which is preserved under categorical products, the
-conclusion reads $\mathcal{L} \subseteq \mathrm{cl}(\mathcal{F})$. This is the form in which
-the lemma is used throughout: a preservation property of $\equiv_{\mathcal{F}}$ produces a
-determined linear combination, and the lemma turns it into a closure property of
-$\mathrm{cl}(\mathcal{F})$.
-
-Coefficients are taken in $\mathbb{Q}$ rather than $\mathbb{R}$; since homomorphism counts are
-natural numbers this is no restriction.
 -/
 
 open Lax871432.DistinguishingClosure Lax871432.HomomorphismCounts

@@ -13,13 +13,6 @@ $$\hom(F, G \cdot H) = \sum_{\mathcal{R}} \hom(F / \mathcal{R}, G)
   \hom(\textstyle\coprod_{R \in \mathcal{R}} F[R], H),$$
 the sum ranging over the partitions $\mathcal{R}$ of $V(F)$ all of whose classes induce
 connected subgraphs.
-
-A homomorphism $F \to G \cdot H$ is determined by, and determines, such a partition together
-with a homomorphism from the quotient into the left factor and one from the disjoint union of
-the classes into the right factor. The identity is of independent interest, and it is what
-turns closure of a graph class under induced subgraphs, respectively under edge contractions,
-into preservation of homomorphism indistinguishability under lexicographic products on one
-side, respectively the other.
 -/
 
 open Lax871432.ConnectedPartitions Lax871432.GraphProducts Lax871432.HomomorphismCounts

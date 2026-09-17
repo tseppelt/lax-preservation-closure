@@ -9,13 +9,6 @@ A *graph isomorphism relaxation* is an equivalence relation on finite simple gra
 coarser than isomorphism: isomorphic graphs are related, and the relation is symmetric and
 transitive.
 
-The equivalence relations comparing graphs that occur in practice are all of this form:
-isomorphism itself, cospectrality, quantum isomorphism, equivalence with respect to a fragment
-of logic, and homomorphism indistinguishability over a graph class. The properties studied
-here — being preserved under disjoint unions, or under taking complements — are properties of
-such a relation alone, and mention no graph class. That they can be traded against closure
-properties of a graph class is the content of the theorems below.
-
 # Implementation notes
 
 Reflexivity is not a separate field: it is `rel_of_iso` applied to the identity isomorphism.

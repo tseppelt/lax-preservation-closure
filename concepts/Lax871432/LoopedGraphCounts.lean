@@ -10,13 +10,6 @@ For simple graphs $F$ and $G$,
 $$\hom(F, G^\circ) = \sum_{L \subseteq E(F)} \hom(F \oslash L, G),$$
 where $G^\circ$ carries a loop at every vertex and $F \oslash L$ is the contraction quotient
 of $F$ by the edge set $L$.
-
-A homomorphism $F \to G^\circ$ is the same thing as a pair consisting of the set $L$ of edges
-of $F$ whose endpoints it identifies and a homomorphism $F \oslash L \to G$: the quotient by
-$L$ is exactly what remains once the collapsed edges are contracted, and an edge outside $L$
-is sent to a genuine edge of $G$.
-
-This is the second of the two steps expanding homomorphism counts into a complement.
 -/
 
 open Lax871432.LoopGraphs

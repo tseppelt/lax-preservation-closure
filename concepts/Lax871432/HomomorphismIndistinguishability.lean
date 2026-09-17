@@ -13,8 +13,7 @@ $F \in \mathcal{F}$.
 
 Since $\hom(F, -)$ is an isomorphism invariant, this is a graph isomorphism relaxation, and
 it is defined as one: `homIndRel 𝓕` is the relaxation itself, and
-$G \equiv_{\mathcal{F}} H$ is notation for the relation it carries. The theorems below are
-stated for an arbitrary relaxation and applied to this one.
+$G \equiv_{\mathcal{F}} H$ is notation for the relation it carries.
 
 # Implementation notes
 
