@@ -32,14 +32,22 @@ variable {U V W : Type*} {F : SimpleGraph U} {G : SimpleGraph V} {H : SimpleGrap
 
 /-! ### The partition a map induces -/
 
-/-- The partition of `V(F)` into the connected components of the edges whose endpoints `p`
-sends to the same value. -/
-def ConnPart.ofMap (F : SimpleGraph U) {β : Type*} (p : U → β) : ConnPart F where
-  setoid := (fibreSubgraph F p).reachableSetoid
+/-- The partition of `V(F)` into the connected components of a spanning subgraph. -/
+def ConnPart.ofSubgraph (F : SimpleGraph U) {K : SimpleGraph U} (hK : K ≤ F) : ConnPart F where
+  setoid := K.reachableSetoid
   connected := fun a => by
     refine Connected.mono ?_ (ConnectedComponent.connected_toSimpleGraph a)
     intro x y h
-    exact h.1
+    exact hK h
+
+theorem ConnPart.proj_ofSubgraph_eq_iff {K : SimpleGraph U} {hK : K ≤ F} {u v : U} :
+    (ConnPart.ofSubgraph F hK).proj u = (ConnPart.ofSubgraph F hK).proj v ↔ K.Reachable u v :=
+  ConnPart.proj_eq_iff _
+
+/-- The partition of `V(F)` into the connected components of the edges whose endpoints `p`
+sends to the same value. -/
+def ConnPart.ofMap (F : SimpleGraph U) {β : Type*} (p : U → β) : ConnPart F :=
+  ConnPart.ofSubgraph F (fibreSubgraph_le F p)
 
 theorem ConnPart.proj_ofMap_eq_iff {β : Type*} {p : U → β} {u v : U} :
     (ConnPart.ofMap F p).proj u = (ConnPart.ofMap F p).proj v ↔

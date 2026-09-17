@@ -3,12 +3,15 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.EdgeContractions
 import Lax871432.ForbiddenMinors
+import Lax871432.InducedSubgraphs
 import Lax871432.LinearCombinationLemma
 import Lax871432.ProductPreservation
 import Lax871432.LovaszTheorem
 import Lax871432.TakingSummands
 import Lax871432Proofs.PreservationClosure.Complement
+import Lax871432Proofs.PreservationClosure.LexProd
 import Lax871432Proofs.PreservationClosure.Summands
 
 /-!
@@ -143,5 +146,45 @@ already generate all minors.  Backwards, (1) ⇒ (2) applied to `cl 𝓕`.
 theorem preservedUnderCompl_iff_cl_isMinorClosed (𝓕 : GraphClass) :
     PreservedUnderCompl (homIndRel 𝓕) ↔ IsMinorClosed (cl 𝓕) :=
   SimpleGraph.GraphClass.preservedUnderCompl_iff_cl_isMinorClosed 𝓕
+
+/--
+---
+conclusion: Lax871432.InducedSubgraphs.preservedUnderLeftLexProd_of_isInducedSubgraphClosed
+---
+`prop:lexprod-indsub`, (1) ⇒ (2).  In the formula for `hom(F, G ⋅ H)` the factor depending on
+`H` counts homomorphisms out of a disjoint union of subgraphs of `F` induced by the classes of
+a partition.  Each of those induced subgraphs lies in `𝓕`, so none of them distinguishes `H`
+from `H'`, and the counts agree summand by summand.
+-/
+theorem preservedUnderLeftLexProd_of_isInducedSubgraphClosed (𝓕 : GraphClass) :
+    IsInducedSubgraphClosed 𝓕 → PreservedUnderLeftLexProd (homIndRel 𝓕) :=
+  fun h => SimpleGraph.GraphClass.IsInducedSubgraphClosed.preservedUnderLeftLexProd h
+
+/--
+---
+conclusion: Lax871432.EdgeContractions.preservedUnderRightLexProd_of_isContractionClosed
+---
+`prop:lexprod-contract`, (1) ⇒ (2).  In the formula for `hom(F, G ⋅ H)` the factor depending
+on `G` counts homomorphisms out of a quotient `F / 𝓡`, which is a contraction of `F` and so
+lies in `𝓕`.
+-/
+theorem preservedUnderRightLexProd_of_isContractionClosed (𝓕 : GraphClass) :
+    IsContractionClosed 𝓕 → PreservedUnderRightLexProd (homIndRel 𝓕) :=
+  fun h => SimpleGraph.GraphClass.IsContractionClosed.preservedUnderRightLexProd h
+
+/--
+---
+conclusion: Lax871432.EdgeContractions.preservedUnderRightLexProd_iff_cl_isContractionClosed
+---
+`prop:lexprod-contract`, (2) ⇔ (3).  Forwards, take the right factor to be a complete graph on
+the vertices of `F`: every coefficient `hom(∐ R ∈ 𝓡, F[R], K)` is then positive, since the
+disjoint union of the classes is a graph on `V(F)` and maps into that complete graph.  The
+formula therefore exhibits a linear combination of the counts from the quotients `F / 𝓡` that
+`≡[𝓕]` determines, and the lemma on determined linear combinations places each quotient in
+`cl 𝓕`; every contraction is such a quotient.  Backwards, (1) ⇒ (2) applied to `cl 𝓕`.
+-/
+theorem preservedUnderRightLexProd_iff_cl_isContractionClosed (𝓕 : GraphClass) :
+    PreservedUnderRightLexProd (homIndRel 𝓕) ↔ IsContractionClosed (cl 𝓕) :=
+  SimpleGraph.GraphClass.preservedUnderRightLexProd_iff_cl_isContractionClosed 𝓕
 
 end Lax871432Proofs

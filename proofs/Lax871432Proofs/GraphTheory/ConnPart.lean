@@ -112,6 +112,61 @@ theorem isContraction : Lax871432.Contractions.IsContraction 𝓡.quotientGraph 
 
 end ConnPart
 
+/-! ### Every contraction is a quotient -/
+
+namespace Contraction
+
+open Lax871432.Contractions
+
+variable {W : Type*} {K : SimpleGraph W} {F : SimpleGraph V} (c : Contraction K F)
+
+theorem proj_surjective : Function.Surjective c.proj := fun w => by
+  obtain ⟨v⟩ := (c.connected w).nonempty
+  exact ⟨v.1, v.2⟩
+
+/-- The partition of `V(F)` into the fibres of a contraction. -/
+def connPart : ConnPart F where
+  setoid := Setoid.ker c.proj
+  connected := fun a => by
+    obtain ⟨v, rfl⟩ := a.exists_rep
+    have hset : {u | Quotient.mk (Setoid.ker c.proj) u = Quotient.mk (Setoid.ker c.proj) v}
+        = {u | c.proj u = c.proj v} := by
+      ext u
+      exact Quotient.eq (r := Setoid.ker c.proj)
+    rw [hset]
+    exact c.connected (c.proj v)
+
+/-- The classes of that partition are the vertices of the contraction. -/
+noncomputable def equivQuotient : Quotient (Setoid.ker c.proj) ≃ W :=
+  Equiv.ofBijective (Quotient.lift c.proj fun _ _ h => h)
+    ⟨by
+      intro a b
+      induction a using Quotient.ind
+      induction b using Quotient.ind
+      exact fun h => Quotient.sound h,
+     fun w => by
+      obtain ⟨v, hv⟩ := proj_surjective c w
+      exact ⟨Quotient.mk _ v, hv⟩⟩
+
+/-- **A contraction is the quotient by the partition into its fibres.** -/
+noncomputable def isoQuotientGraph : K ≃g (connPart c).quotientGraph :=
+  RelIso.symm
+    { toEquiv := equivQuotient c
+      map_rel_iff' := by
+        intro a b
+        induction a using Quotient.ind with | _ u =>
+        induction b using Quotient.ind with | _ v =>
+        rw [c.adj_iff]
+        constructor
+        · rintro ⟨hne, x, y, hxy, hx, hy⟩
+          exact ⟨fun h => hne (congrArg (equivQuotient c) h), x, y, hxy,
+            Quotient.sound hx, Quotient.sound hy⟩
+        · rintro ⟨hne, x, y, hxy, hx, hy⟩
+          exact ⟨fun h => hne ((equivQuotient c).injective h), x, y, hxy,
+            Quotient.exact hx, Quotient.exact hy⟩ }
+
+end Contraction
+
 /-! ### Finiteness -/
 
 instance ConnPart.instFinite {F : SimpleGraph V} [Finite V] : Finite (ConnPart F) :=
