@@ -38,12 +38,19 @@ structure Determines (𝓕 : GraphClass) {m : ℕ} (K : SimpleGraph (Fin m)) : P
 /-- $\mathrm{cl}(\mathcal{F})$, the homomorphism distinguishing closure of `𝓕`. -/
 def cl (𝓕 : GraphClass) : GraphClass where
   mem _ K := Determines 𝓕 K
-  mem_congr he := by
+  mem_congr {_ _ F F'} he := by
+    -- Precomposition with the isomorphism is a bijection between the homomorphisms out of
+    -- `F` and those out of `F'`, so the two are counted alike into every target.
+    obtain ⟨e⟩ := he
+    have key : ∀ {W : Type} (K : SimpleGraph W), homCount F K = homCount F' K := fun K =>
+      Nat.card_congr
+        { toFun f := f.comp e.symm.toHom
+          invFun f := f.comp e.toHom
+          left_inv _ := by ext a; exact congrArg _ (e.symm_apply_apply a)
+          right_inv _ := by ext a; exact congrArg _ (e.apply_symm_apply a) }
     constructor <;> intro h <;> refine ⟨fun G H hGH => ?_⟩
-    · rw [← homCount_congr_left he.some G, ← homCount_congr_left he.some H]
-      exact h.homCount_eq G H hGH
-    · rw [homCount_congr_left he.some G, homCount_congr_left he.some H]
-      exact h.homCount_eq G H hGH
+    · rw [← key G, ← key H]; exact h.homCount_eq G H hGH
+    · rw [key G, key H]; exact h.homCount_eq G H hGH
 
 /-- `𝓕` is *homomorphism distinguishing closed* if it contains its own closure, i.e. if
 adding any graph to `𝓕` strictly refines $\equiv_{\mathcal{F}}$. -/

@@ -277,6 +277,15 @@ lemma autCount_ne_zero (G : SimpleGraph V) [Finite V] : autCount G ≠ 0 :=
 
 /-! ### Isomorphism invariance -/
 
+/-- Homomorphism counts only depend on the isomorphism type of the source. -/
+theorem homCount_congr_left (e : F ≃g G) (K : SimpleGraph W) :
+    homCount F K = homCount G K :=
+  Nat.card_congr
+    { toFun f := f.comp e.symm.toHom
+      invFun f := f.comp e.toHom
+      left_inv f := by ext a; simp
+      right_inv f := by ext a; simp }
+
 /-- Homomorphism counts only depend on the isomorphism type of the target. -/
 theorem homCount_congr_right (K : SimpleGraph U) (e : G ≃g H) :
     homCount K G = homCount K H :=
