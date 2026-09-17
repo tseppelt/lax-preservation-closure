@@ -41,7 +41,8 @@ homomorphism counts under isomorphism of the target.
 -/
 theorem lovasz {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W) :
     (∀ (m : ℕ) (K : SimpleGraph (Fin m)), homCount K G = homCount K H) ↔ Nonempty (G ≃g H) :=
-  ⟨SimpleGraph.nonempty_iso_of_homCount_eq, fun ⟨e⟩ _ K => SimpleGraph.homCount_eq_of_iso e K⟩
+  (SimpleGraph.tfae_homCount_eq (le_max_left (Nat.card V) (Nat.card W))
+    (le_max_right (Nat.card V) (Nat.card W))).out 0 2
 
 /--
 ---
