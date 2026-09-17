@@ -1,0 +1,18 @@
+build-output.json
+paper.pdf
+paper-web.tar
+lake-manifest.json
+.lake/
+
+# LaTeX build artefacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.spl
+*.synctex.gz
+*.toc
+logic-homomorphism-indistinguishability.pdf
