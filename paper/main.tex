@@ -2,7 +2,7 @@
 
 
 
-\bibliographystyle{elsarticle-num-names}% the mandatory bibstyle
+\bibliographystyle{elsarticle-num-names}
 
 
 \usepackage{amsmath, amsfonts, amsthm, amssymb, mathtools, stmaryrd}
@@ -14,7 +14,6 @@
 \usepackage{relsize}
 
 \usepackage{csquotes}
-% \usepackage{microtype}
 \usepackage{tikz}
 
 
@@ -41,11 +40,9 @@
 \DeclareMathOperator{\inj}{inj}
 \DeclareMathOperator{\BP}{BP}
 \DeclareMathOperator{\atp}{atp}
-\newcommand\multiset[1]{%
-	\left\{ \!\! \left\{ #1 \right\} \!\! \right\}}
+\newcommand\multiset[1]{\left\{ \!\! \left\{ #1 \right\} \!\! \right\}}
 
-%\newtheorem{question}[theorem]{Question}
-%\newtheorem{fact}[theorem]{Fact}
+
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
@@ -68,14 +65,12 @@
 
 \begin{document}
 	\begin{frontmatter}
-		\title{Logical~Equivalences, Homomorphism~Indistinguishability, and Forbidden~Minors} %TODO Please add
-		
-		\author[1]{Tim Seppelt%
-			\fnref{fn1}}
+		\title{Logical~Equivalences, Homomorphism~Indistinguishability, and Forbidden~Minors} 
+
+		\author[1]{Tim Seppelt\fnref{fn1}}
 		\ead{seppelt@cs.rwth-aachen.de}
 		
-		\affiliation[1]{organization={RWTH Aachen University},%Department and Organization
-			addressline={Ahornstra{\ss}e 55}, 
+		\affiliation[1]{organization={RWTH Aachen University},addressline={Ahornstra{\ss}e 55}, 
 			city={Aachen},
 			postcode={52074}, 
 			state={North Rhine-Westphalia},
@@ -94,25 +89,22 @@
 		
 		Furthermore, we classify all graph classes which are in a sense finite (\emph{essentially profinite}) and satisfy the maximality condition of being \emph{homomorphism distinguishing closed}, i.e.\@ adding any graph to the class strictly refines its homomorphism indistinguishability relation.
 		Thereby, we answer various questions raised by Roberson~(2022) on general properties of the homomorphism distinguishing closure.
-		% Thereby, first evidences are provided for a possible connection between minors and homomorphism indistinguishability as conjectured by Roberson~(2022). 
-	\end{abstract}
+\end{abstract}
 	
 	\end{frontmatter}
 
 	\section{Introduction}
 	\label{sec:intro}
 	
-%	Counting homomorphisms into a graph of interest offers a versatile framework for understanding the properties of the graph.
-%	Homomorphism counts enjoy rich connections to logic~\cite{grohe_counting_2020,dvorak_recognizing_2010,rattan_weisfeiler_2023}, category theory~\cite{dawar_lovasz-type_2021,montacute_pebble_2022,abramsky_discrete_2022}, quantum groups~\cite{mancinska_quantum_2019}, and algebraic graph theory~\cite{dell_lovasz_2018,grohe_homomorphism_2022,rattan_weisfeiler_2023}.
-%	From a practitioner's point of view, they are relevant for understanding the power of machine learning frameworks \cite{grohe_word2vec_2020,rattan_weisfeiler_2023} or for developing pattern counting algorithms~\cite{curticapean_homomorphisms_2017}.
-	
+
+
 	In 1967, Lovász~\cite{lovasz_operations_1967} proved that two graphs $G$ and $H$ are isomorphic if and only if they are \emph{homomorphism indistinguishable} over all graphs, i.e.\@ for every graph $F$, the number of homomorphisms from~$F$ to~$G$ is equal to the number of homomorphisms from~$F$ to~$H$.
 	Since then, homomorphism indistinguishability over restricted graph classes has emerged as a powerful framework for capturing a wide range of equivalence relations comparing graphs.
 	For example, two graphs have cospectral adjacency matrices iff they are homomorphism indistinguishable over all cycles, cf.\@ \cite{dell_lovasz_2018}.
 	They are quantum isomorphic iff they are homomorphism indistinguishable over all planar graphs \cite{mancinska_quantum_2019}.
 
-	% In light of such results, equivalence relations comparing graphs from the fields of convex optimisation \cite{atserias_sheraliadams_2013,grohe_pebble_2015,grohe_homomorphism_2022}, graph neural network (GNNs) \cite{XHLJ19,Morriswlgoneural}, etc.\@ have found characterisations in terms of homomorphism indistinguishability.
-	
+
+
 	Most notably, equivalences with respect to many logic fragments can be characterised as homomorphism indistinguishability relations over certain graph classes \cite{grohe_counting_2020,dawar_lovasz-type_2021,montacute_pebble_2022,rattan_weisfeiler_2023}. 
 	For example, two graphs satisfy the same sentences of $k$-variable counting logic iff they are homomorphism indistinguishable over graphs of treewidth less than $k$ \cite{dvorak_recognizing_2010}. 
 	All graph classes featured in such characterisations are minor-closed and hence of a particularly enjoyable structure.
@@ -143,8 +135,7 @@
 	In several instances, we show that closure properties of a graph class~$\mathcal{F}$ correspond to preservation properties of its homomorphism indistinguishability relation~$\equiv_{\mathcal{F}}$.
 	These efforts yield answers to several open questions from \cite{roberson_oddomorphisms_2022}.
 	A prototypical result is \cref{thm:main2}, from which \cref{thm:main1} follows. 
-	For further results in the same vein, % concerning other closure properties, e.g.\@ under taking subgraphs,
-	see \cref{tab:overview}.
+	For further results in the same vein, see \cref{tab:overview}.
 	
 	\begin{table}
 		\centering
@@ -159,9 +150,7 @@
 			\hline
 		\end{tabular}
 		
-		\caption{Overview of results on equivalent properties of a homomorphism distinguishing closed graph class $\mathcal{F}$ and of its homomorphism indistinguishability relation $\equiv_{\mathcal{F}}$.%
-			%	Furthermore, if a graph class $\mathcal{F}$ possesses any of the closure properties in the first column then its homomorphism distinguishing closure $\cl(\mathcal{F})$ has the same property. See the corresponding theorems for the precise statements.
-		}
+		\caption{Overview of results on equivalent properties of a homomorphism distinguishing closed graph class $\mathcal{F}$ and of its homomorphism indistinguishability relation $\equiv_{\mathcal{F}}$.}
 		\label{tab:overview}
 	\end{table}
 	
@@ -180,54 +169,18 @@
 	
 	
 	
-%	\cref{thm:main1} is in fact a consequence of the following \cref{thm:main2} which applies to all equivalence relations comparing graphs which are preserved under taking complements. Prominent examples of such relations are not only  equivalences w.r.t.\@ self-complementary logics but also relations expressing the feasibility of systems of equations, e.g.\@ the Lasserre or Sherali--Adams relaxation of the integer program for graph isomorphism \cite{sherali_hierarchy_1990,lasserre_global_2001,atserias_definable_2018,grohe_homomorphism_2022,roberson_lasserre_2023}.
-%	
+
+
+	
+
+
+
+
 	
 	
 
 
-%	The wealth of results relating homomorphism indistinguishability over restricted graph classes to known equivalence relations comparing graphs has motivated a more fundamental study of the properties of the equivalence relation $\equiv_{\mathcal{F}}$ denoting homomorphism indistinguishability over $\mathcal{F}$.% The main question emerging here is the following contrasting syntax (the graph class $\mathcal{F}$) with semantics (its homomorphism indistinguishability relation $\equiv_{\mathcal{F}}$).
 
-	
-	
-%	
-%	\begin{question} \label{central-question}
-%		What is the interplay between properties of a graph class $\mathcal{F}$ and properties of its homomorphism indistinguishability relation $\equiv_{\mathcal{F}}$?
-%	\end{question}
-%
-%	A by-product of studying \cref{central-question} is an understanding of which equivalence relations comparing graphs are homomorphism indistinguishability relations \cite{atserias_expressive_2021,chen_algorithms_2022,abramsky_discrete_2022}.
-%	The furthest-reaching contributions to \cref{central-question} have been made by Roberson~\cite{roberson_oddomorphisms_2022}, who, amongst other contributions, introduced the notion of \emph{homomorphism distinguishing closed} graph classes, i.e.\@ graph classes $\mathcal{F}$ for which homomorphism indistinguishability of $G$ and $H$ does not imply that $G$ and $H$ have the same number of homomorphisms from any $F \not\in \mathcal{F}$. 
-%	This term reconciles syntax and semantics in the sense that such graph classes, albeit syntactically defined, possess the semantic property of not determining any further homomorphism counts.
-%	Roberson made the following conjecture:
-%	\begin{conjecture}[Roberson~\cite{roberson_oddomorphisms_2022}] \label{rcon}
-%		 Every graph class which is closed under taking minors \emph{(minor-closed)} and disjoint unions \emph{(union-closed)} is homomorphism distinguishing closed.
-%	\end{conjecture}
-%	\cref{rcon} has been proven only for few minor-closed graph classes.
-%	An affirmative resolution of this conjecture would imply various lower bounds \cite{arvind_weisfeiler-leman_2020} and separate equivalence relations comparing graphs \cite{roberson_lasserre_2023}.
-%	
-%	From a complexity-theoretic point of view, the central decision problem associated with homomorphism indistinguishability is $\HomInd(\mathcal{F})$, i.e.\@ the problem of deciding whether $G \equiv_{\mathcal{F}} H$ given two graphs $G$ and $H$.
-%	For the classes of cycles, path, or graphs of bounded treewidth, polynomial-time algorithms for this problem exist, cf.\@ \cite{grohe_homomorphism_2022}. Most notably, for planar graphs, the problem is undecidable \cite{mancinska_quantum_2019}. For the class of all graphs, the problem amounts to deciding whether the input graphs are isomorphic and its precise complexity remains unknown \cite{babai_graph_2016}. Along the lines of \cref{central-question}, one may ask what the relationship between a graph class $\mathcal{F}$ and the complexity of $\HomInd(\mathcal{F})$ is.
-%	
-	
-%	\subsection{Contributions}
-%	\label{sec:contributions}
-%	
-%	Our first result concerns the interplay between logical equivalences and homomorphism indistinguishability. 
-%	Perhaps surprisingly, we establish a connection between the former and homomorphism indistinguishability over minor-closed graph classes.
-%	Following~\cite{barwise_extended_2017}, a \emph{logic on graphs} is a pair $(\mathsf{L}, \models)$ of a class $\mathsf{L}$ and a relation $\models$ comparing graphs and elements of $\mathsf{L}$ which is isomorphism-invariant\footnote{For all $\phi \in \mathsf{L}$ and graphs $G$ and $H$ such that $G \cong H$, it holds that $G \models \phi$ iff $H \models \phi$.}. 
-%	One may think of a logic on graphs as a collection of isomorphism-invariant graph properties.
-%	Such a logic is called \emph{self-complementary} if for every $\phi \in \mathsf{L}$ there is an element $\overline{\phi} \in \mathsf{L}$ such that $G \models \phi$ if and only if $\overline{G} \models \overline{\phi}$.
-%	Here, $\overline{G}$ denotes the complement graph of $G$.
-%	This requirement is satisfied by many logics including first-order logic, counting logic, second-order logic, fixed-point logics, and bounded variable, quantifier depth, or quantifier prefix fragments of these.
-%	All these examples are subject to the following result:
-%	
-%	\begin{restatable}{theorem}{logic}
-%		\label{thm:main1}
-%		Let $(\mathsf{L}, \models)$ be a self-complementary logic on graphs for which there exists a graph class
-%		$\mathcal{F}$ such that two graphs $G$ and $H$ are homomorphism indistinguishable over $\mathcal{F}$ if and only if they satisfy the same $\mathsf{L}$-sentences.
-%		Then $\cl(\mathcal{F})$ is minor-closed.
-%		In particular, $\cl(\mathcal{F})$ is a minor-closed graph class whose homomorphism indistinguishability relation coincides with $\mathsf{L}$-equivalence.
-%	\end{restatable}
 
 
 	Our final result confirms Roberson's conjecture for all graph classes which are in a certain sense finite.
@@ -249,10 +202,7 @@
 		In particular, Roberson's conjecture holds for all essentially profinite graph classes.
 	\end{theorem}
 
-%	Establishing that a graph class is homomorphism distinguishing closed remains a notoriously hard task.
-%	The only known examples are all provided by \cite{roberson_oddomorphisms_2022} and include graphs of bounded degree, graphs of treewidth at most $2$, planar graphs, and forests.
-%	All these results have been established using so called oddomorphisms.
-%	Our \cref{thm:profinite} extends the available toolkit for proving that a graph class is homomorphism distinguishing closed and is the first classification result in this vein.
+
 
 	\section{Preliminaries}
 	
@@ -285,8 +235,7 @@
 	For graphs $F$ and $K$, $F$ is said to be \emph{$K$-colourable} if there is a homomorphisms $F \to K$. $F$ and $K$ are \emph{homomorphically equivalent} if there are homomorphisms $F \to K$ and $K \to F$.
 	
 	For graphs $G$ and $H$, write $G + H$ for their \emph{disjoint union} and $\coprod_{i \in [n]} G_i \coloneqq G_1 + \dots + G_n$ for graphs $G_1, \dots, G_n$.
-%	We write  in order to distinguish the disjoint union of graphs from the sum of numbers or vectors.
-	We write $G \times H$ for the \emph{categorical product} of $G$ and $H$, i.e.\@ $V(G \times H) \coloneqq V(G) \times V(H)$ and $gh$ and $g'h'$ are adjacent in $G \times H$ iff $gg' \in E(G)$ and $hh' \in E(H)$. The \emph{lexicographic product} $G \cdot H$ is defined as the graph with vertex set $V(G) \times V(H)$ and edges between $gh$ and $g'h'$ iff $g = g'$ and $hh' \in E(H)$ or $gg' \in E(G)$. It is well-known, cf.\@ e.g.\@ \cite[(5.28)--(5.30)]{lovasz_large_2012}, that
+We write $G \times H$ for the \emph{categorical product} of $G$ and $H$, i.e.\@ $V(G \times H) \coloneqq V(G) \times V(H)$ and $gh$ and $g'h'$ are adjacent in $G \times H$ iff $gg' \in E(G)$ and $hh' \in E(H)$. The \emph{lexicographic product} $G \cdot H$ is defined as the graph with vertex set $V(G) \times V(H)$ and edges between $gh$ and $g'h'$ iff $g = g'$ and $hh' \in E(H)$ or $gg' \in E(G)$. It is well-known, cf.\@ e.g.\@ \cite[(5.28)--(5.30)]{lovasz_large_2012}, that
 	for all graphs $F_1, F_2, G_1, G_2$, and all connected graphs $K$, the following equalities hold:
 	\begin{align}
 		\hom(F_1 + F_2, G) &= \hom(F_1, G) \hom(F_2, G), \label{eq:coproduct} \\
@@ -299,8 +248,7 @@
 	The \emph{full complement} of a  graph $G$ is the graph $\widehat{G}$ obtained from $G$ by replacing every edge with a non-edge and every loop with a non-loop, and vice-versa.
 	
 	The \emph{quotient} $F/\mathcal{P}$ of a simple graph $F$ by a partition $\mathcal{P}$ of $V(F)$ is the simple graph with vertex set $\mathcal{P}$ and edges $PQ$ for $P \neq Q$ iff there exist vertices $p \in P$ and $q \in Q$ such that $pq \in E(F)$. 
-%	Note that we do not include loops in order to state \cref{thm:lexprod-hom} succinctly.
-	For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.	
+For a set $X$, write $\Pi(X)$ for the set of all partitions of $X$.	
 	A graph $F'$ can be obtained from a simple graph $F$ by \emph{contracting edges} if there is a partition $\mathcal{P} \in \Pi(V(F))$ such that $F[P]$ is connected for all $P \in \mathcal{P}$ and $F' \cong F/\mathcal{P}$.
 	
 	For a graph $F$ and a set $P \subseteq V(F)$, write $F[P]$ for the \emph{subgraph induced by $P$}, i.e.\@ the graph with vertex set $P$ and edges $uv$ if $u,v \in P$ and $uv \in E(F)$.
@@ -318,15 +266,8 @@
 		\]
 	\end{fact}
 	
-%	For a graph $F$, the graph obtained by \emph{contracting the edge} $uv \in E(F)$ is the graph with vertex set $V(F) \setminus \{u\}$ and edge set $(E(F) \setminus \{vx \mid x \in V(F)\}) \cup \{ux \mid vx \in E(F) \}$.
-%	Note that contracting edges in a simple graph might create loops, cf.\@ \cref{ex:contr}.
-%	A \emph{minor} of graph $F$ is a graph $F'$ which can be obtained from $F$ by taking subgraphs and contracting edges. The following lemma will be useful. The proof is deferred to \cref{app:prelim}.
-%	
-%	\begin{lemma}
-%		\label{lem:contraction}
-%		Let $F$ and $F'$ be simple graphs. Then $F'$ can be obtained by edge contractions from $F$ if and only if there exists a partition $\mathcal{P} \in \Pi(V(F))$ such that  $F' \cong F/\mathcal{P}$ and all classes $P \in \mathcal{P}$ induce connected subgraphs $F[P]$.
-%	\end{lemma}
-	
+
+
 	\section{Closure Properties Correspond to Preservation Properties}
 	\label{sec:syntax-semantics}
 	
@@ -455,11 +396,9 @@
 		\begin{enumerate}
 			\item $\mathcal{F}$ is closed under edge contraction and deletion,\label{rcl1}
 			\item $\equiv_{\mathcal{F}}$ is \emph{preserved under taking complements}, i.e.\@ for all simple graphs $G$ and $H$ it holds that $G \equiv_{\mathcal{F}} H$ if and only if $\overline{G} \equiv_{\mathcal{F}} \overline{H}$,\label{rcl2}
-			%\item $\cl(\mathcal{F})$ is closed under edge contraction and deletion,\label{rcl3}
-			\item $\cl(\mathcal{F})$ is minor-closed,\label{rcl4}
+\item $\cl(\mathcal{F})$ is minor-closed,\label{rcl4}
 		\end{enumerate}
-		the implications \ref{rcl1} $\Rightarrow$ \ref{rcl2} %$\Leftrightarrow$ \ref{rcl3} 
-		$\Leftrightarrow$ \ref{rcl4} hold.
+		the implications \ref{rcl1} $\Rightarrow$ \ref{rcl2} $\Leftrightarrow$ \ref{rcl4} hold.
 	\end{theorem}
 
 	The strategy is to write $\hom(F, \overline{G})$ as a linear combination of $\hom(F', G)$ for minors $F'$ of $F$.
@@ -472,8 +411,7 @@
 		\hom(F, \widehat{G}) = \sum_{F' \subseteq F \text{ s.t.\@ }V(F') = V(F)} (-1)^{|E(F')|} \hom(F', G).
 		\]
 	\end{lemma}
-	\begin{proof}%[Proof of \cref{eq:complement}]
-		Write $S$ for the set of all maps $V(F) \to V(G)$. For $e \in E(F)$, write $A_e \subseteq S$ for set of all maps $h$ such that the image of $e$ under $h$ is an edge or a loop in $G$.
+	\begin{proof}Write $S$ for the set of all maps $V(F) \to V(G)$. For $e \in E(F)$, write $A_e \subseteq S$ for set of all maps $h$ such that the image of $e$ under $h$ is an edge or a loop in $G$.
 		It holds that $h \not\in A_e$ if and only if $e$ is mapped under $h$ either to two non-adjacent vertices or to a single vertex without a loop.
 		Hence, $\hom(F, \widehat{G}) = \left\lvert \bigcap_{e \in E(F)} \overline{A_e} \right\rvert$.
 		The claim follows from the Inclusion--Exclusion Principle (cf.\@ \cref{fact:incl-excl}) noting that $|S| = \hom(|F|K_1, G)$ and $\left\lvert \bigcap_{e \in F'} A_e \right\rvert$ for some $F' \subseteq F$ is the number of homomorphisms from the graph $F'$ to $G$ which is obtained by deleting all edges from $F$ which are not in $F'$.
@@ -498,8 +436,7 @@
 		\hom(F, G^\circ) = \sum_{L \subseteq E(F)} \hom(F \oslash L, G).
 		\]
 	\end{theorem}
-	\begin{proof}% [Proof of \cref{lem:looping}]
-	The proof is by establishing a bijection between the set of homomorphisms $h \colon F \to G^\circ$ and the set $X$ of pairs $(L, \phi)$ where $L \subseteq E(F)$ and $\phi \colon F \oslash L \to G$ is a homomorphism.	
+	\begin{proof}The proof is by establishing a bijection between the set of homomorphisms $h \colon F \to G^\circ$ and the set $X$ of pairs $(L, \phi)$ where $L \subseteq E(F)$ and $\phi \colon F \oslash L \to G$ is a homomorphism.	
 	
 	\begin{claim} \label{cl:looping-map}
 		The map which associates a homomorphism $h \colon F \to G^\circ$ with the pair $(L, \phi) \in X$ consisting of the set $L \coloneqq \{e \in E(F) \mid |h(e)| = 1\}$ and the homomorphism $\phi \colon F \oslash L \to G$, $[x]_L \mapsto h(x)$ is well-defined.
@@ -547,8 +484,7 @@
 	\begin{lemma} \label{lem:minors}
 		If a homomorphism distinguishing closed graph class $\mathcal{F}$ is closed under deleting edges then it is closed under taking subgraphs.
 	\end{lemma}
-	\begin{proof}%[Proof of \cref{lem:minors}]
-		Let $F \in \mathcal{F}$ be a graph on $n$ vertices. Since the graph $nK_1$ can be obtained from $F$ by deleting all its edges, it holds that $nK_1 \in \mathcal{F}$.
+	\begin{proof}Let $F \in \mathcal{F}$ be a graph on $n$ vertices. Since the graph $nK_1$ can be obtained from $F$ by deleting all its edges, it holds that $nK_1 \in \mathcal{F}$.
 		Thus, for all graphs $G$ and $H$ such that $G \equiv_{\mathcal{F}} H$, by \cref{eq:coproduct},
 		$|V(G)|^n = \hom(nK_1, G) = \hom(nK_1, H)  = |V(H)|^n$.
 		Hence, $\hom(K_1, G) = \hom(K_1, H)$.
@@ -651,19 +587,16 @@
 		the implications \ref{cl1} $\Rightarrow$ \ref{cl2a} $\Rightarrow$ \ref{cl2} $\Rightarrow$ \ref{cl3} $\Leftrightarrow$ \ref{cl4} $\Leftrightarrow$ \ref{cl6} $\Leftrightarrow$ \ref{cl5} hold.
 	\end{theorem}
 
-	\begin{proof}%[Proof of \cref{thm:full-complement}]
-		Assuming \ref{cl1}, by \cref{eq:complement}, for all not necessarily simple graphs $G$ and $H$, if $G \equiv_{\mathcal{F}} H$ and $\mathcal{F}$ is closed under deleting edges it holds that $\hom(F, \widehat{G}) = \hom(F, \widehat{H})$ for all $F \in \mathcal{F}$ as all graphs $F'$ appearing in \cref{eq:complement} are obtained from $F$ by deleting edges. 
+	\begin{proof}Assuming \ref{cl1}, by \cref{eq:complement}, for all not necessarily simple graphs $G$ and $H$, if $G \equiv_{\mathcal{F}} H$ and $\mathcal{F}$ is closed under deleting edges it holds that $\hom(F, \widehat{G}) = \hom(F, \widehat{H})$ for all $F \in \mathcal{F}$ as all graphs $F'$ appearing in \cref{eq:complement} are obtained from $F$ by deleting edges. 
 		Hence, \ref{cl2a} holds.
 		Clearly, \ref{cl2a} implies \ref{cl2}.
 		
 		Suppose \ref{cl2} holds.
-		%As pointed out by an anonymous reviewer, 
-		Since \cref{lem:lincomb} is not directly applicable since the condition in \ref{cl2} involves graphs with loops, we first prove the following claim:
+Since \cref{lem:lincomb} is not directly applicable since the condition in \ref{cl2} involves graphs with loops, we first prove the following claim:
 		
 		\begin{claim} \label{cl:full-complement}
 			Let $\mathcal{F}$ be a graph class satisfying \ref{cl2}.
-			For all graphs $G$ and~$H$ with loops at every vertex, % and $F \in \cl(\mathcal{F})$, 
-			if $G \equiv_{\mathcal{F}} H$, then $G \equiv_{\cl(\mathcal{F})} H$.
+			For all graphs $G$ and~$H$ with loops at every vertex, if $G \equiv_{\mathcal{F}} H$, then $G \equiv_{\cl(\mathcal{F})} H$.
 		\end{claim}
 		\begin{claimproof}
 			Let $K$ be an arbitrary graph with a loop at every vertex. Then
@@ -678,16 +611,8 @@
 			\begin{equation} \label{eq:full-complement}
 				\sum_{\substack{F' \subseteq F \\ V(F') = V(F)}} (-1)^{|E(F')|} \hom(F', G)\hom(F', K)  = \sum_{\substack{F' \subseteq F \\ V(F') = V(F)}} (-1)^{|E(F')|} \hom(F', H)\hom(F', K).
 			\end{equation}
-%			
-%			eq:complement,
-%			\begin{align*}
-%				& \implies G \times K \equiv_{\mathcal{F}} H \times K \\
-%				& \stackrel{\ref{cl2}}{\implies} \widehat{G \times K} \equiv_{\mathcal{F}} \widehat{H \times K} \\
-%				& \implies \hom(F, \widehat{G \times K}) = \hom(F, \widehat{H \times K}) \\
-%				& \implies \sum_{\substack{F' \subseteq F \\ V(F') = V(F)}} (-1)^{|E(F')|} \hom(F', G \times K)  = \sum_{\substack{F' \subseteq F \\ V(F') = V(F)}} (-1)^{|E(F')|} \hom(F', H \times K) \\
-%				& \implies \sum_{\substack{F' \subseteq F \\ V(F') = V(F)}} (-1)^{|E(F')|} \hom(F', G)\hom(F', K)  = \sum_{\substack{F' \subseteq F \\ V(F') = V(F)}} (-1)^{|E(F')|} \hom(F', H)\hom(F', K) 
-%			\end{align*}
-			
+
+
 			Let $n \coloneqq |V(F)|$ and write $\mathcal{L}$ for the set of all simple graphs on at most $n$ vertices. We claim that the matrix $(\hom(F, G^\circ)))_{F, G \in \mathcal{L}}$ is invertible. Indeed, by \cref{lem:looping},
 			\[
 			\hom(F, G^\circ) = \sum_{L \subseteq E(F)} \hom(F \oslash L, G)
@@ -764,8 +689,7 @@
 		\]
 		where the outer sum ranges over all $\mathcal{R} \in \Pi(V(F))$ such that $F[R]$ is connected for all $R \in \mathcal{R}$.
 	\end{theorem}
-	\begin{proof}%[Proof of \cref{thm:lexprod-hom}]
-		The proof is by constructing a bijection between the set of homomorphisms $F \to G \cdot H$ and the set of triples $(\mathcal{R}, g, h)$ where $\mathcal{R} \in \Pi(V(F))$ is such that all $F[R]$, $R \in \mathcal{R}$, are connected, and $g \colon F/\mathcal{R} \to G$ and $h \colon \coprod_{R \in \mathcal{R}} F[R] \to H$ are homomorphisms.
+	\begin{proof}The proof is by constructing a bijection between the set of homomorphisms $F \to G \cdot H$ and the set of triples $(\mathcal{R}, g, h)$ where $\mathcal{R} \in \Pi(V(F))$ is such that all $F[R]$, $R \in \mathcal{R}$, are connected, and $g \colon F/\mathcal{R} \to G$ and $h \colon \coprod_{R \in \mathcal{R}} F[R] \to H$ are homomorphisms.
 		To that end, write $\pi_G \colon V(G \cdot H) \to V(G)$ and $\pi_H \colon V(G \cdot H) \to V(H)$ for the projection maps. 
 		
 		Let $f \colon F \to G \cdot H$ be a homomorphism. Define a partition $\mathcal{R}'$ of $V(F)$ with classes $(\pi_G \circ f)^{-1}(v)$ for $v \in V(G)$ and $\mathcal{R} \leq \mathcal{R}'$ as the coarsest partition whose classes $R \in \mathcal{R}$ all induce connected subgraphs $F[R]$, i.e.\@ for every $R' \in \mathcal{R}'$, the partition $\mathcal{R}$ contains one class for every connected component of $F[R']$.
@@ -799,8 +723,8 @@
 		Finally, $h' = \pi_H \circ f = h$.
 	\end{proof}
 	
-	\cref{thm:lexprod-hom} yields \cref{prop:lexprod-indsub,prop:lexprod-contract} as follows: %, which in turn imply together the following \cref{cor:lexprod}.
-	
+	\cref{thm:lexprod-hom} yields \cref{prop:lexprod-indsub,prop:lexprod-contract} as follows: 
+
 	\begin{proof}[Proof of \cref{prop:lexprod-indsub}]
 		That \ref{indsub1} implies \ref{indsub2} is immediate from \cref{thm:lexprod-hom}.
 		
@@ -835,8 +759,7 @@
 		\end{enumerate}
 		the implications \ref{ccontr1} $\Rightarrow$ \ref{ccontr2} $\Leftrightarrow$ \ref{ccontr3}  hold.
 	\end{corollary}
-	\begin{proof}%[Proof of \cref{cor:lexprod}]
-		Assuming \ref{ccontr1}, if $G \equiv_{\mathcal{F}} G'$ and $H \equiv_{\mathcal{F}} H'$ then $G \cdot H \equiv_{\mathcal{F}} G' \cdot H$ by \cref{prop:lexprod-contract}
+	\begin{proof}Assuming \ref{ccontr1}, if $G \equiv_{\mathcal{F}} G'$ and $H \equiv_{\mathcal{F}} H'$ then $G \cdot H \equiv_{\mathcal{F}} G' \cdot H$ by \cref{prop:lexprod-contract}
 		and $G' \cdot H \equiv_{\mathcal{F}} G' \cdot H'$ by \cref{prop:lexprod-indsub}.
 		By transitivity, $G \cdot H \equiv_{\mathcal{F}} G' \cdot H'$ and \ref{ccontr2} holds. The implication \ref{ccontr2} $\Rightarrow$ \ref{ccontr3} is immediate from \cref{prop:lexprod-contract,prop:lexprod-indsub}.
 		The implication \ref{ccontr3} $\Rightarrow$ \ref{ccontr2} follows from \ref{ccontr1} $\Rightarrow$ \ref{ccontr2} for $\cl(\mathcal{F})$ since $\equiv_{\mathcal{F}}$ and $\equiv_{\cl(\mathcal{F})}$ coincide.  
@@ -848,8 +771,7 @@
 	\begin{lemma} \label{lem:contr}
 		If a homomorphism distinguishing closed graph class $\mathcal{F}$ is closed under contracting edges then it is closed under taking summands.
 	\end{lemma}
-	\begin{proof}%[Proof of \cref{lem:contr}]
-		Let $F \in \mathcal{F}$. Since every homomorphism distinguishing closed graph class is closed under disjoint unions, cf.\@ \cref{eq:coproduct} and \cite{roberson_oddomorphisms_2022}, it suffices to show that every connected component $C$ of $F$ is in $\mathcal{F}$. Let~$m$ denote the number of connected components of~$F$. 
+	\begin{proof}Let $F \in \mathcal{F}$. Since every homomorphism distinguishing closed graph class is closed under disjoint unions, cf.\@ \cref{eq:coproduct} and \cite{roberson_oddomorphisms_2022}, it suffices to show that every connected component $C$ of $F$ is in $\mathcal{F}$. Let~$m$ denote the number of connected components of~$F$. 
 		By contracting all edges, the graph $mK_1$ can be obtained from~$F$.
 		Hence, as argued in \cref{lem:minors}, $K_1 \in \mathcal{F}$. 
 		Moreover, the graph $C + (m-1)K_1$ can be obtained from~$F$ by contracting all edges not in~$C$. This implies as in \cref{lem:minors} that $C \in \mathcal{F}$.
@@ -915,8 +837,7 @@
 	\thmLogic*
 	
 	
-	\begin{proof}%[Proof of \cref{thm:main1}]
-		It is shown that $\equiv_{\mathcal{F}}$ is preserved under taking complements in the sense of \cref{thm:complement}.
+	\begin{proof}It is shown that $\equiv_{\mathcal{F}}$ is preserved under taking complements in the sense of \cref{thm:complement}.
 		Let $G$ and $H$ be simple graphs such that $G \equiv_{\mathcal{F}} H$. By assumption, for all $\phi \in \mathsf{L}$ it holds that $G \models \phi$ iff $H \models \phi$ and hence, by self-complementarity,
 		\[
 		\overline{G} \models \phi 
@@ -991,61 +912,15 @@
 		\cref{cor:complement} readily gives an alternative proof of \cite[Propositions~1 and~2]{atserias_expressive_2021}, which assert that neither $\mathsf{FO}^k$-equivalence nor $\mathsf{FO}_d$-equivalence are characterised by homomorphism indistinguishability relations.
 	The logic fragments $\mathsf{C}^k$ and $\mathsf{C}_d$ are however characterised by homomorphism indistinguishability relations \cite{dvorak_recognizing_2010,grohe_counting_2020}.
 	
-%	\begin{example} 
-%		Let $k, d \geq 0$.
-%		The logic fragments $\mathsf{FO}^k$ and $\mathsf{FO}_d$ of $k$-variable and respectively quantifier-depth-$d$ first-order formulae are self-complementary. 
-%	\end{example}
-%	
 
-%	
-%	\begin{example}
-%		Let $k, d \geq 0$.
-%		The logic fragments $\mathsf{C}^k$ and $\mathsf{C}_d$ of $k$-variable and respectively quantifier-depth-$d$ first-order formulae with counting quantifiers are self-complementary.
-%	\end{example}
+
+
 
 	
-%	It can be argued similarly that other extension of first-order logic, such as fixed-point logics \cite{grohe_descriptive_2017} or higher-order logics, are self-complementary.
-%	Prominent examples of higher-order logic on graphs include  (prefix classes of) second-order logic $\mathsf{SO}$ and its fragment monadic second-order logic $\mathsf{MSO}_1$ \cite{courcelle_monadic_1994,blass_model_2010}.
-%	The proof  of the following \cref{ex:mso} and formal definitions of the logics are deferred to \cref{app:logic}.
-%	
-%	\begin{lemma} \label{ex:mso}
-%		$\mathsf{SO}$ and its fragments $\mathsf{MSO}_1$, $\mathsf{ESO}$, and prefix classes thereof are self-complementary.
-%	\end{lemma}
-	
-%	To justify \cref{ex:logics}, we first consider first-order logic with counting quantifiers $\mathsf{C}$.
-%	The counting quantifiers $\exists^{\geq p}$ for $p \in \mathbb{N}$ are defined inductively via $\exists^{\geq 0} x.\ \phi(x) \Leftrightarrow \top$ and  $\exists^{\geq p+1} x.\ \phi(x) \Leftrightarrow \exists x.\ (\phi(x) \land \exists^{\geq p} y.\ ((y \neq x) \land \phi(y)))$.
-%	By induction on $p$, it is easy to see that $\overline{\exists^{\geq p} x.\ \phi(x)} \Leftrightarrow \exists^{\geq p} x.\ \overline{\phi(x)}$ for all $p \in \mathbb{N}$.
-%	
-%	Next, we consider second-order logic $\mathsf{SO}$ with equality and without function symbols. We regard graphs~$G$ as relational structures with universe $V(G)$ and one binary relation $E$ encoding adjacency. This is in line with the definition of $\mathsf{MSO}_1$ in \cite[Definition~1.7]{courcelle_monadic_1994}.
-%	In addition to first-order syntax $\mathsf{FO}$ has for every $k \in \mathbb{N}$ variables $X$ ranging over $k$-ary relations over the universe of the structure, atomic formulas $X(x_1\dots x_k)$ where $x_1, \dots, x_k$ are first-order variables, and quantifiers $\exists X.\ \phi$ and $\forall X.\ \phi$.
-%	
-%	\emph{Monadic second-order logic} $\mathsf{MSO}_1$ is the fragment of $\mathsf{SO}$ allowing second-order quantification only over subsets of the universe, i.e.\@ unary relations.
-%	\emph{Existential second-order logic} $\mathsf{ESO}$ is the fragment of $\mathsf{SO}$ of formulas of the form $\exists X_1 \exists X_2 \dots \exists X_\ell.\ \phi$ where the $X_1, \dots, X_\ell$ are second-order variables, $\ell \in \mathbb{N}$, and $\phi$ is a formula without second-order quantifiers.
-%	Following~\cite{blass_model_2010}, for every \emph{prefix set} $\mathcal{Q} \subseteq \{\exists, \forall\}^*$, one may restrict $\mathsf{ESO}$ even further to $\mathsf{ESO}(\mathcal{Q})$ the set of formulas $\exists X_1 \exists X_2 \dots \exists X_\ell.\ \phi$ where $\phi$ is a prenex first-order formula whose (first-order) quantifier prefix is in $\mathcal{Q}$.
-%	We may extend \cref{def:fo-complement} to all $\mathsf{SO}$-formulas as follows:
-%	\begin{enumerate}
-%		\item if $\phi = X(x_1, \dots, x_k)$ where $X$ is a second-order variable of arity $k \in \mathbb{N}$ then $\overline{\phi} \coloneqq \phi$,
-%		\item if $\phi = \exists X.\ \psi$ then $\overline{\phi} \coloneqq \exists X.\ \overline{\psi}$ and if $\phi = \forall X.\ \psi$ then $\overline{\phi} \coloneqq \exists X.\ \overline{\psi}$.
-%	\end{enumerate}
-%	
-%	We prove the following \cref{lem:semantics-complemtary-formula-mso1} for $\mathsf{MSO}_1$ only.
-%	For $\mathsf{SO}$, $\mathsf{ESO}$, and $\mathsf{ESO}(\mathcal{Q})$, the analogous statement follows similarly.
-%	This implies self-complementarity.
-%	
-%	\begin{lemma} \label{lem:semantics-complemtary-formula-mso1}
-%		Let $\phi \in \mathsf{MSO}_1$ be a formula with $k \geq 0$ free first-order variables and $\ell \geq 0$ free set variables.
-%		Then for all simple graphs $G$, $\boldsymbol{v} \in V(G)^k$, and $\boldsymbol{U} \in (2^{V(G)})^\ell$ it holds that
-%		\[
-%		G, \boldsymbol{v}, \boldsymbol{U} \models \phi \iff 
-%		\overline{G}, \boldsymbol{v}, \boldsymbol{U} \models \overline{\phi}.
-%		\]
-%		In particular, $\mathsf{MSO}_1$ is self-complementary.
-%	\end{lemma}
-%	\begin{proof}
-%		Given \cref{lem:semantics-complemtary-formula}, only formulas of the form $\phi = Xx$ and $\phi = \exists X.\ \psi$ need to be considered in an inductive fashion.
-%		In both cases, the claim is purely syntactical.
-%	\end{proof}
-	
+
+
+
+
 	
 
 	\subsection{Applications: Graph Minor Theory and Expressive Power}
@@ -1114,14 +989,14 @@
 		\end{enumerate}
 	\end{theorem}
 	
-%	For most graph classes to which \cref{thm:profinite} is applied in this article, it suffices to verify that $\Gamma(K) \subseteq \Gamma(\mathcal{F}_K)$, i.e.\@ $K$ has only connected components which also appear in some graph in $\mathcal{F}_K$, instead of the linear-algebraic condition in \cref{pf2}. Indeed, if $K$ has a connected component $C$ shared by no graph in $\mathcal{F}_K$ then the $C$-th entry in $\vec{K}$ is non-zero while all vectors in $\vec{K} \in \spn \{\vec{F} \in \mathbb{R}^{\Gamma(\mathcal{F}_{K} \cup \{K\})} \mid F \in \mathcal{F}_{K}\}$ have zero as their $C$-th entry.
-	
+
+
 	\cref{thm:profinite} directly implies \cref{thm:main3}. Indeed, if $\mathcal{F}$ is union-closed and closed under summands then $\Gamma(\mathcal{F}) \subseteq \mathcal{F}$ and every graph $K$ such that $\Gamma(K) \subseteq \Gamma(\mathcal{F})$ is itself in $\mathcal{F}$.
 	In particular, \cref{thm:profinite} implies that all essentially profinite union-closed minor-closed graph classes are homomorphism distinguishing closed.
 	For example, for every graph $G$, the union-closure of the class of minors of $G$ is homomorphism distinguishing closed, cf.\@ \cite[Question~4]{roberson_oddomorphisms_2022}.
 	
-%	\subsection{Proof of \cref{thm:profinite}}
-	
+
+
 	Towards proving \cref{thm:profinite}, we first make the following general observation:
 	Considering essentially profinite graph classes is very natural in light of the following \cref{lem:reduction}. For every graph $K$, the subset $\mathcal{F}_K$ of $\mathcal{F}$ is the object prescribing whether $K \in \cl(\mathcal{F})$.
 	
@@ -1129,8 +1004,7 @@
 		Let $\mathcal{F}$ be a graph class and $K$ be a simple  graph. 
 		Then $K \in \cl(\mathcal{F})$ if and only if $K \in \cl(\mathcal{F}_K)$.
 	\end{lemma}
-	\begin{proof}% [Proof of \cref{lem:reduction}]
-		The backward implication is immediate since $\mathcal{F}_K \subseteq \mathcal{F}$ and thus $\cl(\mathcal{F}_K) \subseteq \cl(\mathcal{F})$.
+	\begin{proof}The backward implication is immediate since $\mathcal{F}_K \subseteq \mathcal{F}$ and thus $\cl(\mathcal{F}_K) \subseteq \cl(\mathcal{F})$.
 		Conversely, suppose that $K \in \cl(\mathcal{F})$. Let $G$ and $H$ be arbitrary graphs such that $G \equiv_{\mathcal{F}_K} H$.
 		Then, by \cref{eq:product}, $G \times K \equiv_{\mathcal{F}} H \times K$ since $\hom(F, K) = 0$ for all $F \in \mathcal{F} \setminus \mathcal{F}_K$.
 		By assumption, $\hom(K,G \times K) = \hom(K, H \times K)$, and therefore $\hom(K, G) = \hom(K, H)$ since $\hom(K, K) > 0$. Thus, $K \in \cl(\mathcal{F}_K)$.
@@ -1311,8 +1185,7 @@ the following \cref{lem:def-epf} implies that no homomorphism indistinguishabili
 			Then $\cl(\mathcal{F}_3 \cap \mathcal{F}_4) \subsetneq \cl(\mathcal{F}_3) \cap \cl(\mathcal{F}_4)$.
 		\end{enumerate}
 	\end{example}
-	\begin{proof}% [Proof of \cref{ex1}]
-		For the first example, observe that clearly $\Gamma(\mathcal{F}) = \{F_1, F_2\}$.
+	\begin{proof}For the first example, observe that clearly $\Gamma(\mathcal{F}) = \{F_1, F_2\}$.
 		To verify the assumptions of \cref{thm:profinite}, let $K \coloneqq n_1 F_1 + n_2 F_2$ for $n_1, n_2 \geq 0$. 
 		It holds that $\spn\{\vec{F} \in \mathbb{R}^{\Gamma(\mathcal{F})} \mid F \in \mathcal{F}\} = \left\{ \lambda \left( \begin{smallmatrix}
 			1\\1
@@ -1343,8 +1216,7 @@ the following \cref{lem:def-epf} implies that no homomorphism indistinguishabili
 		Then there exists a finite graph class $\mathcal{F}'$ such that $G \equiv_{\mathcal{F}} H$ if and only if $G \equiv_{\mathcal{F}'} H$ for all simple graphs $G$ and $H$.
 		In particular, there is a polynomial-time algorithm for $\HomInd(\mathcal{F})$.
 	\end{theorem}
-	\begin{proof}%[Proof of \cref{thm:finite}]
-		Construct $\mathcal{F}'$ by choosing for every $\Lambda \subseteq \Gamma(\mathcal{F})$ a
+	\begin{proof}Construct $\mathcal{F}'$ by choosing for every $\Lambda \subseteq \Gamma(\mathcal{F})$ a
 		finite set $F_1^\Lambda, \dots, F_\ell^\Lambda \in \mathcal{F}_L$ such that the 
 		$\vec{F}_1^\Lambda, \dots, \vec{F}_\ell^\Lambda \in \mathbb{R}^{\Gamma(\mathcal{F})}$ span the finite-dimensional space $\spn\{\vec{F} \in \mathbb{R}^{\Gamma(\mathcal{F})} \mid F \in \mathcal{F}_L\}$
 		where $L \coloneqq \coprod_{C \in \Lambda} C$ and taking the union over all graphs $F_1^\Lambda, \dots, F_\ell^\Lambda \in \mathcal{F}_L$ constructed in this way. By construction, $\mathcal{F}' \subseteq \mathcal{F}$. Thus, it suffices to show that $\mathcal{F} \subseteq \cl(\mathcal{F}')$.
@@ -1392,8 +1264,7 @@ the following \cref{lem:def-epf} implies that no homomorphism indistinguishabili
 	\begin{lemma} \label{lem:profinite-minor}
 		Every essentially profinite minor-closed graph class $\mathcal{F}$ is essentially finite.
 	\end{lemma}
-	\begin{proof}%[Proof of \cref{lem:profinite-minor}]
-		Since the class of all graphs is not essentially profinite, there exists a number $t \in \mathbb{N}$ such that all $F \in \mathcal{F}$ do not contain the clique $K_t$ as a minor.
+	\begin{proof}Since the class of all graphs is not essentially profinite, there exists a number $t \in \mathbb{N}$ such that all $F \in \mathcal{F}$ do not contain the clique $K_t$ as a minor.
 		By a weak form of Hadwiger's conjecture \cite{seymour_hadwigers_2016} proven by Wagner \cite{wagner_beweis_1964}, this implies that all $F \in \mathcal{F}$ are $2^{t-1}$-colourable.
 		In particular, $\mathcal{F} = \mathcal{F}_{K_{2^{t-1}}}$ is essentially finite.
 	\end{proof}
@@ -1448,19 +1319,8 @@ the following \cref{lem:def-epf} implies that no homomorphism indistinguishabili
 	In particular, if an essentially profinite graph class admits $K$-cancellation for some simple graph $K$, then it is essentially finite.
 	Beyond essentially profinite graph classes, it is less clear when $\equiv_{\mathcal{F}}$ admits $K$-cancellation.
 	If $K$ is bipartite then this depends solely on whether the graphs in $\mathcal{F}$ are $K$-colourable.
-%	We first observe the following:
-%	\begin{lemma} \label{lem:bipartite-closed}
-%		The class $\mathcal{G}_{K_2}$ of all bipartite graphs is homomorphism distinguishing closed.
-%	\end{lemma}
-%	\begin{proof}
-%		Let $F$ be a non-bipartite graph. Let $G \coloneqq F + F$ and $H \coloneqq F \times K_2$.
-%		For every connected bipartite graph $K$, 
-%		\[
-%		\hom(K, G) = \hom(K, F+F)  = 2\hom(K, F) = \hom(K, F \times K_2) = \hom(K, H)
-%		\]
-%		Hence, $G \equiv_{\mathcal{G}_{K_2}} H$ but $\hom(F, G) \neq 0 = \hom(F, H)$.
-%	\end{proof}
-	
+
+
 	\begin{lemma} \label{cor:bipartite-exception}
 		For every graph class $\mathcal{F}$ and every bipartite simple graph $K$, $\cl(\mathcal{F}_K) =  \cl(\mathcal{F})_K$.
 		In particular, $\equiv_{\mathcal{F}}$ admits $K$-cancellation if and only if all graphs in $\mathcal{F}$ are $K$-colourable.
