@@ -4,7 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
 import Lax871432.EdgeContractions
-import Lax871432.HomomorphismCountIdentities
+import Lax871432.ComplementCounts
+import Lax871432.FullComplementCounts
+import Lax871432.LexicographicProductCounts
+import Lax871432.LoopedGraphCounts
 import Lax871432.ForbiddenMinors
 import Lax871432.InducedSubgraphs
 import Lax871432.LinearCombinationLemma
@@ -228,7 +231,7 @@ theorem preservedUnderLeftLexProd_iff_cl_isInducedSubgraphClosed (𝓕 : GraphCl
 
 /--
 ---
-conclusion: Lax871432.HomomorphismCountIdentities.homCount_lexProd
+conclusion: Lax871432.LexicographicProductCounts.homCount_lexProd
 ---
 `thm:lexprod-hom`.  A homomorphism `f : F → G ⋅ H` induces the partition of `V(F)` whose
 classes are the connected components of the subgraphs induced on the fibres of the first
@@ -248,7 +251,7 @@ theorem homCount_lexProd {U V W : Type*} [Finite U] [Finite V] [Finite W] (F : S
 
 /--
 ---
-conclusion: Lax871432.HomomorphismCountIdentities.homCount_fullCompl
+conclusion: Lax871432.FullComplementCounts.homCount_fullCompl
 ---
 `eq:complement`.  A map `V(F) → V(X)` is a homomorphism into the full complement exactly when
 it avoids, for every edge of `F`, the event that its endpoints are sent to an adjacent pair;
@@ -265,7 +268,7 @@ theorem homCount_fullCompl {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph 
 
 /--
 ---
-conclusion: Lax871432.HomomorphismCountIdentities.homCount_looped
+conclusion: Lax871432.LoopedGraphCounts.homCount_looped
 ---
 `lem:looping`.  A homomorphism `F → G°` is the same thing as a pair consisting of the set `L`
 of edges of `F` whose endpoints it identifies and a homomorphism `F ⊘ L → G`: the quotient by
@@ -280,7 +283,7 @@ theorem homCount_looped {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph V)
 
 /--
 ---
-conclusion: Lax871432.HomomorphismCountIdentities.homCount_compl
+conclusion: Lax871432.ComplementCounts.homCount_compl
 ---
 `eq:del-contr`.  Since `Gᶜ` is the full complement of the looped graph `G°`, expanding by
 `eq:complement` and then applying `lem:looping` to each spanning subgraph `F_s` gives the
