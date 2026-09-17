@@ -483,7 +483,7 @@ def triangleEdges (F : SimpleGraph V) (u v : V) : Set (Sym2 V) :=
 unchanged: a deleted edge `uw` and the surviving edge `vw` have the same image, because `u`
 and `v` are identified. -/
 theorem contractionQuotient_deleteEdges_triangleEdges {u v : V} (huv : F.Adj u v) :
-    (F.deleteEdges (F.triangleEdges u v)) ⊘ ({s(u, v)} : Set (Sym2 V)) =
+    (F.deleteEdges ((triangleEdges F) u v)) ⊘ ({s(u, v)} : Set (Sym2 V)) =
       F ⊘ ({s(u, v)} : Set (Sym2 V)) := by
   have huv' : (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).connectedComponentMk u =
       (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).connectedComponentMk v :=
@@ -491,11 +491,11 @@ theorem contractionQuotient_deleteEdges_triangleEdges {u v : V} (huv : F.Adj u v
   ext c d
   refine ⟨fun ⟨x, y, hxy, hL, hx, hy⟩ => ⟨x, y, ((deleteEdges_adj ..).1 hxy).1, hL, hx, hy⟩, ?_⟩
   rintro ⟨x, y, hxy, hL, hx, hy⟩
-  rcases Classical.em (s(x, y) ∈ F.triangleEdges u v) with hT | hT
+  rcases Classical.em (s(x, y) ∈ (triangleEdges F) u v) with hT | hT
   swap
   · exact ⟨x, y, (deleteEdges_adj ..).2 ⟨hxy, hT⟩, hL, hx, hy⟩
   obtain ⟨w, huw, hvw, hf⟩ := hT
-  have hnotT : s(v, w) ∉ F.triangleEdges u v := by
+  have hnotT : s(v, w) ∉ (triangleEdges F) u v := by
     rintro ⟨w', -, hv', hw'⟩
     rcases Sym2.eq_iff.1 hw' with ⟨h1, -⟩ | ⟨h1, -⟩
     · exact huv.ne h1.symm
@@ -506,7 +506,7 @@ theorem contractionQuotient_deleteEdges_triangleEdges {u v : V} (huv : F.Adj u v
     rcases Sym2.eq_iff.1 hc with ⟨h1, -⟩ | ⟨-, h2⟩
     · exact huv.ne h1.symm
     · exact huw.ne h2.symm
-  have hadj : (F.deleteEdges (F.triangleEdges u v)).Adj v w :=
+  have hadj : (F.deleteEdges ((triangleEdges F) u v)).Adj v w :=
     (deleteEdges_adj ..).2 ⟨hvw, hnotT⟩
   rcases Sym2.eq_iff.1 hf with ⟨h1, h2⟩ | ⟨h1, h2⟩
   · refine ⟨v, w, hadj, hnotL, ?_, ?_⟩
@@ -521,8 +521,8 @@ theorem contractionQuotient_deleteEdges_triangleEdges {u v : V} (huv : F.Adj u v
 
 /-- After deleting `SimpleGraph.triangleEdges`, no vertex forms a triangle with `uv`. -/
 theorem isEmpty_triangle_deleteEdges (F : SimpleGraph V) (u v : V) :
-    IsEmpty {w : V // (F.deleteEdges (F.triangleEdges u v)).Adj u w ∧
-      (F.deleteEdges (F.triangleEdges u v)).Adj v w} := by
+    IsEmpty {w : V // (F.deleteEdges ((triangleEdges F) u v)).Adj u w ∧
+      (F.deleteEdges ((triangleEdges F) u v)).Adj v w} := by
   refine ⟨fun x => ?_⟩
   obtain ⟨w, huw, hvw⟩ := x
   exact ((deleteEdges_adj ..).1 huw).2
@@ -530,7 +530,7 @@ theorem isEmpty_triangle_deleteEdges (F : SimpleGraph V) (u v : V) :
 
 /-- The contracted edge itself is not a triangle edge, so it survives the deletion. -/
 theorem adj_deleteEdges_triangleEdges {u v : V} (huv : F.Adj u v) :
-    (F.deleteEdges (F.triangleEdges u v)).Adj u v := by
+    (F.deleteEdges ((triangleEdges F) u v)).Adj u v := by
   refine (deleteEdges_adj ..).2 ⟨huv, ?_⟩
   rintro ⟨w, -, hv', hf⟩
   rcases Sym2.eq_iff.1 hf with ⟨-, h2⟩ | ⟨-, h2⟩
@@ -564,8 +564,8 @@ as `F` and fewer edges. -/
 def MinorModel.ofLE {K : SimpleGraph V} (h : K ≤ F) : MinorModel K F where
   branchSet v := {v}
   connected v := connected_induce_singleton F v
-  disjoint _ _ hvw := Set.disjoint_singleton.2 hvw
-  adjacent _ _ hvw := ⟨_, rfl, _, rfl, h hvw⟩
+  disjoint hvw := Set.disjoint_singleton.2 hvw
+  adjacent hvw := ⟨_, rfl, _, rfl, h hvw⟩
 
 @[refl]
 theorem IsMinor.refl (F : SimpleGraph V) : IsMinor F F := ⟨MinorModel.ofLE le_rfl⟩
@@ -617,7 +617,7 @@ theorem IsMinor.trans {X : Type*} {K : SimpleGraph W} {J : SimpleGraph X}
     (h : IsMinor J K) (h' : IsMinor K F) : IsMinor J F := by
   obtain ⟨B⟩ := h
   obtain ⟨C⟩ := h'
-  refine ⟨{ branch := fun j => ⋃ k ∈ B.branchSet j, C.branchSet k
+  refine ⟨{ branchSet := fun j => ⋃ k ∈ B.branchSet j, C.branchSet k
             connected := fun j => connected_biUnion_branch C _ (B.connected j)
             disjoint := ?_
             adjacent := ?_ }⟩
@@ -641,8 +641,8 @@ theorem isMinor_spanningSubgraph (F : SimpleGraph V) (s : Set (Sym2 V)) :
 theorem isMinor_induce (F : SimpleGraph V) (s : Set V) : IsMinor (F.induce s) F :=
   ⟨{ branchSet v := {(v : V)}
      connected v := connected_induce_singleton F v
-     disjoint _ _ hvw := Set.disjoint_singleton.2 fun h => hvw (Subtype.ext h)
-     adjacent _ _ hvw := ⟨_, rfl, _, rfl, hvw⟩ }⟩
+     disjoint hvw := Set.disjoint_singleton.2 fun h => hvw (Subtype.ext h)
+     adjacent hvw := ⟨_, rfl, _, rfl, hvw⟩ }⟩
 
 /-- A graph obtained by deleting edges is a minor. -/
 theorem isMinor_deleteEdges (F : SimpleGraph V) (s : Set (Sym2 V)) :
@@ -659,12 +659,12 @@ theorem isMinor_of_iso_contractionQuotient {L : Set (Sym2 V)} (hL : L ⊆ F.edge
     branchSet w := (e w).supp
     connected w :=
       Connected.mono (fun _ _ hab => hle hab) (ConnectedComponent.connected_toSimpleGraph (e w))
-    disjoint v w hvw := by
+    disjoint hvw := by
       rw [Set.disjoint_left]
       intro x hx hx'
       rw [ConnectedComponent.mem_supp_iff] at hx hx'
       exact hvw (e.injective (hx.symm.trans hx'))
-    adjacent v w hvw := by
+    adjacent hvw := by
       obtain ⟨x, y, hxy, -, hx, hy⟩ := e.map_rel_iff.2 hvw
       exact ⟨x, hx, y, hy, hxy⟩ }⟩
 
@@ -681,12 +681,12 @@ noncomputable def contractEdge (F : SimpleGraph V) (u v : V) :
 @[simp]
 theorem contractEdge_adj (F : SimpleGraph V) (u v : V)
     {c d : (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).ConnectedComponent} :
-    (F.contractEdge u v).Adj c d ↔ ∃ x y, F.Adj x y ∧ s(x, y) ∉ ({s(u, v)} : Set (Sym2 V)) ∧
+    ((contractEdge F) u v).Adj c d ↔ ∃ x y, F.Adj x y ∧ s(x, y) ∉ ({s(u, v)} : Set (Sym2 V)) ∧
       (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).connectedComponentMk x = c ∧
       (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).connectedComponentMk y = d := Iff.rfl
 
 theorem toLoopGraph_contractEdge (F : SimpleGraph V) (u v : V) :
-    (toLoopGraph (F.contractEdge u v)) = F ⊘ ({s(u, v)} : Set (Sym2 V)) := rfl
+    (toLoopGraph ((contractEdge F) u v)) = F ⊘ ({s(u, v)} : Set (Sym2 V)) := rfl
 
 /-- A connected induced subgraph with two distinct vertices contains an edge. -/
 theorem exists_adj_of_connected_of_ne {s : Set V} (h : (F.induce s).Connected) {x y : ↥s}
@@ -700,19 +700,19 @@ theorem exists_adj_of_connected_of_ne {s : Set V} (h : (F.induce s).Connected) {
 each edge either survives or has its two endpoints identified. -/
 theorem connected_induce_image_contractEdge {s : Set V} {a b : V} (hab : F.Adj a b)
     (h : (F.induce s).Connected) :
-    ((F.contractEdge a b).induce
+    (((contractEdge F) a b).induce
       ((fromEdgeSet ({s(a, b)} : Set (Sym2 V))).connectedComponentMk '' s)).Connected := by
   classical
   set q := (fromEdgeSet ({s(a, b)} : Set (Sym2 V))).connectedComponentMk with hqdef
   set T : Set (fromEdgeSet ({s(a, b)} : Set (Sym2 V))).ConnectedComponent := q '' s with hTdef
   have hmem : ∀ {x : V}, x ∈ s → q x ∈ T := fun hx => ⟨_, hx, rfl⟩
   have hstep : ∀ {x y : ↥s}, (F.induce s).Adj x y → q ↑x ≠ q ↑y →
-      ((F.contractEdge a b).induce T).Adj ⟨q ↑x, hmem x.2⟩ ⟨q ↑y, hmem y.2⟩ := by
+      (((contractEdge F) a b).induce T).Adj ⟨q ↑x, hmem x.2⟩ ⟨q ↑y, hmem y.2⟩ := by
     intro x y hxy hne
     exact ⟨↑x, ↑y, hxy, fun hc => hne ((connectedComponentMk_eq_iff hab.ne).2 (Or.inr hc)),
       rfl, rfl⟩
   have hwalk : ∀ {x y : ↥s}, (F.induce s).Walk x y →
-      ((F.contractEdge a b).induce T).Reachable ⟨q ↑x, hmem x.2⟩ ⟨q ↑y, hmem y.2⟩ := by
+      (((contractEdge F) a b).induce T).Reachable ⟨q ↑x, hmem x.2⟩ ⟨q ↑y, hmem y.2⟩ := by
     intro x y p
     induction p with
     | nil => rfl
@@ -737,10 +737,10 @@ branch set: the quotient map identifies only its two endpoints, so the branch se
 disjoint. -/
 noncomputable def MinorModel.contractEdge {K : SimpleGraph W} (C : MinorModel K F) {w₀ : W}
     {a b : V} (hab : F.Adj a b) (ha : a ∈ C.branchSet w₀) (hb : b ∈ C.branchSet w₀) :
-    MinorModel K (F.contractEdge a b) where
+    MinorModel K ((contractEdge F) a b) where
   branchSet w := (fromEdgeSet ({s(a, b)} : Set (Sym2 V))).connectedComponentMk '' C.branchSet w
   connected w := connected_induce_image_contractEdge hab (C.connected w)
-  disjoint v w hvw := by
+  disjoint hvw := by
     have hbr : ∀ {u : W} {z : V}, z ∈ C.branchSet u → z ∈ C.branchSet w₀ → u = w₀ := by
       intro u z hz hz0
       by_contra hne
@@ -752,7 +752,7 @@ noncomputable def MinorModel.contractEdge {K : SimpleGraph W} (C : MinorModel K 
     · rcases Sym2.eq_iff.1 he with ⟨h1, h2⟩ | ⟨h1, h2⟩
       · exact hvw ((hbr hx (by rw [h2]; exact hb)).trans (hbr hy (by rw [h1]; exact ha)).symm)
       · exact hvw ((hbr hx (by rw [h2]; exact ha)).trans (hbr hy (by rw [h1]; exact hb)).symm)
-  adjacent v w hvw := by
+  adjacent hvw := by
     have hbr : ∀ {u : W} {z : V}, z ∈ C.branchSet u → z ∈ C.branchSet w₀ → u = w₀ := by
       intro u z hz hz0
       by_contra hne
@@ -905,10 +905,10 @@ theorem isMinor_iff_exists_induce_spanningSubgraph_contraction {K : SimpleGraph 
     IsMinor K F ↔ ∃ (s : Set V) (t L : Set (Sym2 ↥s)),
       L ⊆ ((spanningSubgraph (F.induce s)) t).edgeSet ∧
         Nonempty ((toLoopGraph K) ≃lg ((spanningSubgraph (F.induce s)) t ⊘ L)) := by
-  refine ⟨fun ⟨C⟩ => C.exists_eq_contractionQuotient, ?_⟩
+  refine ⟨fun ⟨C⟩ => (MinorModel.exists_eq_contractionQuotient C), ?_⟩
   rintro ⟨s, t, L, hL, ⟨e⟩⟩
-  exact (isMinor_of_iso_contractionQuotient hL e).trans
-    ((isMinor_spanningSubgraph _ t).trans (isMinor_induce F s))
+  exact IsMinor.trans (isMinor_of_iso_contractionQuotient hL e)
+    (IsMinor.trans (isMinor_spanningSubgraph _ t) (isMinor_induce F s))
 
 end SimpleGraph
 

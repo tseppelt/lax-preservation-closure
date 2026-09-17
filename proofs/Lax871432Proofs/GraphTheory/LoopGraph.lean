@@ -151,7 +151,7 @@ theorem toLoopGraph_isLoopless (G : SimpleGraph V) : (toLoopGraph G).IsLoopless 
 /-- Passing from a loopless loop graph to the underlying simple graph and back changes
 nothing. -/
 @[simp]
-theorem _root_.LoopGraph.toSimpleGraph_toLoopGraph (X : LoopGraph V) (h : X.IsLoopless) :
+theorem _root_.Lax871432Proofs.LoopGraph.toSimpleGraph_toLoopGraph (X : LoopGraph V) (h : X.IsLoopless) :
     (toLoopGraph (X.toSimpleGraph h)) = X := rfl
 
 /-- The *looped* graph `G°`: a loop is added at every vertex of `G`. -/

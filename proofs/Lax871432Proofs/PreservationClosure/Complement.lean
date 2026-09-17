@@ -64,8 +64,8 @@ namespace Lax871432Proofs
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
-open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open scoped Lax871432.HomomorphismIndistinguishability
+open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open Lax68.GraphMinors
 
 open Function
@@ -144,7 +144,7 @@ theorem eq_univ_and_card_eq_one_of_iso_contract {V : Type*} [Finite V] {F : Simp
     Nat.card_congr h.some.mapEdgeSet
   -- Contracting `L` destroys at least `|L|` of the `|s|` remaining edges.
   have hbound := card_edgeSet_contractionQuotient_add_card_le
-    ((spanningSubgraph F) ((edgeSetOf F) s)) (F.edgeSetOf_subset_edgeSet_spanningSubgraph hL)
+    ((spanningSubgraph F) ((edgeSetOf F) s)) ((edgeSetOf_subset_edgeSet_spanningSubgraph F) hL)
   rw [card_edgeSet_spanningSubgraph, card_edgeSetOf] at hbound
   have hcard : Nat.card F.edgeSet = Fintype.card F.edgeSet := Nat.card_eq_fintype_card
   have hscard : s.card ≤ Fintype.card F.edgeSet := Finset.card_le_univ s
@@ -185,7 +185,7 @@ theorem IsEdgeContractionClosed.preservedUnderCompl (hd : IsEdgeDeletionClosed �
   classical
   intro V W _ _ G H hGH m F hF
   haveI : Fintype F.edgeSet := Fintype.ofFinite _
-  have hFmem : 𝓕.Mem F := (𝓕.Mem_fin F).2 hF
+  have hFmem : 𝓕.Mem F := (GraphClass.Mem_fin 𝓕 F).2 hF
   -- Each summand of `eq:del-contr` is a homomorphism count from a member of `𝓕`, unless it
   -- vanishes on both sides.
   have key : ∀ s L : Finset F.edgeSet, L ⊆ s →
@@ -197,13 +197,13 @@ theorem IsEdgeContractionClosed.preservedUnderCompl (hd : IsEdgeDeletionClosed �
     by_cases hloop : X.IsLoopless
     · -- `X` is a simple graph, obtained from `F` by deleting and then contracting edges.
       have hmem : 𝓕.Mem (X.toSimpleGraph hloop) :=
-        hc (F.edgeSetOf_subset_edgeSet_spanningSubgraph hL)
+        hc ((edgeSetOf_subset_edgeSet_spanningSubgraph F) hL)
           (hd.mem_spanningSubgraph F _ hFmem) _ ⟨RelIso.refl _⟩
       have heq := (homIndistinguishable_iff_forall_mem 𝓕 G H).1 hGH (X.toSimpleGraph hloop) hmem
       rw [← homCount_toLoopGraph, ← homCount_toLoopGraph] at heq
       simpa using heq
-    · rw [LoopGraph.homCount_eq_zero_of_not_isLoopless hloop G.toLoopGraph_isLoopless,
-        LoopGraph.homCount_eq_zero_of_not_isLoopless hloop H.toLoopGraph_isLoopless]
+    · rw [LoopGraph.homCount_eq_zero_of_not_isLoopless hloop (toLoopGraph_isLoopless G),
+        LoopGraph.homCount_eq_zero_of_not_isLoopless hloop (toLoopGraph_isLoopless H)]
   rw [← Nat.cast_inj (R := ℤ), homCount_compl F G, homCount_compl F H]
   refine Finset.sum_congr rfl fun s _ => ?_
   congr 1
@@ -243,7 +243,7 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
     simp [SimpleGraph.edgeSetOf]
   have hloop : (((spanningSubgraph F) ((edgeSetOf F) s₀)) ⊘ (edgeSetOf F) ∅).IsLoopless := by
     rw [hs₀, hempty]; exact contractionQuotient_empty_isLoopless _
-  set i₀ : F.DelContrIndex := ⟨(s₀, ∅), Finset.empty_subset _, hloop⟩ with hi₀def
+  set i₀ : (DelContrIndex F) := ⟨(s₀, ∅), Finset.empty_subset _, hloop⟩ with hi₀def
   have hi₀iso : Nonempty ((toLoopGraph (F.deleteEdges {e})) ≃lg
       (((spanningSubgraph F) ((edgeSetOf F) i₀.1.1)) ⊘ (edgeSetOf F) i₀.1.2)) := by
     change Nonempty (_ ≃lg (((spanningSubgraph F) ((edgeSetOf F) s₀)) ⊘ (edgeSetOf F) ∅))
@@ -256,7 +256,7 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
     omega
   -- Group the summands of `eq:del-contr` by isomorphism type.
   obtain ⟨κ, _, _, M, β, ρ, hMni, hMiso, hβdef, hsum⟩ :=
-    exists_graphFamily (n := Nat.card V) (fun i : F.DelContrIndex => i.size_le)
+    exists_graphFamily (n := Nat.card V) (fun i : (DelContrIndex F) => i.size_le)
       (fun i => i.graph) (fun i => (-1 : ℚ) ^ i.1.1.card)
   -- `≡[𝓕]` determines the linear combination, because it determines `hom(F, -ᶜ)`.
   have hdet : ∀ {X Y : Type} [Finite X] [Finite Y] (G : SimpleGraph X) (H : SimpleGraph Y),
@@ -264,8 +264,8 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
         ∑ k, β k * (homCount (M.graph k) H : ℚ) := by
     intro X Y _ _ G H hGH
     rw [← hsum (V := X) G, ← hsum (V := Y) H]
-    have hZ : (∑ i : F.DelContrIndex, (-1 : ℤ) ^ i.1.1.card * (homCount i.graph G : ℤ)) =
-        ∑ i : F.DelContrIndex, (-1 : ℤ) ^ i.1.1.card * (homCount i.graph H : ℤ) := by
+    have hZ : (∑ i : (DelContrIndex F), (-1 : ℤ) ^ i.1.1.card * (homCount i.graph G : ℤ)) =
+        ∑ i : (DelContrIndex F), (-1 : ℤ) ^ i.1.1.card * (homCount i.graph H : ℤ) := by
       rw [← homCount_compl_delContr F G, ← homCount_compl_delContr F H,
         homCount_eq_of_Mem_cl hF (hp G H hGH)]
     exact_mod_cast hZ
@@ -273,7 +273,7 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
   have hKiso : Nonempty (F.deleteEdges {e} ≃g M.graph (ρ i₀)) :=
     ⟨(hi₀iso.some.trans (i₀.nonempty_iso).some.symm).trans (hMiso i₀).some⟩
   have hβ : β (ρ i₀) ≠ 0 := by
-    have hfib : ∀ i : F.DelContrIndex, ρ i = ρ i₀ →
+    have hfib : ∀ i : (DelContrIndex F), ρ i = ρ i₀ →
         (-1 : ℚ) ^ i.1.1.card = (-1 : ℚ) ^ i₀.1.1.card := by
       intro i hρ
       have hiso : Nonempty ((toLoopGraph (F.deleteEdges {e})) ≃lg
@@ -283,7 +283,7 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
       obtain ⟨-, hcard⟩ := eq_empty_and_card_succ_of_iso_deleteEdges he hiso
       have hcards : i.1.1.card = s₀.card := by omega
       rw [hcards]
-    have hsimp : ∀ i : F.DelContrIndex,
+    have hsimp : ∀ i : (DelContrIndex F),
         (if ρ i = ρ i₀ then (-1 : ℚ) ^ i.1.1.card else 0) =
           (if ρ i = ρ i₀ then (-1 : ℚ) ^ i₀.1.1.card else 0) := by
       intro i
@@ -299,8 +299,8 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
     refine mem_cl_of_determines_of_ne_zero 𝓕 M hMni β ?_ hβ
     intro X Y _ _ G H hGH
     exact hdet G H hGH
-  rw [(cl 𝓕).Mem_congr hKiso.some]
-  exact ((cl 𝓕).Mem_fin (M.graph (ρ i₀))).2 hmem
+  rw [(GraphClass.Mem_congr (cl 𝓕)) hKiso.some]
+  exact ((GraphClass.Mem_fin (cl 𝓕)) (M.graph (ρ i₀))).2 hmem
 
 /-- **`thm:complement`, (2) ⇒ (3), edge deletion**: deleting a set of edges one at a time. -/
 theorem PreservedUnderCompl.cl_isEdgeDeletionClosed (hp : PreservedUnderCompl 𝓕) :
@@ -335,7 +335,7 @@ theorem PreservedUnderCompl.cl_isEdgeDeletionClosed (hp : PreservedUnderCompl �
         have hcard : Nat.card (F.deleteEdges {e}).edgeSet ≤ n := by
           have := card_edgeSet_deleteEdges_singleton_add_one he
           omega
-        exact ih (F.deleteEdges {e}) hcard t (hp.cl_mem_deleteEdges_singleton hF e)
+        exact ih (F.deleteEdges {e}) hcard t ((GraphClass.PreservedUnderCompl.cl_mem_deleteEdges_singleton hp) hF e)
   exact key (Nat.card F₀.edgeSet) F₀ le_rfl t₀ hF₀
 
 /-- **`thm:complement`, (2) ⇒ (3), one edge contraction.**
@@ -350,8 +350,8 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
     (hK : Nonempty ((toLoopGraph K) ≃lg (F ⊘ ({s(u, v)} : Set (Sym2 V))))) : (cl 𝓕).Mem K := by
   classical
   -- Delete the triangle edges; this changes neither the contraction nor membership in `cl 𝓕`.
-  set F' := F.deleteEdges (F.triangleEdges u v) with hF'def
-  have hF' : (cl 𝓕).Mem F' := hp.cl_isEdgeDeletionClosed F _ hF
+  set F' := F.deleteEdges ((triangleEdges F) u v) with hF'def
+  have hF' : (cl 𝓕).Mem F' := (GraphClass.PreservedUnderCompl.cl_isEdgeDeletionClosed hp) F _ hF
   have huv' : F'.Adj u v := adj_deleteEdges_triangleEdges huv
   have htri : IsEmpty {w : V // F'.Adj u w ∧ F'.Adj v w} := isEmpty_triangle_deleteEdges F u v
   rw [← contractionQuotient_deleteEdges_triangleEdges (F := F) huv] at hK
@@ -375,7 +375,7 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
   have hloop : (((spanningSubgraph F') ((edgeSetOf F') (Finset.univ : Finset F'.edgeSet))) ⊘
       (edgeSetOf F') L₀).IsLoopless := by
     rw [hspan, hL₀set]; exact contractionQuotient_singleton_isLoopless u v
-  set i₀ : F'.DelContrIndex := ⟨(Finset.univ, L₀), Finset.subset_univ _, hloop⟩ with hi₀def
+  set i₀ : (DelContrIndex F') := ⟨(Finset.univ, L₀), Finset.subset_univ _, hloop⟩ with hi₀def
   have hi₀iso : Nonempty ((toLoopGraph K) ≃lg
       (((spanningSubgraph F') ((edgeSetOf F') i₀.1.1)) ⊘ (edgeSetOf F') i₀.1.2)) := by
     change Nonempty (_ ≃lg
@@ -384,22 +384,22 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
     exact hK
   -- Group the summands of `eq:del-contr` by isomorphism type.
   obtain ⟨κ, _, _, M, β, ρ, hMni, hMiso, hβdef, hsum⟩ :=
-    exists_graphFamily (n := Nat.card V) (fun i : F'.DelContrIndex => i.size_le)
+    exists_graphFamily (n := Nat.card V) (fun i : (DelContrIndex F') => i.size_le)
       (fun i => i.graph) (fun i => (-1 : ℚ) ^ i.1.1.card)
   have hdet : ∀ {X Y : Type} [Finite X] [Finite Y] (G : SimpleGraph X) (H : SimpleGraph Y),
       (G ≡[𝓕] H) → ∑ k, β k * (homCount (M.graph k) G : ℚ) =
         ∑ k, β k * (homCount (M.graph k) H : ℚ) := by
     intro X Y _ _ G H hGH
     rw [← hsum (V := X) G, ← hsum (V := Y) H]
-    have hZ : (∑ i : F'.DelContrIndex, (-1 : ℤ) ^ i.1.1.card * (homCount i.graph G : ℤ)) =
-        ∑ i : F'.DelContrIndex, (-1 : ℤ) ^ i.1.1.card * (homCount i.graph H : ℤ) := by
+    have hZ : (∑ i : (DelContrIndex F'), (-1 : ℤ) ^ i.1.1.card * (homCount i.graph G : ℤ)) =
+        ∑ i : (DelContrIndex F'), (-1 : ℤ) ^ i.1.1.card * (homCount i.graph H : ℤ) := by
       rw [← homCount_compl_delContr F' G, ← homCount_compl_delContr F' H,
         homCount_eq_of_Mem_cl hF' (hp G H hGH)]
     exact_mod_cast hZ
   have hKiso : Nonempty (K ≃g M.graph (ρ i₀)) :=
     ⟨(hi₀iso.some.trans (i₀.nonempty_iso).some.symm).trans (hMiso i₀).some⟩
   have hβ : β (ρ i₀) ≠ 0 := by
-    have hfib : ∀ i : F'.DelContrIndex, ρ i = ρ i₀ →
+    have hfib : ∀ i : (DelContrIndex F'), ρ i = ρ i₀ →
         (-1 : ℚ) ^ i.1.1.card = (-1 : ℚ) ^ i₀.1.1.card := by
       intro i hρ
       have hiso : Nonempty ((F' ⊘ ({s(u, v)} : Set (Sym2 V))) ≃lg
@@ -408,7 +408,7 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
           ((hKiso.some.trans (hρ ▸ (hMiso i).some.symm)).trans (i.nonempty_iso).some)⟩
       obtain ⟨huniv, -⟩ := eq_univ_and_card_eq_one_of_iso_contract huv' htri i.2.1 hiso
       rw [huniv]
-    have hsimp : ∀ i : F'.DelContrIndex,
+    have hsimp : ∀ i : (DelContrIndex F'),
         (if ρ i = ρ i₀ then (-1 : ℚ) ^ i.1.1.card else 0) =
           (if ρ i = ρ i₀ then (-1 : ℚ) ^ i₀.1.1.card else 0) := by
       intro i
@@ -423,14 +423,14 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
     refine mem_cl_of_determines_of_ne_zero 𝓕 M hMni β ?_ hβ
     intro X Y _ _ G H hGH
     exact hdet G H hGH
-  rw [(cl 𝓕).Mem_congr hKiso.some]
-  exact ((cl 𝓕).Mem_fin (M.graph (ρ i₀))).2 hmem
+  rw [(GraphClass.Mem_congr (cl 𝓕)) hKiso.some]
+  exact ((GraphClass.Mem_fin (cl 𝓕)) (M.graph (ρ i₀))).2 hmem
 
 /-- **`thm:complement`, (2) ⇒ (3), edge contraction**, in single-edge form. -/
 theorem PreservedUnderCompl.cl_isSingleEdgeContractionClosed (hp : PreservedUnderCompl 𝓕) :
     IsSingleEdgeContractionClosed (cl 𝓕) := by
   intro V _ F u v huv hF W _ K he
-  exact hp.cl_mem_contractionQuotient_singleton hF huv K he
+  exact (GraphClass.PreservedUnderCompl.cl_mem_contractionQuotient_singleton hp) hF huv K he
 
 /-- **`thm:complement`, (2) ⇒ (3)**: if `≡[𝓕]` is preserved under taking complements then
 `cl 𝓕` is minor-closed.
@@ -440,15 +440,15 @@ computations above; closure under deleting vertices is `lem:minors`; and
 `SimpleGraph.GraphClass.isMinorClosed_of_atomic_single` assembles them. -/
 theorem PreservedUnderCompl.cl_isMinorClosed (hp : PreservedUnderCompl 𝓕) :
     IsMinorClosed (cl 𝓕) :=
-  isMinorClosed_of_atomic_single hp.cl_isEdgeDeletionClosed
-    (IsEdgeDeletionClosed.cl_isSubgraphClosed hp.cl_isEdgeDeletionClosed).2
-    hp.cl_isSingleEdgeContractionClosed
+  isMinorClosed_of_atomic_single (GraphClass.PreservedUnderCompl.cl_isEdgeDeletionClosed hp)
+    (IsEdgeDeletionClosed.cl_isSubgraphClosed (GraphClass.PreservedUnderCompl.cl_isEdgeDeletionClosed hp)).2
+    (GraphClass.PreservedUnderCompl.cl_isSingleEdgeContractionClosed hp)
 
 /-- **`thm:complement`, (2) ⇒ (3), edge contraction**: contracting any set of edges, which
 follows from minor-closedness. -/
 theorem PreservedUnderCompl.cl_isEdgeContractionClosed (hp : PreservedUnderCompl 𝓕) :
     IsEdgeContractionClosed (cl 𝓕) := by
-  have h : IsMinorClosed (cl 𝓕) := hp.cl_isMinorClosed
+  have h : IsMinorClosed (cl 𝓕) := (GraphClass.PreservedUnderCompl.cl_isMinorClosed hp)
   intro V _ F L hL hF W _ K he
   exact h K (isMinor_of_iso_contractionQuotient hL he.some) hF
 
@@ -458,15 +458,15 @@ theorem PreservedUnderCompl.of_cl_isMinorClosed (h : IsMinorClosed (cl 𝓕)) :
     PreservedUnderCompl 𝓕 := by
   intro V W _ _ G H hGH
   rw [← homIndistinguishable_cl_iff] at hGH ⊢
-  exact IsEdgeContractionClosed.preservedUnderCompl h.isEdgeDeletionClosed
-    h.isEdgeContractionClosed G H hGH
+  exact IsEdgeContractionClosed.preservedUnderCompl (GraphClass.IsMinorClosed.isEdgeDeletionClosed h)
+    (GraphClass.IsMinorClosed.isEdgeContractionClosed h) G H hGH
 
 /-- **`thm:complement`**: `≡[𝓕]` is preserved under taking complements if and only if `cl 𝓕`
 is minor-closed; and this holds whenever `𝓕` itself is closed under deleting and contracting
 edges (`SimpleGraph.GraphClass.IsEdgeContractionClosed.preservedUnderCompl`). -/
 theorem preservedUnderCompl_iff_cl_isMinorClosed (𝓕 : GraphClass) :
     PreservedUnderCompl 𝓕 ↔ IsMinorClosed (cl 𝓕) :=
-  ⟨fun h => h.cl_isMinorClosed, PreservedUnderCompl.of_cl_isMinorClosed⟩
+  ⟨fun h => (GraphClass.PreservedUnderCompl.cl_isMinorClosed h), PreservedUnderCompl.of_cl_isMinorClosed⟩
 
 end GraphClass
 

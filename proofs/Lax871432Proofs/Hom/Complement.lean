@@ -379,30 +379,30 @@ abbrev DelContrIndex (F : SimpleGraph V) :=
     p.2 ⊆ p.1 ∧ (((spanningSubgraph F) ((edgeSetOf F) p.1)) ⊘ (edgeSetOf F) p.2).IsLoopless}
 
 noncomputable instance (F : SimpleGraph V) [Finite V] [Fintype F.edgeSet] :
-    Fintype F.DelContrIndex := Fintype.ofFinite _
+    Fintype (DelContrIndex F) := Fintype.ofFinite _
 
 /-- The number of vertices of the minor of `F` produced by a summation index. -/
-noncomputable def DelContrIndex.size {F : SimpleGraph V} (i : F.DelContrIndex) : ℕ :=
+noncomputable def DelContrIndex.size {F : SimpleGraph V} (i : (DelContrIndex F)) : ℕ :=
   Nat.card (fromEdgeSet ((edgeSetOf F) i.1.2)).ConnectedComponent
 
-theorem DelContrIndex.size_le [Finite V] {F : SimpleGraph V} (i : F.DelContrIndex) :
+theorem DelContrIndex.size_le [Finite V] {F : SimpleGraph V} (i : (DelContrIndex F)) :
     i.size ≤ Nat.card V := card_connectedComponent_le _
 
 /-- The minor `F_s ⊘ L` of `F` produced by a summation index, transported to a graph over
 `Fin _` so that `SimpleGraph.mem_cl_of_determines` applies to it. -/
-noncomputable def DelContrIndex.graph [Finite V] {F : SimpleGraph V} (i : F.DelContrIndex) :
+noncomputable def DelContrIndex.graph [Finite V] {F : SimpleGraph V} (i : (DelContrIndex F)) :
     SimpleGraph (Fin i.size) :=
   SimpleGraph.map (Finite.equivFin _)
     ((((spanningSubgraph F) ((edgeSetOf F) i.1.1)) ⊘ (edgeSetOf F) i.1.2).toSimpleGraph i.2.2)
 
 /-- The graph attached to a summation index is isomorphic to the quotient it names. -/
-theorem DelContrIndex.nonempty_iso [Finite V] {F : SimpleGraph V} (i : F.DelContrIndex) :
+theorem DelContrIndex.nonempty_iso [Finite V] {F : SimpleGraph V} (i : (DelContrIndex F)) :
     Nonempty ((toLoopGraph i.graph) ≃lg
       (((spanningSubgraph F) ((edgeSetOf F) i.1.1)) ⊘ (edgeSetOf F) i.1.2)) :=
   ⟨(Iso.map (Finite.equivFin _) _).symm⟩
 
 theorem DelContrIndex.homCount_graph [Finite V] [Finite W] {F : SimpleGraph V}
-    (i : F.DelContrIndex) (G : SimpleGraph W) :
+    (i : (DelContrIndex F)) (G : SimpleGraph W) :
     homCount i.graph G = LoopGraph.homCount
       (((spanningSubgraph F) ((edgeSetOf F) i.1.1)) ⊘ (edgeSetOf F) i.1.2) (toLoopGraph G) := by
   rw [← homCount_toLoopGraph]
@@ -417,13 +417,13 @@ isomorphism type, and `SimpleGraph.mem_cl_of_determines` then applies. -/
 theorem homCount_compl_delContr [Finite V] [Finite W] (F : SimpleGraph V) [Fintype F.edgeSet]
     (G : SimpleGraph W) :
     (homCount F Gᶜ : ℤ) =
-      ∑ i : F.DelContrIndex, (-1 : ℤ) ^ i.1.1.card * (homCount i.graph G : ℤ) := by
+      ∑ i : (DelContrIndex F), (-1 : ℤ) ^ i.1.1.card * (homCount i.graph G : ℤ) := by
   classical
   set c : Finset F.edgeSet × Finset F.edgeSet → ℤ := fun p =>
     (LoopGraph.homCount (((spanningSubgraph F) ((edgeSetOf F) p.1)) ⊘ (edgeSetOf F) p.2)
       (toLoopGraph G) : ℤ) with hcdef
   -- Rewrite the right-hand side as a sum over those pairs `(s, L)` that contribute.
-  have hright : ∑ i : F.DelContrIndex, (-1 : ℤ) ^ i.1.1.card * (homCount i.graph G : ℤ) =
+  have hright : ∑ i : (DelContrIndex F), (-1 : ℤ) ^ i.1.1.card * (homCount i.graph G : ℤ) =
       ∑ p ∈ Finset.univ.filter (fun p : Finset F.edgeSet × Finset F.edgeSet =>
         p.2 ⊆ p.1 ∧ (((spanningSubgraph F) ((edgeSetOf F) p.1)) ⊘ (edgeSetOf F) p.2).IsLoopless),
         (-1 : ℤ) ^ p.1.card * c p := by
@@ -444,7 +444,7 @@ theorem homCount_compl_delContr [Finite V] [Finite W] (F : SimpleGraph V) [Finty
       have hz : c p = 0 := by
         rw [hcdef, Nat.cast_eq_zero]
         exact LoopGraph.homCount_eq_zero_of_not_isLoopless
-          (fun hc => hp' ⟨hp.1, hp.2, hc⟩) G.toLoopGraph_isLoopless
+          (fun hc => hp' ⟨hp.1, hp.2, hc⟩) (toLoopGraph_isLoopless G)
       rw [hz, mul_zero]
   rw [hright, hloop, homCount_compl F G, Finset.sum_filter, Fintype.sum_prod_type]
   -- Unfold the filtered sum over pairs into the iterated sum of `eq:del-contr`.

@@ -171,7 +171,7 @@ theorem imageIndex_comp (hni : F.PairwiseNonIso) (hF : F.IsExhaustive) {i j k : 
   refine hni.eq (⟨?_⟩ : F.Iso (imageIndex F hF (g.comp h)) k)
   exact (imageIndex_spec F hF (g.comp h)).some.symm.trans
     ((Subgraph.isoCoeOfEq (Hom.range_comp_of_isStrongSurjective g hh)).trans
-      (g.isoImageGraph hg).symm)
+      ((Hom.isoImageGraph g) hg).symm)
 
 end ImageIndex
 

@@ -34,7 +34,6 @@ namespace Lax871432Proofs
 
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts
-open Lax68.GraphMinors
 
 namespace SimpleGraph
 

@@ -62,8 +62,8 @@ namespace Lax871432Proofs
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
-open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open scoped Lax871432.HomomorphismIndistinguishability
+open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open Lax68.GraphMinors
 
 open Function
@@ -268,7 +268,7 @@ theorem GraphClass.IsEdgeDeletionClosed.isVertexDeletionClosed
   have hbot : 𝓕.Mem (⊥ : SimpleGraph α) := by
     have := h F Set.univ hF; rwa [deleteEdges_univ] at this
   have hisol : 𝓕.Mem (F.deleteEdges (incidenceEdges s)) := h F _ hF
-  refine hcl _ (𝓕.Mem_cl_of_forall fun {V W} _ _ G H hGH => ?_)
+  refine hcl _ ((GraphClass.Mem_cl_of_forall 𝓕) fun {V W} _ _ G H hGH => ?_)
   have htest : ∀ {β : Type} [Finite β] (F : SimpleGraph β), 𝓕.Mem F →
       homCount F G = homCount F H := (homIndistinguishable_iff_forall_mem 𝓕 G H).1 hGH
   rcases isEmpty_or_nonempty α with hα | ⟨⟨v⟩⟩
@@ -328,8 +328,8 @@ theorem isMinorClosed_of_atomic_single (hd : IsEdgeDeletionClosed 𝓕)
   have hsubcase : ∀ {V W : Type} [Finite V] [Finite W] {F : SimpleGraph V} {K : SimpleGraph W}
       (C : MinorModel K F), (∀ w, (C.branchSet w).Subsingleton) → 𝓕.Mem F → 𝓕.Mem K := by
     intro V W _ _ F K C hsub hF
-    obtain ⟨s, t, ⟨e⟩⟩ := C.exists_iso_of_forall_subsingleton hsub
-    rw [𝓕.Mem_congr e]
+    obtain ⟨s, t, ⟨e⟩⟩ := (MinorModel.exists_iso_of_forall_subsingleton C) hsub
+    rw [(GraphClass.Mem_congr 𝓕) e]
     exact hd.mem_spanningSubgraph _ t (hv F s hF)
   have key : ∀ (n : ℕ) {V W : Type} [Finite V] [Finite W] (F : SimpleGraph V)
       (K : SimpleGraph W), Nat.card V ≤ n → IsMinor K F → 𝓕.Mem F → 𝓕.Mem K := by
@@ -352,9 +352,9 @@ theorem isMinorClosed_of_atomic_single (hd : IsEdgeDeletionClosed 𝓕)
         obtain ⟨⟨a, ha⟩, ⟨b, hb⟩, hab⟩ := exists_adj_of_connected_of_ne (C.connected w₀)
           (x := ⟨x, hx⟩) (y := ⟨y, hy⟩) fun hc => hxy (congrArg Subtype.val hc)
         have hab' : F.Adj a b := hab
-        have hF' : 𝓕.Mem (F.contractEdge a b) :=
-          hc hab' hF (F.contractEdge a b) ⟨RelIso.refl _⟩
-        refine ih (F.contractEdge a b) K ?_ ⟨C.contractEdge hab' ha hb⟩ hF'
+        have hF' : 𝓕.Mem ((contractEdge F) a b) :=
+          hc hab' hF ((contractEdge F) a b) ⟨RelIso.refl _⟩
+        refine ih ((contractEdge F) a b) K ?_ ⟨MinorModel.contractEdge C hab' ha hb⟩ hF'
         have hcard := card_contractionQuotient_singleton hab'
         have hpos : 0 < Nat.card V := Nat.card_pos_iff.2 ⟨⟨a⟩, ‹Finite V›⟩
         omega
@@ -373,7 +373,7 @@ theorem IsMinorClosed.isEdgeContractionClosed (h : IsMinorClosed 𝓕) :
   exact h K (isMinor_of_iso_contractionQuotient hL he.some) hF
 
 theorem IsMinorClosed.isSubgraphClosed (h : IsMinorClosed 𝓕) : IsSubgraphClosed 𝓕 :=
-  ⟨h.isEdgeDeletionClosed, h.isVertexDeletionClosed⟩
+  ⟨(GraphClass.IsMinorClosed.isEdgeDeletionClosed h), (GraphClass.IsMinorClosed.isVertexDeletionClosed h)⟩
 
 /-! ### Summands -/
 
@@ -382,7 +382,7 @@ connected components of any of its members. -/
 theorem IsSummandClosed.mem_sigmaOn_connectedComponent (h : IsSummandClosed 𝓕) {α : Type}
     [Finite α] {F : SimpleGraph α} (hF : 𝓕.Mem F) (s : Set F.ConnectedComponent) :
     𝓕.Mem (sigmaOn s fun c : F.ConnectedComponent => c.toSimpleGraph) :=
-  (h _ _ ((𝓕.Mem_congr
+  (h _ _ (((GraphClass.Mem_congr 𝓕)
     ((Iso.sigmaConnectedComponent F).symm.trans (Iso.sigmaSplit s _))).1 hF)).1
 
 end GraphClass

@@ -66,9 +66,7 @@ namespace Lax871432Proofs
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
-open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open scoped Lax871432.HomomorphismIndistinguishability
-open Lax68.GraphMinors
 
 open Function
 
@@ -117,7 +115,7 @@ theorem homIndistinguishable_iff_forall_mem (𝓕 : GraphClass) (G : SimpleGraph
       homCount_congr_left (Iso.map (Finite.equivFin β) F) H]
     exact h _ hF
   · intro h _ F hF
-    exact h F ((𝓕.Mem_fin F).2 hF)
+    exact h F ((GraphClass.Mem_fin 𝓕 F).2 hF)
 
 @[refl]
 theorem HomIndistinguishable.refl (𝓕 : GraphClass) (G : SimpleGraph V) : G ≡[𝓕] G :=
@@ -154,7 +152,7 @@ theorem homCount_eq_of_mem_cl {m : ℕ} {K : SimpleGraph (Fin m)} (h : (cl 𝓕)
   set eG := Iso.map (Finite.equivFin V) G with heG
   set eH := Iso.map (Finite.equivFin W) H with heH
   rw [homCount_congr_right K eG, homCount_congr_right K eH]
-  exact h.homCount_eq _ _ (((HomIndistinguishable.of_iso 𝓕 eG).symm.trans hGH).trans
+  exact h.homCount_eq _ _ ((HomIndistinguishable.trans ((HomIndistinguishable.trans (HomIndistinguishable.symm (HomIndistinguishable.of_iso 𝓕 eG))) hGH))
     (HomIndistinguishable.of_iso 𝓕 eH))
 
 /-- To place a graph in `cl 𝓕` it suffices to determine its homomorphism counts into graphs
@@ -183,13 +181,13 @@ theorem GraphClass.le_cl (𝓕 : GraphClass) : 𝓕 ≤ (cl 𝓕) := by
 /-- `cl` is monotone. -/
 theorem GraphClass.cl_mono (h : 𝓕 ≤ 𝓖) : (cl 𝓕) ≤ (cl 𝓖) := by
   intro _ K hK
-  exact ⟨fun G H hGH => hK.homCount_eq G H (hGH.mono h)⟩
+  exact ⟨fun G H hGH => hK.homCount_eq G H (HomIndistinguishable.mono h hGH)⟩
 
 /-- `≡[𝓕]` and `≡[cl 𝓕]` are the same relation: this is the sense in which `cl 𝓕` is the
 largest class with the same homomorphism indistinguishability relation as `𝓕`. -/
 theorem homIndistinguishable_cl_iff (𝓕 : GraphClass) (G : SimpleGraph V) (H : SimpleGraph W) :
     (G ≡[(cl 𝓕)] H) ↔ (G ≡[𝓕] H) :=
-  ⟨fun h => h.mono 𝓕.le_cl, fun h _ _ hF => homCount_eq_of_mem_cl hF h⟩
+  ⟨fun h => HomIndistinguishable.mono (GraphClass.le_cl 𝓕) h, fun h _ _ hF => homCount_eq_of_mem_cl hF h⟩
 
 /-- `cl` is idempotent. -/
 theorem GraphClass.cl_cl (𝓕 : GraphClass) : (cl (cl 𝓕)) ≤ (cl 𝓕) := by
@@ -254,7 +252,7 @@ theorem mem_cl_of_determines {n : ℕ} {ι : Type} [Fintype ι] (𝓕 : GraphCla
   have hvec : Matrix.vecMul (fun k => α' k * (homCount (M.graph k) G : ℚ)) (homMatrix M) =
       Matrix.vecMul (fun k => α' k * (homCount (M.graph k) H : ℚ)) (homMatrix M) := by
     funext l
-    have key := hdet (G ×g M.graph l) (H ×g M.graph l) (hGH.catProd (M.graph l))
+    have key := hdet (G ×g M.graph l) (H ×g M.graph l) ((HomIndistinguishable.catProd hGH) (M.graph l))
     rw [← hreindex (G ×g M.graph l), ← hreindex (H ×g M.graph l)] at key
     simpa [Matrix.vecMul, dotProduct, homCount_catProd_right, mul_assoc] using key
   -- The homomorphism matrix of `M` is invertible, so the two vectors coincide.

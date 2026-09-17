@@ -15,3 +15,4 @@ import Lax871432Proofs.Lovasz.Basic
 import Lax871432Proofs.Lovasz.HomMatrix
 import Lax871432Proofs.PreservationClosure.Complement
 import Lax871432Proofs.PreservationClosure.Summands
+import Lax871432Proofs.Results

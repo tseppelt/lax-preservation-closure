@@ -53,8 +53,8 @@ namespace Lax871432Proofs
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
-open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open scoped Lax871432.HomomorphismIndistinguishability
+open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open Lax68.GraphMinors
 
 open Function
@@ -72,13 +72,13 @@ theorem IsSummandClosed.preservedUnderDisjointUnion (h : IsSummandClosed 𝓕) :
   classical
   intro V V' W W' _ _ _ _ G G' H H' hG hH _ F hF
   haveI : Fintype F.ConnectedComponent := Fintype.ofFinite _
-  have hFmem : 𝓕.Mem F := (𝓕.Mem_fin F).2 hF
+  have hFmem : 𝓕.Mem F := (GraphClass.Mem_fin 𝓕 F).2 hF
   rw [homCount_sum_right_eq_sum_powerset F G H, homCount_sum_right_eq_sum_powerset F G' H']
   refine Finset.sum_congr rfl fun t _ => ?_
   rw [(homIndistinguishable_iff_forall_mem 𝓕 G G').1 hG _
-      (h.mem_sigmaOn_connectedComponent hFmem _),
+      ((GraphClass.IsSummandClosed.mem_sigmaOn_connectedComponent h) hFmem _),
     (homIndistinguishable_iff_forall_mem 𝓕 H H').1 hH _
-      (h.mem_sigmaOn_connectedComponent hFmem _)]
+      ((GraphClass.IsSummandClosed.mem_sigmaOn_connectedComponent h) hFmem _)]
 
 /-- If `≡[𝓕]` is preserved under disjoint unions and a disjoint union of connected graphs lies
 in `cl 𝓕`, then so does every sub-union.
@@ -151,8 +151,8 @@ theorem PreservedUnderDisjointUnion.mem_cl_sigmaOn (hp : PreservedUnderDisjointU
   have hiso : sigmaOn s D ≃g M.graph k := by
     have h1 : sigmaOn (↑s.toFinset) D ≃g M.graph k := (hLiso s.toFinset).some.trans hk.some
     rwa [Set.coe_toFinset] at h1
-  have h2 : (cl 𝓕).Mem (M.graph k) := ((cl 𝓕).Mem_fin (M.graph k)).2 (hMmem k)
-  rw [(cl 𝓕).Mem_congr hiso]
+  have h2 : (cl 𝓕).Mem (M.graph k) := ((GraphClass.Mem_fin (cl 𝓕)) (M.graph k)).2 (hMmem k)
+  rw [(GraphClass.Mem_congr (cl 𝓕)) hiso]
   exact h2
 
 /-- The family of connected components of `F₁ ⊕g F₂`, indexed by the components of `F₁` and
@@ -196,11 +196,11 @@ theorem PreservedUnderDisjointUnion.cl_isSummandClosed (hp : PreservedUnderDisjo
       (fun i : Set.range (Sum.inr : F₂.ConnectedComponent →
         F₁.ConnectedComponent ⊕ F₂.ConnectedComponent) => sumComponentFamily F₁ F₂ ↑i)
   have hmem' : (cl 𝓕).Mem (SimpleGraph.sigma (sumComponentFamily F₁ F₂)) :=
-    ((cl 𝓕).Mem_congr hsplit).1 hmem
-  exact ⟨((cl 𝓕).Mem_congr ((Iso.sigmaConnectedComponent F₁).symm.trans e₁)).2
-      (hp.mem_cl_sigmaOn hD hmem' _),
-    ((cl 𝓕).Mem_congr ((Iso.sigmaConnectedComponent F₂).symm.trans e₂)).2
-      (hp.mem_cl_sigmaOn hD hmem' _)⟩
+    ((GraphClass.Mem_congr (cl 𝓕)) hsplit).1 hmem
+  exact ⟨((GraphClass.Mem_congr (cl 𝓕)) ((Iso.sigmaConnectedComponent F₁).symm.trans e₁)).2
+      ((GraphClass.PreservedUnderDisjointUnion.mem_cl_sigmaOn hp) hD hmem' _),
+    ((GraphClass.Mem_congr (cl 𝓕)) ((Iso.sigmaConnectedComponent F₂).symm.trans e₂)).2
+      ((GraphClass.PreservedUnderDisjointUnion.mem_cl_sigmaOn hp) hD hmem' _)⟩
 
 /-- **`thm:taking-summands`, (3) ⇒ (2)**: this follows from (1) ⇒ (2) applied to `cl 𝓕`,
 since `≡[𝓕]` and `≡[cl 𝓕]` coincide. -/
@@ -208,14 +208,14 @@ theorem PreservedUnderDisjointUnion.of_cl_isSummandClosed (h : IsSummandClosed (
     PreservedUnderDisjointUnion 𝓕 := by
   intro V V' W W' _ _ _ _ G G' H H' hG hH
   rw [← homIndistinguishable_cl_iff] at hG hH ⊢
-  exact h.preservedUnderDisjointUnion G G' H H' hG hH
+  exact (GraphClass.IsSummandClosed.preservedUnderDisjointUnion h) G G' H H' hG hH
 
 /-- **`thm:taking-summands`**: `≡[𝓕]` is preserved under disjoint unions if and only if
 `cl 𝓕` is closed under taking summands; and this holds whenever `𝓕` itself is closed under
 taking summands (`SimpleGraph.GraphClass.IsSummandClosed.preservedUnderDisjointUnion`). -/
 theorem preservedUnderDisjointUnion_iff_cl_isSummandClosed (𝓕 : GraphClass) :
     PreservedUnderDisjointUnion 𝓕 ↔ IsSummandClosed (cl 𝓕) :=
-  ⟨fun h => h.cl_isSummandClosed, PreservedUnderDisjointUnion.of_cl_isSummandClosed⟩
+  ⟨fun h => (GraphClass.PreservedUnderDisjointUnion.cl_isSummandClosed h), PreservedUnderDisjointUnion.of_cl_isSummandClosed⟩
 
 end GraphClass
 
