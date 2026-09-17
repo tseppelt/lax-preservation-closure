@@ -8,6 +8,8 @@ type: definition
 A *partition into connected parts* of a simple graph $F$ is a partition $\mathcal{R}$ of
 $V(F)$ such that the subgraph $F[R]$ induced by every class $R \in \mathcal{R}$ is connected.
 
+# Comments
+
 Two graphs are attached to such a partition: the *quotient* $F / \mathcal{R}$, whose vertices
 are the classes and in which two distinct classes are adjacent when some edge of $F$ joins
 them, and the disjoint union $\coprod_{R \in \mathcal{R}} F[R]$ of the induced subgraphs.

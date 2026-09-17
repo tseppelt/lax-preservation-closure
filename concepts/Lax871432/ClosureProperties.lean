@@ -20,9 +20,6 @@ It is *closed under taking induced subgraphs* if every induced subgraph of a mem
 member, and *closed under contracting edges* if every graph obtained from a member by contracting edges is
 a member.
 
-Minors are taken from `Lax68.GraphMinors`: $K$ is a minor of $F$ when the vertices of $K$ can
-be represented by pairwise disjoint connected branch sets in $F$, with an edge of $F$ joining
-the corresponding branch sets for every edge of $K$.
 -/
 
 open Lax871432.Contractions Lax871432.HomomorphismIndistinguishability
