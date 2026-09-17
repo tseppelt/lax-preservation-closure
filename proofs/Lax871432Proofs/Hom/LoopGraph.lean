@@ -3,6 +3,7 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.LoopGraphs
 import Lax871432Proofs.GraphTheory.LoopGraph
 import Lax871432Proofs.Hom.Count
 
@@ -26,6 +27,8 @@ Loop graphs are only ever intermediate objects here; see `GraphTheory/LoopGraph.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
+open Lax871432.LoopGraphs
+open scoped Lax871432.LoopGraphs
 open Lax871432.HomomorphismCounts
 
 open Function
@@ -35,9 +38,6 @@ variable {U V W : Type*}
 namespace LoopGraph
 
 open scoped LoopGraph
-
-/-- The number of homomorphisms from `X` to `Y`. -/
-noncomputable def homCount (X : LoopGraph V) (Y : LoopGraph W) : ℕ := Nat.card (X →lg Y)
 
 end LoopGraph
 
@@ -57,7 +57,7 @@ open scoped LoopGraph
 variable {X : LoopGraph U} {Y : LoopGraph V} {Z : LoopGraph W}
 
 /-- Homomorphism counts of loop graphs are invariant under isomorphism of the source. -/
-theorem homCount_congr_left (e : X ≃lg Y) (Z : LoopGraph W) : homCount X Z = homCount Y Z :=
+theorem homCount_congr_left (e : X ≃lg Y) (Z : LoopGraph W) : LoopGraph.homCount X Z = LoopGraph.homCount Y Z :=
   Nat.card_congr
     { toFun f := f.comp e.symm.toRelEmbedding.toRelHom
       invFun f := f.comp e.toRelEmbedding.toRelHom
@@ -65,7 +65,7 @@ theorem homCount_congr_left (e : X ≃lg Y) (Z : LoopGraph W) : homCount X Z = h
       right_inv f := by ext a; exact congrArg f (e.apply_symm_apply a) }
 
 /-- Homomorphism counts of loop graphs are invariant under isomorphism of the target. -/
-theorem homCount_congr_right (X : LoopGraph U) (e : Y ≃lg Z) : homCount X Y = homCount X Z :=
+theorem homCount_congr_right (X : LoopGraph U) (e : Y ≃lg Z) : LoopGraph.homCount X Y = LoopGraph.homCount X Z :=
   Nat.card_congr
     { toFun f := e.toRelEmbedding.toRelHom.comp f
       invFun f := e.symm.toRelEmbedding.toRelHom.comp f
@@ -76,9 +76,9 @@ theorem homCount_congr_right (X : LoopGraph U) (e : Y ≃lg Z) : homCount X Y = 
 homomorphism count vanishes.  This is what makes the terms of `SimpleGraph.homCount_looped`
 indexed by an edge set whose contraction quotient has a loop drop out. -/
 theorem homCount_eq_zero_of_not_isLoopless (hX : ¬ X.IsLoopless) (hY : Y.IsLoopless) :
-    homCount X Y = 0 := by
-  rw [homCount, Nat.card_eq_zero]
-  simp only [IsLoopless, not_forall, not_not] at hX
+    LoopGraph.homCount X Y = 0 := by
+  rw [LoopGraph.homCount, Nat.card_eq_zero]
+  simp only [LoopGraph.IsLoopless, not_forall, not_not] at hX
   obtain ⟨v, hv⟩ := hX
   exact Or.inl ⟨fun f => hY (f v) (f.map_rel hv)⟩
 

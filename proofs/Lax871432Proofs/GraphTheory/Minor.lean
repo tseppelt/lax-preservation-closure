@@ -3,6 +3,7 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.LoopGraphs
 import Lax871432Proofs.GraphTheory.LoopGraph
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Combinatorics.SimpleGraph.DeleteEdges
@@ -60,6 +61,8 @@ deleting vertices and edges and contracting edges; see
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
+open Lax871432.LoopGraphs
+open scoped Lax871432.LoopGraphs
 open Lax68.GraphMinors
 
 open Function
@@ -70,36 +73,11 @@ variable {V W : Type*}
 
 /-! ### Spanning subgraphs -/
 
-/-- The spanning subgraph of `F` whose edges are those of `F` lying in `s`.  It has the same
-vertex type as `F`. -/
-def spanningSubgraph (F : SimpleGraph V) (s : Set (Sym2 V)) : SimpleGraph V where
-  Adj u v := F.Adj u v ∧ s(u, v) ∈ s
-  symm := ⟨fun _ _ h => ⟨h.1.symm, Sym2.eq_swap ▸ h.2⟩⟩
-  loopless := ⟨fun _ h => F.irrefl h.1⟩
-
 @[simp]
 theorem spanningSubgraph_adj (F : SimpleGraph V) (s : Set (Sym2 V)) (u v : V) :
     ((spanningSubgraph F) s).Adj u v ↔ F.Adj u v ∧ s(u, v) ∈ s := Iff.rfl
 
-/-- The set of unordered pairs selected by a finite set of edges of `F`. -/
-def edgeSetOf (F : SimpleGraph V) (s : Finset F.edgeSet) : Set (Sym2 V) :=
-  Subtype.val '' (s : Set F.edgeSet)
-
 /-! ### Contraction quotients -/
-
-/-- The *contraction quotient* `F ⊘ L`: its vertices are the connected components of the graph
-on `V(F)` with edge set `L`, and `[v]` is adjacent to `[w]` when some edge of `E(F) \ L` joins
-a vertex of `[v]` to a vertex of `[w]`.
-
-The result may have loops, so it is a `LoopGraph`. -/
-def contractionQuotient (F : SimpleGraph V) (L : Set (Sym2 V)) :
-    LoopGraph (fromEdgeSet L).ConnectedComponent where
-  Adj c d := ∃ x y, F.Adj x y ∧ s(x, y) ∉ L ∧
-    (fromEdgeSet L).connectedComponentMk x = c ∧ (fromEdgeSet L).connectedComponentMk y = d
-  symm := ⟨fun _ _ ⟨x, y, hxy, hL, hx, hy⟩ =>
-    ⟨y, x, hxy.symm, Sym2.eq_swap ▸ hL, hy, hx⟩⟩
-
-@[inherit_doc] scoped notation:70 F:70 " ⊘ " L:71 => SimpleGraph.contractionQuotient F L
 
 @[simp]
 theorem contractionQuotient_adj (F : SimpleGraph V) (L : Set (Sym2 V))

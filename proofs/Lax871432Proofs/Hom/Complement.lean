@@ -3,6 +3,7 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.LoopGraphs
 import Lax871432Proofs.GraphTheory.Minor
 import Lax871432Proofs.Hom.LoopGraph
 import Mathlib.Algebra.BigOperators.Ring.Finset
@@ -51,6 +52,8 @@ decidable adjacency, and is supplied as an instance argument.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
+open Lax871432.LoopGraphs
+open scoped Lax871432.LoopGraphs
 open Lax871432.HomomorphismCounts
 open Lax68.GraphMinors
 
@@ -67,7 +70,7 @@ variable {V W : Type*}
 /-- An edge of `F` lies in the set of pairs selected by `L` exactly when it lies in `L`. -/
 theorem mem_edgeSetOf_iff (F : SimpleGraph V) (L : Finset F.edgeSet) (e : F.edgeSet) :
     (e : Sym2 V) ∈ (edgeSetOf F) L ↔ e ∈ L := by
-  simp [SimpleGraph.edgeSetOf, Subtype.val_injective.eq_iff]
+  simp [Lax871432.LoopGraphs.edgeSetOf, Subtype.val_injective.eq_iff]
 
 /-- A vertex map is a homomorphism `F_s → X` exactly when it sends every edge of `F` lying in
 `s` to an adjacent pair of `X`.  This is the reformulation of the left-hand side of (5.23)
@@ -95,7 +98,8 @@ theorem homCount_fullCompl [Finite V] [Finite W] (F : SimpleGraph V) [Fintype F.
   -- `A f e` says that `f` sends the endpoints of the edge `e` to an adjacent pair of `X`.
   set A : (V → W) → F.edgeSet → Prop := fun f e =>
     Sym2.lift ⟨fun a b => X.Adj (f a) (f b),
-      fun _ _ => propext ⟨fun h => h.symm, fun h => h.symm⟩⟩ (e : Sym2 V) with hA
+      fun _ _ => propext ⟨fun h => X.symm.symm _ _ h, fun h => X.symm.symm _ _ h⟩⟩
+      (e : Sym2 V) with hA
   have hAmk : ∀ (f : V → W) (a b : V) (hab : F.Adj a b),
       A f ⟨s(a, b), hab⟩ ↔ X.Adj (f a) (f b) := fun _ _ _ _ => Iff.rfl
   -- Every homomorphism count is a number of vertex maps.
@@ -358,7 +362,7 @@ theorem homCount_compl [Finite V] [Finite W] (F : SimpleGraph V) [Fintype F.edge
     have hset : (edgeSetOf ((spanningSubgraph F) ((edgeSetOf F) s))) L' =
         (edgeSetOf F) ((L'.map ⟨Subtype.val, Subtype.val_injective⟩).subtype (· ∈ F.edgeSet)) := by
       ext x
-      simp only [SimpleGraph.edgeSetOf, Set.mem_image, Finset.mem_coe, Finset.mem_subtype]
+      simp only [Lax871432.LoopGraphs.edgeSetOf, Set.mem_image, Finset.mem_coe, Finset.mem_subtype]
       constructor
       · rintro ⟨a, ha, rfl⟩
         exact ⟨⟨a.1, edgeSet_subset_edgeSet.2 (spanningSubgraph_le F _) a.2⟩,

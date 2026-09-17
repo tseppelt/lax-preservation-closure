@@ -21,6 +21,7 @@ pattern of `PreservationClosure/Summands.lean`.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
+open Lax871432.ConnectedPartitions
 open Lax871432.ClosureProperties Lax871432.DistinguishingClosure
 open Lax871432.GraphProducts Lax871432.HomomorphismCounts
 open Lax871432.HomomorphismIndistinguishability Lax871432.IsomorphismRelaxations
@@ -62,7 +63,7 @@ theorem IsContractionClosed.preservedUnderRightLexProd (h : IsContractionClosed 
   rw [homCount_lexProd, homCount_lexProd]
   refine Finset.sum_congr rfl fun 𝓡 _ => ?_
   rw [(homIndistinguishable_iff_forall_mem 𝓕 G G').1 hGG' _
-    (h 𝓡.quotientGraph 𝓡.isContraction hFmem)]
+    (h 𝓡.quotientGraph (ConnPart.isContraction 𝓡) hFmem)]
 
 /-! ### The coefficient analyses -/
 
@@ -70,7 +71,7 @@ theorem IsContractionClosed.preservedUnderRightLexProd (h : IsContractionClosed 
 because the disjoint union of the classes maps into a complete graph on the vertices of `F`. -/
 theorem homCount_partsGraph_top_pos {V : Type} [Finite V] {F : SimpleGraph V}
     (𝓡 : ConnPart F) :
-    0 < homCount 𝓡.partsGraph (⊤ : SimpleGraph V) :=
+    0 < homCount (ConnPart.partsGraph 𝓡) (⊤ : SimpleGraph V) :=
   homCount_pos_iff.2 ⟨⟨id, fun {_ _} h => h.1.ne⟩⟩
 
 /-- Likewise every disjoint union of classes is positively weighted, because each quotient
@@ -109,7 +110,7 @@ theorem PreservedUnderRightLexProd.cl_mem_quotientGraph
   obtain ⟨κ, _, M, β, hMni, hβ, hMhit, hMsum⟩ :=
     exists_graphFamily_of_pos (n := Nat.card V) (fun 𝓢 => card_quotient_le 𝓢)
       (fun 𝓢 : ConnPart F => SimpleGraph.map (Finite.equivFin (Quotient 𝓢.setoid)) 𝓢.quotientGraph)
-      (α := fun 𝓢 => (homCount 𝓢.partsGraph (⊤ : SimpleGraph V) : ℚ))
+      (α := fun 𝓢 => (homCount (ConnPart.partsGraph 𝓢) (⊤ : SimpleGraph V) : ℚ))
       (fun 𝓢 => by exact_mod_cast homCount_partsGraph_top_pos 𝓢)
   have hdet : ∀ {X Y : Type} [Finite X] [Finite Y] (G : SimpleGraph X) (G' : SimpleGraph Y),
       (G ≡[𝓕] G') →
@@ -121,18 +122,18 @@ theorem PreservedUnderRightLexProd.cl_mem_quotientGraph
       homCount_eq_of_Mem_cl hF (hp G G' (⊤ : SimpleGraph V) hGG')
     rw [homCount_lexProd, homCount_lexProd] at key
     have key' : ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph G : ℚ) *
-          (homCount 𝓢.partsGraph (⊤ : SimpleGraph V) : ℚ) =
+          (homCount (ConnPart.partsGraph 𝓢) (⊤ : SimpleGraph V) : ℚ) =
         ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph G' : ℚ) *
-          (homCount 𝓢.partsGraph (⊤ : SimpleGraph V) : ℚ) := by
+          (homCount (ConnPart.partsGraph 𝓢) (⊤ : SimpleGraph V) : ℚ) := by
       exact_mod_cast congrArg (Nat.cast (R := ℚ)) key
-    calc ∑ 𝓢 : ConnPart F, (homCount 𝓢.partsGraph (⊤ : SimpleGraph V) : ℚ) *
+    calc ∑ 𝓢 : ConnPart F, (homCount (ConnPart.partsGraph 𝓢) (⊤ : SimpleGraph V) : ℚ) *
           (homCount (SimpleGraph.map (Finite.equivFin (Quotient 𝓢.setoid)) 𝓢.quotientGraph) G : ℚ)
         = ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph G : ℚ) *
-            (homCount 𝓢.partsGraph (⊤ : SimpleGraph V) : ℚ) := by
+            (homCount (ConnPart.partsGraph 𝓢) (⊤ : SimpleGraph V) : ℚ) := by
           refine Finset.sum_congr rfl fun 𝓢 _ => ?_
           rw [← homCount_congr_left (hLiso 𝓢).some G, mul_comm]
       _ = _ := key'
-      _ = ∑ 𝓢 : ConnPart F, (homCount 𝓢.partsGraph (⊤ : SimpleGraph V) : ℚ) *
+      _ = ∑ 𝓢 : ConnPart F, (homCount (ConnPart.partsGraph 𝓢) (⊤ : SimpleGraph V) : ℚ) *
             (homCount (SimpleGraph.map (Finite.equivFin (Quotient 𝓢.setoid)) 𝓢.quotientGraph) G' : ℚ) := by
           refine Finset.sum_congr rfl fun 𝓢 _ => ?_
           rw [← homCount_congr_left (hLiso 𝓢).some G', mul_comm]
@@ -184,7 +185,7 @@ theorem mem_of_reachable_deleteIncidence {α : Type*} {F : SimpleGraph α} {U : 
 /-- Deleting the edges that meet `Uᶜ` leaves the classes of `F[U]` and a singleton for every
 vertex outside `U`; the disjoint union of those classes is what was left. -/
 theorem partsGraph_deleteIncidence {α : Type*} (F : SimpleGraph α) (U : Set α) :
-    (ConnPart.ofSubgraph F (deleteEdges_le (incidenceEdges U))).partsGraph
+    ConnPart.partsGraph (ConnPart.ofSubgraph F (deleteEdges_le (incidenceEdges U)))
       = F.deleteEdges (incidenceEdges U) := by
   ext u v
   rw [ConnPart.partsGraph_adj, ConnPart.proj_ofSubgraph_eq_iff]
@@ -198,7 +199,7 @@ theorem partsGraph_deleteIncidence {α : Type*} (F : SimpleGraph α) (U : Set α
 
 /-- The partition into singletons: the disjoint union of its classes is edgeless. -/
 theorem partsGraph_bot {α : Type*} (F : SimpleGraph α) :
-    (ConnPart.ofSubgraph F (bot_le : (⊥ : SimpleGraph α) ≤ F)).partsGraph = ⊥ := by
+    ConnPart.partsGraph (ConnPart.ofSubgraph F (bot_le : (⊥ : SimpleGraph α) ≤ F)) = ⊥ := by
   ext u v
   rw [ConnPart.partsGraph_adj, ConnPart.proj_ofSubgraph_eq_iff]
   simp only [bot_adj, iff_false, not_and]
@@ -217,14 +218,14 @@ Taking the left factor to be a complete graph on the vertices of `F` makes every
 `hom(F / 𝓡, K)` positive. -/
 theorem PreservedUnderLeftLexProd.cl_mem_partsGraph
     (hp : PreservedUnderLeftLexProd (homIndRel 𝓕)) {V : Type} [Finite V] {F : SimpleGraph V}
-    (hF : (cl 𝓕).Mem F) (𝓡 : ConnPart F) : (cl 𝓕).Mem 𝓡.partsGraph := by
+    (hF : (cl 𝓕).Mem F) (𝓡 : ConnPart F) : (cl 𝓕).Mem (ConnPart.partsGraph 𝓡) := by
   classical
   have hLiso : ∀ 𝓢 : ConnPart F,
-      Nonempty (𝓢.partsGraph ≃g SimpleGraph.map (Finite.equivFin V) 𝓢.partsGraph) :=
+      Nonempty ((ConnPart.partsGraph 𝓢) ≃g SimpleGraph.map (Finite.equivFin V) (ConnPart.partsGraph 𝓢)) :=
     fun 𝓢 => ⟨Iso.map (Finite.equivFin V) _⟩
   obtain ⟨κ, _, M, β, hMni, hβ, hMhit, hMsum⟩ :=
     exists_graphFamily_of_pos (n := Nat.card V) (fun _ => le_rfl)
-      (fun 𝓢 : ConnPart F => SimpleGraph.map (Finite.equivFin V) 𝓢.partsGraph)
+      (fun 𝓢 : ConnPart F => SimpleGraph.map (Finite.equivFin V) (ConnPart.partsGraph 𝓢))
       (α := fun 𝓢 => (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ))
       (fun 𝓢 => by exact_mod_cast homCount_quotientGraph_top_pos 𝓢)
   have hdet : ∀ {X Y : Type} [Finite X] [Finite Y] (H : SimpleGraph X) (H' : SimpleGraph Y),
@@ -237,19 +238,19 @@ theorem PreservedUnderLeftLexProd.cl_mem_partsGraph
       homCount_eq_of_Mem_cl hF (hp (⊤ : SimpleGraph V) H H' hHH')
     rw [homCount_lexProd, homCount_lexProd] at key
     have key' : ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
-          (homCount 𝓢.partsGraph H : ℚ) =
+          (homCount (ConnPart.partsGraph 𝓢) H : ℚ) =
         ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
-          (homCount 𝓢.partsGraph H' : ℚ) := by
+          (homCount (ConnPart.partsGraph 𝓢) H' : ℚ) := by
       exact_mod_cast congrArg (Nat.cast (R := ℚ)) key
     calc ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
-          (homCount (SimpleGraph.map (Finite.equivFin V) 𝓢.partsGraph) H : ℚ)
+          (homCount (SimpleGraph.map (Finite.equivFin V) (ConnPart.partsGraph 𝓢)) H : ℚ)
         = ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
-            (homCount 𝓢.partsGraph H : ℚ) := by
+            (homCount (ConnPart.partsGraph 𝓢) H : ℚ) := by
           refine Finset.sum_congr rfl fun 𝓢 _ => ?_
           rw [← homCount_congr_left (hLiso 𝓢).some H]
       _ = _ := key'
       _ = ∑ 𝓢 : ConnPart F, (homCount 𝓢.quotientGraph (⊤ : SimpleGraph V) : ℚ) *
-            (homCount (SimpleGraph.map (Finite.equivFin V) 𝓢.partsGraph) H' : ℚ) := by
+            (homCount (SimpleGraph.map (Finite.equivFin V) (ConnPart.partsGraph 𝓢)) H' : ℚ) := by
           refine Finset.sum_congr rfl fun 𝓢 _ => ?_
           rw [← homCount_congr_left (hLiso 𝓢).some H']
   have hMmem : ∀ k, (cl 𝓕).mem _ (M.graph k) := fun k =>

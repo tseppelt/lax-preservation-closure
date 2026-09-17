@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
 import Lax871432.EdgeContractions
+import Lax871432.HomomorphismCountIdentities
 import Lax871432.ForbiddenMinors
 import Lax871432.InducedSubgraphs
 import Lax871432.LinearCombinationLemma
@@ -27,7 +28,9 @@ namespace Lax871432Proofs
 
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts Lax871432.HomomorphismIndistinguishability
-open Lax871432.LovaszTheorem
+open Lax871432.LovaszTheorem Lax871432.GraphProducts
+open Lax871432.ConnectedPartitions Lax871432.LoopGraphs
+open scoped Lax871432.LoopGraphs
 open Lax871432.DistinguishingClosure
 open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open Lax871432.IsomorphismRelaxations
@@ -222,5 +225,74 @@ Backwards, (1) ⇒ (2) applied to `cl 𝓕`.
 theorem preservedUnderLeftLexProd_iff_cl_isInducedSubgraphClosed (𝓕 : GraphClass) :
     PreservedUnderLeftLexProd (homIndRel 𝓕) ↔ IsInducedSubgraphClosed (cl 𝓕) :=
   SimpleGraph.GraphClass.preservedUnderLeftLexProd_iff_cl_isInducedSubgraphClosed 𝓕
+
+/--
+---
+conclusion: Lax871432.HomomorphismCountIdentities.homCount_lexProd
+---
+`thm:lexprod-hom`.  A homomorphism `f : F → G ⋅ H` induces the partition of `V(F)` whose
+classes are the connected components of the subgraphs induced on the fibres of the first
+coordinate of `f`; it is the unique partition into connected parts with which `f` is
+compatible, in the sense that it refines those fibres and that no edge inside a fibre crosses
+two of its classes.  Splitting the hom-set along this partition and pairing the two
+coordinates of `f` with a homomorphism out of the quotient and one out of the disjoint union
+of the classes gives the bijection.
+-/
+theorem homCount_lexProd {U V W : Type*} [Finite U] [Finite V] [Finite W] (F : SimpleGraph U)
+    (G : SimpleGraph V) (H : SimpleGraph W) :
+    homCount F (lexProd G H) =
+      ∑ 𝓡 : ConnPart F, homCount 𝓡.quotientGraph G * homCount 𝓡.parts H := by
+  rw [SimpleGraph.homCount_lexProd]
+  exact Finset.sum_congr rfl fun 𝓡 _ => by
+    rw [SimpleGraph.homCount_congr_left (Lax871432Proofs.SimpleGraph.ConnPart.isoParts 𝓡) H]
+
+/--
+---
+conclusion: Lax871432.HomomorphismCountIdentities.homCount_fullCompl
+---
+`eq:complement`.  A map `V(F) → V(X)` is a homomorphism into the full complement exactly when
+it avoids, for every edge of `F`, the event that its endpoints are sent to an adjacent pair;
+inclusion–exclusion over those events counts the maps avoiding all of them, and the maps
+satisfying the events of a set `s` of edges are the homomorphisms out of the spanning subgraph
+with edge set `s`.
+-/
+theorem homCount_fullCompl {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph V)
+    [Fintype F.edgeSet] (X : LoopGraph W) :
+    (LoopGraph.homCount (toLoopGraph F) X.fullCompl : ℤ) =
+      ∑ s : Finset F.edgeSet, (-1 : ℤ) ^ s.card *
+        (LoopGraph.homCount (toLoopGraph ((spanningSubgraph F) ((edgeSetOf F) s))) X : ℤ) :=
+  SimpleGraph.homCount_fullCompl F X
+
+/--
+---
+conclusion: Lax871432.HomomorphismCountIdentities.homCount_looped
+---
+`lem:looping`.  A homomorphism `F → G°` is the same thing as a pair consisting of the set `L`
+of edges of `F` whose endpoints it identifies and a homomorphism `F ⊘ L → G`: the quotient by
+`L` is exactly what remains once the collapsed edges are contracted, and an edge outside `L`
+is sent to a genuine edge of `G`.  Summing over `L` gives the identity.
+-/
+theorem homCount_looped {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph V)
+    [Fintype F.edgeSet] (G : SimpleGraph W) :
+    LoopGraph.homCount (toLoopGraph F) (looped G) =
+      ∑ L : Finset F.edgeSet, LoopGraph.homCount (F ⊘ (edgeSetOf F) L) (toLoopGraph G) :=
+  SimpleGraph.homCount_looped F G
+
+/--
+---
+conclusion: Lax871432.HomomorphismCountIdentities.homCount_compl
+---
+`eq:del-contr`.  Since `Gᶜ` is the full complement of the looped graph `G°`, expanding by
+`eq:complement` and then applying `lem:looping` to each spanning subgraph `F_s` gives the
+double sum.  The inner sum ranges over the subsets of `s`, the edges of `F_s`.
+-/
+theorem homCount_compl {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph V)
+    [Fintype F.edgeSet] (G : SimpleGraph W) :
+    (homCount F Gᶜ : ℤ) =
+      ∑ s : Finset F.edgeSet, (-1 : ℤ) ^ s.card *
+        ∑ L ∈ s.powerset,
+          (LoopGraph.homCount
+            (((spanningSubgraph F) ((edgeSetOf F) s)) ⊘ (edgeSetOf F) L) (toLoopGraph G) : ℤ) :=
+  SimpleGraph.homCount_compl F G
 
 end Lax871432Proofs

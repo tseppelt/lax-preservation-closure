@@ -22,6 +22,7 @@ partition attached to `f` is characterised without reference to components by
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
+open Lax871432.ConnectedPartitions
 open Lax871432.GraphProducts Lax871432.HomomorphismCounts
 
 open scoped Lax871432.GraphProducts
@@ -123,7 +124,7 @@ def ConnPart.partsGraph (𝓡 : ConnPart F) : SimpleGraph U := fibreSubgraph F �
 
 @[simp]
 theorem ConnPart.partsGraph_adj {𝓡 : ConnPart F} {u v : U} :
-    𝓡.partsGraph.Adj u v ↔ F.Adj u v ∧ 𝓡.proj u = 𝓡.proj v := Iff.rfl
+    (ConnPart.partsGraph 𝓡).Adj u v ↔ F.Adj u v ∧ 𝓡.proj u = 𝓡.proj v := Iff.rfl
 
 /-- Adjacency in the disjoint union of the classes. -/
 theorem sigma_part_adj_iff {𝓡 : ConnPart F} {p q : Σ a : Quotient 𝓡.setoid,
@@ -139,22 +140,28 @@ theorem sigma_part_adj_iff {𝓡 : ConnPart F} {p q : Σ a : Quotient 𝓡.setoi
     exact sigma_adj_mk.2 hadj
 
 /-- Realising the disjoint union of the classes on the vertices of `F`. -/
-def ConnPart.isoPartsGraph (𝓡 : ConnPart F) : SimpleGraph.sigma 𝓡.part ≃g 𝓡.partsGraph where
+def ConnPart.isoPartsGraph (𝓡 : ConnPart F) : SimpleGraph.sigma 𝓡.part ≃g (ConnPart.partsGraph 𝓡) where
   toEquiv := Equiv.sigmaFiberEquiv 𝓡.proj
   map_rel_iff' := by
     intro p q
-    show 𝓡.partsGraph.Adj p.2.1 q.2.1 ↔ _
+    show (ConnPart.partsGraph 𝓡).Adj p.2.1 q.2.1 ↔ _
     rw [ConnPart.partsGraph_adj, sigma_part_adj_iff, p.2.2, q.2.2]
+
+/-- The disjoint union of the classes, indexed by the classes, is the one realised on the
+vertices of `F`. -/
+def ConnPart.isoParts (𝓡 : ConnPart F) : 𝓡.parts ≃g (ConnPart.partsGraph 𝓡) where
+  toEquiv := Equiv.sigmaFiberEquiv 𝓡.proj
+  map_rel_iff' := Iff.rfl
 
 /-- **`eq:coproduct` for the classes of a partition**: the disjoint union of the classes is
 counted by the product over the classes, so it cannot tell apart two graphs that none of the
 classes tells apart. -/
 theorem homCount_partsGraph_congr [Finite U] {W' : Type*} (𝓡 : ConnPart F) (H : SimpleGraph W)
     (H' : SimpleGraph W') (h : ∀ a, homCount (𝓡.part a) H = homCount (𝓡.part a) H') :
-    homCount 𝓡.partsGraph H = homCount 𝓡.partsGraph H' := by
+    homCount (ConnPart.partsGraph 𝓡) H = homCount (ConnPart.partsGraph 𝓡) H' := by
   haveI : Finite (Quotient 𝓡.setoid) := Quotient.finite _
   haveI : Fintype (Quotient 𝓡.setoid) := Fintype.ofFinite _
-  rw [← homCount_congr_left 𝓡.isoPartsGraph H, ← homCount_congr_left 𝓡.isoPartsGraph H',
+  rw [← homCount_congr_left (ConnPart.isoPartsGraph 𝓡) H, ← homCount_congr_left (ConnPart.isoPartsGraph 𝓡) H',
     homCount_sigma, homCount_sigma]
   exact Finset.prod_congr rfl fun a _ => h a
 
@@ -171,7 +178,7 @@ def Compatible.toQuotientHom (hc : Compatible 𝓡 ⇑f) : 𝓡.quotientGraph �
     · exact absurd (hc.maximal x y hxy heq) hne
 
 /-- The homomorphism `∐ R ∈ 𝓡, F[R] → H` carried by a compatible homomorphism. -/
-def Compatible.toPartsHom (hc : Compatible 𝓡 ⇑f) : 𝓡.partsGraph →g H where
+def Compatible.toPartsHom (hc : Compatible 𝓡 ⇑f) : (ConnPart.partsGraph 𝓡) →g H where
   toFun v := (f v).2
   map_rel' := by
     intro u v huv
@@ -181,30 +188,30 @@ def Compatible.toPartsHom (hc : Compatible 𝓡 ⇑f) : 𝓡.partsGraph →g H w
 
 /-- The homomorphism assembled from a homomorphism out of the quotient and one out of the
 disjoint union of the classes. -/
-def ConnPart.homOfPair (𝓡 : ConnPart F) (g : 𝓡.quotientGraph →g G) (h : 𝓡.partsGraph →g H) :
+def ConnPart.homOfPair (𝓡 : ConnPart F) (g : 𝓡.quotientGraph →g G) (h : (ConnPart.partsGraph 𝓡) →g H) :
     F →g lexProd G H where
   toFun v := (g (𝓡.proj v), h v)
   map_rel' := by
     intro u v huv
     by_cases hp : 𝓡.proj u = 𝓡.proj v
     · exact Or.inr ⟨by rw [hp], h.map_rel' ⟨huv, hp⟩⟩
-    · exact Or.inl (g.map_rel' (𝓡.quotientGraph_adj_of_adj huv hp))
+    · exact Or.inl (g.map_rel' ((ConnPart.quotientGraph_adj_of_adj 𝓡) huv hp))
 
 theorem compatible_homOfPair (𝓡 : ConnPart F) (g : 𝓡.quotientGraph →g G)
-    (h : 𝓡.partsGraph →g H) : Compatible 𝓡 ⇑(𝓡.homOfPair g h) where
+    (h : (ConnPart.partsGraph 𝓡) →g H) : Compatible 𝓡 ⇑((ConnPart.homOfPair 𝓡) g h) where
   const u v hp := by
     show g (𝓡.proj u) = g (𝓡.proj v)
     rw [hp]
   maximal u v huv heq := by
     by_contra hne
-    exact (g.map_rel' (𝓡.quotientGraph_adj_of_adj huv hne)).ne heq
+    exact (g.map_rel' ((ConnPart.quotientGraph_adj_of_adj 𝓡) huv hne)).ne heq
 
 /-- **The bijection behind the formula**, at a fixed partition. -/
 def compatibleEquiv (𝓡 : ConnPart F) :
     {f : F →g lexProd G H // Compatible 𝓡 ⇑f} ≃
-      (𝓡.quotientGraph →g G) × (𝓡.partsGraph →g H) where
+      (𝓡.quotientGraph →g G) × ((ConnPart.partsGraph 𝓡) →g H) where
   toFun f := (f.2.toQuotientHom, f.2.toPartsHom)
-  invFun gh := ⟨𝓡.homOfPair gh.1 gh.2, compatible_homOfPair 𝓡 gh.1 gh.2⟩
+  invFun gh := ⟨(ConnPart.homOfPair 𝓡) gh.1 gh.2, compatible_homOfPair 𝓡 gh.1 gh.2⟩
   left_inv := by
     rintro ⟨f, hc⟩
     ext v
@@ -224,7 +231,7 @@ partition of the source they induce. -/
 theorem homCount_lexProd [Finite U] [Finite V] [Finite W] (F : SimpleGraph U)
     (G : SimpleGraph V) (H : SimpleGraph W) :
     homCount F (lexProd G H) =
-      ∑ 𝓡 : ConnPart F, homCount 𝓡.quotientGraph G * homCount 𝓡.partsGraph H := by
+      ∑ 𝓡 : ConnPart F, homCount 𝓡.quotientGraph G * homCount (ConnPart.partsGraph 𝓡) H := by
   classical
   have key : ∀ (𝓡 : ConnPart F) (f : F →g lexProd G H),
       ConnPart.ofMap F (fun v => (f v).1) = 𝓡 ↔ Compatible 𝓡 ⇑f := by

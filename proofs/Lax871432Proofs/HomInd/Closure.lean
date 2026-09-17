@@ -3,6 +3,7 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.LoopGraphs
 import Lax871432Proofs.GraphTheory.Minor
 import Lax871432Proofs.Hom.DisjUnion
 import Lax871432Proofs.HomInd.Basic
@@ -60,6 +61,8 @@ in the class; both quantify over all simple graphs isomorphic to it instead.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
+open Lax871432.LoopGraphs
+open scoped Lax871432.LoopGraphs
 open Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
 open scoped Lax871432.HomomorphismIndistinguishability

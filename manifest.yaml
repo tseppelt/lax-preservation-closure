@@ -18,13 +18,19 @@ bibEntries:
       doi = {10.1016/j.ic.2024.105224}
     }
   - |
-    @misc{roberson_oddomorphisms_2022,
-      title = {Oddomorphisms and homomorphism indistinguishability over graph classes},
+    @article{roberson_oddomorphisms_2026,
+      title = {Oddomorphisms and homomorphism indistinguishability over graphs of bounded degree},
+      volume = {181},
+      issn = {00958956},
+      url = {https://linkinghub.elsevier.com/retrieve/pii/S0095895626000432},
+      doi = {10.1016/j.jctb.2026.07.003},
+      language = {en},
+      urldate = {2026-07-27},
+      journal = {Journal of Combinatorial Theory, Series B},
       author = {Roberson, David E.},
-      year = {2022},
-      eprint = {2206.10321},
-      archivePrefix = {arXiv},
-      primaryClass = {math.CO}
+      month = nov,
+      year = {2026},
+      pages = {1--61}
     }
   - |
     @article{lovasz_operations_1967,

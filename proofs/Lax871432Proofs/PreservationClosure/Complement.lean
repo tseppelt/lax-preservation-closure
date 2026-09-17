@@ -3,6 +3,7 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.LoopGraphs
 import Lax871432Proofs.Hom.Complement
 import Lax871432Proofs.HomInd.Closure
 
@@ -62,6 +63,8 @@ minors of `F`.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
+open Lax871432.LoopGraphs
+open scoped Lax871432.LoopGraphs
 open Lax871432.HomomorphismCounts
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
 open scoped Lax871432.HomomorphismIndistinguishability
@@ -106,7 +109,7 @@ theorem eq_empty_and_card_succ_of_iso_deleteEdges {V : Type*} [Finite V] {F : Si
   -- With nothing contracted the quotient is the spanning subgraph itself.
   refine ⟨rfl, ?_⟩
   have h0 : (edgeSetOf F) (∅ : Finset F.edgeSet) = (∅ : Set (Sym2 V)) := by
-    simp [SimpleGraph.edgeSetOf]
+    simp [Lax871432.LoopGraphs.edgeSetOf]
   rw [h0] at h
   have hiso : (F.deleteEdges {e}) ≃g ((spanningSubgraph F) ((edgeSetOf F) s)) :=
     h.some.trans (nonempty_iso_contractionQuotient_empty _).some
@@ -141,7 +144,7 @@ theorem eq_univ_and_card_eq_one_of_iso_contract {V : Type*} [Finite V] {F : Simp
       Nat.card (fromEdgeSet ((edgeSetOf F) L)).ConnectedComponent := Nat.card_congr h.some.toEquiv
   have hEiso : Nat.card (F ⊘ ({s(u, v)} : Set (Sym2 V))).edgeSet =
       Nat.card (((spanningSubgraph F) ((edgeSetOf F) s)) ⊘ (edgeSetOf F) L).edgeSet :=
-    Nat.card_congr h.some.mapEdgeSet
+    Nat.card_congr (LoopGraph.Iso.mapEdgeSet h.some)
   -- Contracting `L` destroys at least `|L|` of the `|s|` remaining edges.
   have hbound := card_edgeSet_contractionQuotient_add_card_le
     ((spanningSubgraph F) ((edgeSetOf F) s)) ((edgeSetOf_subset_edgeSet_spanningSubgraph F) hL)
@@ -154,7 +157,7 @@ theorem eq_univ_and_card_eq_one_of_iso_contract {V : Type*} [Finite V] {F : Simp
     · exfalso
       have h0 : (edgeSetOf F) L = (∅ : Set (Sym2 V)) := by
         rw [Finset.card_eq_zero] at hzero
-        simp [hzero, SimpleGraph.edgeSetOf]
+        simp [hzero, Lax871432.LoopGraphs.edgeSetOf]
       rw [h0] at hViso
       have := Nat.card_congr
         (nonempty_iso_contractionQuotient_empty (V := V) ⊥).some.toEquiv
@@ -240,7 +243,7 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
       mem_edgeSet]
     tauto
   have hempty : (edgeSetOf F) (∅ : Finset F.edgeSet) = (∅ : Set (Sym2 V)) := by
-    simp [SimpleGraph.edgeSetOf]
+    simp [Lax871432.LoopGraphs.edgeSetOf]
   have hloop : (((spanningSubgraph F) ((edgeSetOf F) s₀)) ⊘ (edgeSetOf F) ∅).IsLoopless := by
     rw [hs₀, hempty]; exact contractionQuotient_empty_isLoopless _
   set i₀ : (DelContrIndex F) := ⟨(s₀, ∅), Finset.empty_subset _, hloop⟩ with hi₀def
@@ -371,7 +374,7 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
   have hL₀set : (edgeSetOf F') L₀ = ({s(u, v)} : Set (Sym2 V)) := by
     rw [hL₀def]
     ext x
-    simp [SimpleGraph.edgeSetOf]
+    simp [Lax871432.LoopGraphs.edgeSetOf]
   have hloop : (((spanningSubgraph F') ((edgeSetOf F') (Finset.univ : Finset F'.edgeSet))) ⊘
       (edgeSetOf F') L₀).IsLoopless := by
     rw [hspan, hL₀set]; exact contractionQuotient_singleton_isLoopless u v
