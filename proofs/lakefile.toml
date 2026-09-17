@@ -16,6 +16,12 @@ rev = "f179bc81671b353be657432784d7dee68486b0bd"
 subDir = "planar-graph-classes-v4-33/concepts"
 
 [[require]]
+name = "Lax199508"
+git = "https://github.com/lax-archive/lax-submissions"
+rev = "e9845c204d14a5678f9d64c0e6f4ca757d9dc9d0"
+subDir = "sparsity-lectures-v4-33/concepts"
+
+[[require]]
 name = "Lax871432"
 path = "../concepts"
 

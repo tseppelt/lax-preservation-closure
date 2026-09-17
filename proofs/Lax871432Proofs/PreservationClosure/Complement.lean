@@ -295,7 +295,7 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
     refine mul_ne_zero (Nat.cast_ne_zero.2 ?_) (pow_ne_zero _ (by norm_num))
     exact Finset.card_ne_zero_of_mem (Finset.mem_filter.2 ⟨Finset.mem_univ _, rfl⟩)
   -- Conclude by `lem:lincomb`.
-  have hmem : (cl 𝓕).mem (M.graph (ρ i₀)) := by
+  have hmem : (cl 𝓕).mem _ (M.graph (ρ i₀)) := by
     refine mem_cl_of_determines_of_ne_zero 𝓕 M hMni β ?_ hβ
     intro X Y _ _ G H hGH
     exact hdet G H hGH
@@ -419,7 +419,7 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
       Finset.sum_const, nsmul_eq_mul]
     refine mul_ne_zero (Nat.cast_ne_zero.2 ?_) (pow_ne_zero _ (by norm_num))
     exact Finset.card_ne_zero_of_mem (Finset.mem_filter.2 ⟨Finset.mem_univ _, rfl⟩)
-  have hmem : (cl 𝓕).mem (M.graph (ρ i₀)) := by
+  have hmem : (cl 𝓕).mem _ (M.graph (ρ i₀)) := by
     refine mem_cl_of_determines_of_ne_zero 𝓕 M hMni β ?_ hβ
     intro X Y _ _ G H hGH
     exact hdet G H hGH

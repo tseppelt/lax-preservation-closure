@@ -48,6 +48,6 @@ def cl (𝓕 : GraphClass) : GraphClass where
 /-- `𝓕` is *homomorphism distinguishing closed* if it contains its own closure, i.e. if
 adding any graph to `𝓕` strictly refines $\equiv_{\mathcal{F}}$. -/
 def IsHomDistinguishingClosed (𝓕 : GraphClass) : Prop :=
-  ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), (cl 𝓕).mem F → 𝓕.mem F
+  ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), (cl 𝓕).mem _ F → 𝓕.mem _ F
 
 end Lax871432.DistinguishingClosure

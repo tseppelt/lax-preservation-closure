@@ -142,7 +142,7 @@ theorem PreservedUnderDisjointUnion.mem_cl_sigmaOn (hp : PreservedUnderDisjointU
           refine Finset.sum_congr rfl fun t _ => ?_
           rw [← homCount_congr_left (hLiso t).some H, mul_comm]
   -- Hence every member of the grouped family lies in `cl 𝓕`, and so does every sub-union.
-  have hMmem : ∀ k, (cl 𝓕).mem (M.graph k) := by
+  have hMmem : ∀ k, (cl 𝓕).mem _ (M.graph k) := by
     intro k
     refine mem_cl_of_determines 𝓕 M hMni β hβ ?_ k
     intro X Y _ _ G H hGH

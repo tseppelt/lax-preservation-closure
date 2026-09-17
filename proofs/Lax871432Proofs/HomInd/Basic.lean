@@ -80,10 +80,10 @@ namespace SimpleGraph
 
 /-- One graph class is contained in another. -/
 instance : LE GraphClass :=
-  ⟨fun 𝓕 𝓖 => ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem F → 𝓖.mem F⟩
+  ⟨fun 𝓕 𝓖 => ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem _ F → 𝓖.mem _ F⟩
 
 theorem le_def {𝓕 𝓖 : GraphClass} :
-    𝓕 ≤ 𝓖 ↔ ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem F → 𝓖.mem F := Iff.rfl
+    𝓕 ≤ 𝓖 ↔ ∀ ⦃m : ℕ⦄ (F : SimpleGraph (Fin m)), 𝓕.mem _ F → 𝓖.mem _ F := Iff.rfl
 
 variable {𝓕 𝓖 : GraphClass} {α V W : Type*} [Finite α] [Finite V] [Finite W]
   {G : SimpleGraph V} {H : SimpleGraph W}
@@ -98,7 +98,7 @@ theorem GraphClass.Mem_congr (𝓕 : GraphClass) (e : G ≃g H) : 𝓕.Mem G ↔
 /-- For a graph already given over `Fin m`, `Mem` agrees with the defining predicate. -/
 @[simp]
 theorem GraphClass.Mem_fin (𝓕 : GraphClass) {m : ℕ} (F : SimpleGraph (Fin m)) :
-    𝓕.Mem F ↔ 𝓕.mem F :=
+    𝓕.Mem F ↔ 𝓕.mem _ F :=
   (𝓕.mem_congr ⟨Iso.map (Finite.equivFin (Fin m)) F⟩).symm
 
 /-! ### Basic properties of homomorphism indistinguishability -/
@@ -146,7 +146,7 @@ theorem HomIndistinguishable.catProd (h : G ≡[𝓕] H) {β : Type*} [Finite β
 /-! ### The homomorphism distinguishing closure -/
 
 /-- Membership in `cl 𝓕` may be used against graphs in an arbitrary universe. -/
-theorem homCount_eq_of_mem_cl {m : ℕ} {K : SimpleGraph (Fin m)} (h : (cl 𝓕).mem K)
+theorem homCount_eq_of_mem_cl {m : ℕ} {K : SimpleGraph (Fin m)} (h : (cl 𝓕).mem _ K)
     (hGH : G ≡[𝓕] H) : homCount K G = homCount K H := by
   -- Transport `G` and `H` to graphs over `Fin _`, where `h` applies.
   set eG := Iso.map (Finite.equivFin V) G with heG
@@ -213,7 +213,7 @@ theorem mem_cl_of_determines {n : ℕ} {ι : Type} [Fintype ι] (𝓕 : GraphCla
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
       (G ≡[𝓕] H) →
         ∑ i, α i * (homCount (L.graph i) G : ℚ) = ∑ i, α i * (homCount (L.graph i) H : ℚ))
-    (i : ι) : (cl 𝓕).mem (L.graph i) := by
+    (i : ι) : (cl 𝓕).mem _ (L.graph i) := by
   classical
   refine ⟨?_⟩
   intro V W _ _ G H hGH
@@ -274,7 +274,7 @@ theorem mem_cl_of_determines_of_ne_zero {n : ℕ} {ι : Type} [Fintype ι] (𝓕
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
       (G ≡[𝓕] H) →
         ∑ i, α i * (homCount (L.graph i) G : ℚ) = ∑ i, α i * (homCount (L.graph i) H : ℚ))
-    {i : ι} (hi : α i ≠ 0) : (cl 𝓕).mem (L.graph i) := by
+    {i : ι} (hi : α i ≠ 0) : (cl 𝓕).mem _ (L.graph i) := by
   classical
   haveI : Fintype {k : ι // α k ≠ 0} := Fintype.ofFinite _
   set M : GraphFamily n {k : ι // α k ≠ 0} :=
@@ -294,7 +294,7 @@ theorem mem_cl_of_determines_of_ne_zero {n : ℕ} {ι : Type} [Fintype ι] (𝓕
     rw [h1, Finset.sum_subtype (p := fun i => α i ≠ 0) _ (fun x => by simp)
       (fun i => α i * (homCount (L.graph i) G : ℚ))]
   have hM : M.PairwiseNonIso := fun k k' hne hiso => hne (Subtype.ext (hL.eq hiso))
-  have key : (cl 𝓕).mem (M.graph ⟨i, hi⟩) := by
+  have key : (cl 𝓕).mem _ (M.graph ⟨i, hi⟩) := by
     refine mem_cl_of_determines 𝓕 M hM (fun k => α k.1) (fun k => k.2) ?_ ⟨i, hi⟩
     intro X Y _ _ G H hGH
     rw [← hdrop G, ← hdrop H]
