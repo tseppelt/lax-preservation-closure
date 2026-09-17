@@ -101,6 +101,15 @@ def parts : SimpleGraph (Σ a : Quotient 𝓡.setoid, {v | 𝓡.proj v = a}) :=
 theorem quotientGraph_adj_of_adj {u v : V} (h : F.Adj u v) (hne : 𝓡.proj u ≠ 𝓡.proj v) :
     𝓡.quotientGraph.Adj (𝓡.proj u) (𝓡.proj v) := ⟨hne, u, v, h, rfl, rfl⟩
 
+/-- The quotient by a partition into connected parts is a contraction of `F`. -/
+def contraction : Lax871432.Contractions.Contraction 𝓡.quotientGraph F where
+  proj := 𝓡.proj
+  connected := 𝓡.connected
+  adj_iff _ _ := Iff.rfl
+
+theorem isContraction : Lax871432.Contractions.IsContraction 𝓡.quotientGraph F :=
+  ⟨𝓡.contraction⟩
+
 end ConnPart
 
 /-! ### Finiteness -/

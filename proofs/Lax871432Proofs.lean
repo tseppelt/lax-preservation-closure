@@ -8,6 +8,7 @@ import Lax871432Proofs.Hom.Basic
 import Lax871432Proofs.Hom.Complement
 import Lax871432Proofs.Hom.Count
 import Lax871432Proofs.Hom.DisjUnion
+import Lax871432Proofs.Hom.LexProd
 import Lax871432Proofs.Hom.LoopGraph
 import Lax871432Proofs.Hom.Sigma
 import Lax871432Proofs.HomInd.Basic
@@ -15,5 +16,6 @@ import Lax871432Proofs.HomInd.Closure
 import Lax871432Proofs.Lovasz.Basic
 import Lax871432Proofs.Lovasz.HomMatrix
 import Lax871432Proofs.PreservationClosure.Complement
+import Lax871432Proofs.PreservationClosure.LexProd
 import Lax871432Proofs.PreservationClosure.Summands
 import Lax871432Proofs.Results

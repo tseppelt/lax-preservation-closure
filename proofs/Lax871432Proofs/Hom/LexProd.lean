@@ -117,6 +117,39 @@ def ConnPart.partsGraph (𝓡 : ConnPart F) : SimpleGraph U := fibreSubgraph F �
 theorem ConnPart.partsGraph_adj {𝓡 : ConnPart F} {u v : U} :
     𝓡.partsGraph.Adj u v ↔ F.Adj u v ∧ 𝓡.proj u = 𝓡.proj v := Iff.rfl
 
+/-- Adjacency in the disjoint union of the classes. -/
+theorem sigma_part_adj_iff {𝓡 : ConnPart F} {p q : Σ a : Quotient 𝓡.setoid,
+    {v | 𝓡.proj v = a}} :
+    (SimpleGraph.sigma 𝓡.part).Adj p q ↔ F.Adj p.2.1 q.2.1 ∧ p.1 = q.1 := by
+  constructor
+  · rintro ⟨i, u, v, huv, rfl, rfl⟩
+    exact ⟨huv, rfl⟩
+  · rintro ⟨hadj, hfst⟩
+    obtain ⟨a, x, hx⟩ := p
+    obtain ⟨b, y, hy⟩ := q
+    cases hfst
+    exact sigma_adj_mk.2 hadj
+
+/-- Realising the disjoint union of the classes on the vertices of `F`. -/
+def ConnPart.isoPartsGraph (𝓡 : ConnPart F) : SimpleGraph.sigma 𝓡.part ≃g 𝓡.partsGraph where
+  toEquiv := Equiv.sigmaFiberEquiv 𝓡.proj
+  map_rel_iff' := by
+    intro p q
+    show 𝓡.partsGraph.Adj p.2.1 q.2.1 ↔ _
+    rw [ConnPart.partsGraph_adj, sigma_part_adj_iff, p.2.2, q.2.2]
+
+/-- **`eq:coproduct` for the classes of a partition**: the disjoint union of the classes is
+counted by the product over the classes, so it cannot tell apart two graphs that none of the
+classes tells apart. -/
+theorem homCount_partsGraph_congr [Finite U] {W' : Type*} (𝓡 : ConnPart F) (H : SimpleGraph W)
+    (H' : SimpleGraph W') (h : ∀ a, homCount (𝓡.part a) H = homCount (𝓡.part a) H') :
+    homCount 𝓡.partsGraph H = homCount 𝓡.partsGraph H' := by
+  haveI : Finite (Quotient 𝓡.setoid) := Quotient.finite _
+  haveI : Fintype (Quotient 𝓡.setoid) := Fintype.ofFinite _
+  rw [← homCount_congr_left 𝓡.isoPartsGraph H, ← homCount_congr_left 𝓡.isoPartsGraph H',
+    homCount_sigma, homCount_sigma]
+  exact Finset.prod_congr rfl fun a _ => h a
+
 variable {f : F →g lexProd G H}
 
 /-- The homomorphism `F / 𝓡 → G` carried by a compatible homomorphism. -/
