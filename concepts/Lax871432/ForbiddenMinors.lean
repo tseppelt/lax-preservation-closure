@@ -16,9 +16,9 @@ For a graph class $\mathcal{F}$ and the assertions
 the implications (1) $\Rightarrow$ (2) $\Leftrightarrow$ (3) hold.
 
 This answers Question 8 of Roberson (2022) affirmatively: if $\equiv_{\mathcal{F}}$ is
-preserved under taking complements then there is a minor-closed class $\mathcal{F}'$ with
-$\equiv_{\mathcal{F}}\ =\ \equiv_{\mathcal{F}'}$, namely $\mathcal{F}' =
-\mathrm{cl}(\mathcal{F})$. Whereas Roberson's conjecture asserts that
+preserved under taking complements then $\equiv_{\mathcal{F}}$ coincides with
+$\equiv_{\mathcal{F}'}$ for a minor-closed class $\mathcal{F}'$, namely
+$\mathcal{F}' = \mathrm{cl}(\mathcal{F})$. Whereas Roberson's conjecture asserts that
 $\mathrm{cl}(\mathcal{F})$ coincides with $\mathcal{F}$ for every minor-closed and
 union-closed $\mathcal{F}$, assertion (3) holds unconditionally.
 
