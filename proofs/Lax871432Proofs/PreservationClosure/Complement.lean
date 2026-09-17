@@ -168,7 +168,7 @@ namespace GraphClass
 
 /-- Complementation is an involution, so preservation under complements is automatically an
 equivalence. -/
-theorem PreservedUnderCompl.iff (hp : PreservedUnderCompl 𝓕) {V W : Type} [Finite V] [Finite W]
+theorem PreservedUnderCompl.iff (hp : PreservedUnderCompl (homIndistinguishability 𝓕)) {V W : Type} [Finite V] [Finite W]
     (G : SimpleGraph V) (H : SimpleGraph W) : (G ≡[𝓕] H) ↔ (Gᶜ ≡[𝓕] Hᶜ) := by
   refine ⟨hp G H, fun h => ?_⟩
   have hc := hp Gᶜ Hᶜ h
@@ -181,7 +181,7 @@ Every graph `F_s ⊘ L` occurring in `SimpleGraph.homCount_compl` is obtained fr
 operations, so all its homomorphism counts are determined by `≡[𝓕]`.  The terms whose
 contraction quotient carries a loop vanish on both sides and need no hypothesis. -/
 theorem IsEdgeContractionClosed.preservedUnderCompl (hd : IsEdgeDeletionClosed 𝓕)
-    (hc : IsEdgeContractionClosed 𝓕) : PreservedUnderCompl 𝓕 := by
+    (hc : IsEdgeContractionClosed 𝓕) : PreservedUnderCompl (homIndistinguishability 𝓕) := by
   classical
   intro V W _ _ G H hGH m F hF
   haveI : Fintype F.edgeSet := Fintype.ofFinite _
@@ -215,7 +215,7 @@ Group the summands of `eq:del-contr` by isomorphism type.  By
 `SimpleGraph.eq_empty_and_card_succ_of_iso_deleteEdges` every index producing `F - e` carries
 the sign `(-1)^{|E(F)| - 1}`, so the coefficient of `hom(F - e, -)` is that sign times the
 number of such indices, which is at least one. -/
-theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCompl 𝓕)
+theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCompl (homIndistinguishability 𝓕))
     {V : Type} [Finite V] {F : SimpleGraph V} (hF : (cl 𝓕).Mem F) (e : Sym2 V) :
     (cl 𝓕).Mem (F.deleteEdges {e}) := by
   classical
@@ -303,7 +303,7 @@ theorem PreservedUnderCompl.cl_mem_deleteEdges_singleton (hp : PreservedUnderCom
   exact ((GraphClass.Mem_fin (cl 𝓕)) (M.graph (ρ i₀))).2 hmem
 
 /-- **`thm:complement`, (2) ⇒ (3), edge deletion**: deleting a set of edges one at a time. -/
-theorem PreservedUnderCompl.cl_isEdgeDeletionClosed (hp : PreservedUnderCompl 𝓕) :
+theorem PreservedUnderCompl.cl_isEdgeDeletionClosed (hp : PreservedUnderCompl (homIndistinguishability 𝓕)) :
     IsEdgeDeletionClosed (cl 𝓕) := by
   classical
   intro V _ F₀ t₀ hF₀
@@ -344,7 +344,7 @@ First delete the edges `uw` for the vertices `w` forming a triangle with `uv`; t
 contraction unchanged (`SimpleGraph.contractionQuotient_deleteEdges_triangleEdges`) and puts us
 in the situation of `SimpleGraph.eq_univ_and_card_eq_one_of_iso_contract`, where every index of
 `eq:del-contr` producing `F ⊘ uv` carries the sign `(-1)^{|E(F)|}`. -/
-theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : PreservedUnderCompl 𝓕)
+theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : PreservedUnderCompl (homIndistinguishability 𝓕))
     {V : Type} [Finite V] {F : SimpleGraph V} (hF : (cl 𝓕).Mem F) {u v : V} (huv : F.Adj u v)
     {W : Type} [Finite W] (K : SimpleGraph W)
     (hK : Nonempty ((toLoopGraph K) ≃lg (F ⊘ ({s(u, v)} : Set (Sym2 V))))) : (cl 𝓕).Mem K := by
@@ -427,7 +427,7 @@ theorem PreservedUnderCompl.cl_mem_contractionQuotient_singleton (hp : Preserved
   exact ((GraphClass.Mem_fin (cl 𝓕)) (M.graph (ρ i₀))).2 hmem
 
 /-- **`thm:complement`, (2) ⇒ (3), edge contraction**, in single-edge form. -/
-theorem PreservedUnderCompl.cl_isSingleEdgeContractionClosed (hp : PreservedUnderCompl 𝓕) :
+theorem PreservedUnderCompl.cl_isSingleEdgeContractionClosed (hp : PreservedUnderCompl (homIndistinguishability 𝓕)) :
     IsSingleEdgeContractionClosed (cl 𝓕) := by
   intro V _ F u v huv hF W _ K he
   exact (GraphClass.PreservedUnderCompl.cl_mem_contractionQuotient_singleton hp) hF huv K he
@@ -438,7 +438,7 @@ theorem PreservedUnderCompl.cl_isSingleEdgeContractionClosed (hp : PreservedUnde
 Closure under deleting edges and under contracting a single edge are the two coefficient
 computations above; closure under deleting vertices is `lem:minors`; and
 `SimpleGraph.GraphClass.isMinorClosed_of_atomic_single` assembles them. -/
-theorem PreservedUnderCompl.cl_isMinorClosed (hp : PreservedUnderCompl 𝓕) :
+theorem PreservedUnderCompl.cl_isMinorClosed (hp : PreservedUnderCompl (homIndistinguishability 𝓕)) :
     IsMinorClosed (cl 𝓕) :=
   isMinorClosed_of_atomic_single (GraphClass.PreservedUnderCompl.cl_isEdgeDeletionClosed hp)
     (IsEdgeDeletionClosed.cl_isSubgraphClosed (GraphClass.PreservedUnderCompl.cl_isEdgeDeletionClosed hp)).2
@@ -446,7 +446,7 @@ theorem PreservedUnderCompl.cl_isMinorClosed (hp : PreservedUnderCompl 𝓕) :
 
 /-- **`thm:complement`, (2) ⇒ (3), edge contraction**: contracting any set of edges, which
 follows from minor-closedness. -/
-theorem PreservedUnderCompl.cl_isEdgeContractionClosed (hp : PreservedUnderCompl 𝓕) :
+theorem PreservedUnderCompl.cl_isEdgeContractionClosed (hp : PreservedUnderCompl (homIndistinguishability 𝓕)) :
     IsEdgeContractionClosed (cl 𝓕) := by
   have h : IsMinorClosed (cl 𝓕) := (GraphClass.PreservedUnderCompl.cl_isMinorClosed hp)
   intro V _ F L hL hF W _ K he
@@ -455,8 +455,10 @@ theorem PreservedUnderCompl.cl_isEdgeContractionClosed (hp : PreservedUnderCompl
 /-- **`thm:complement`, (3) ⇒ (2)**: this follows from (1) ⇒ (2) applied to `cl 𝓕`, since
 `≡[𝓕]` and `≡[cl 𝓕]` coincide. -/
 theorem PreservedUnderCompl.of_cl_isMinorClosed (h : IsMinorClosed (cl 𝓕)) :
-    PreservedUnderCompl 𝓕 := by
+    PreservedUnderCompl (homIndistinguishability 𝓕) := by
   intro V W _ _ G H hGH
+  replace hGH : G ≡[𝓕] H := hGH
+  show Gᶜ ≡[𝓕] Hᶜ
   rw [← homIndistinguishable_cl_iff] at hGH ⊢
   exact IsEdgeContractionClosed.preservedUnderCompl (GraphClass.IsMinorClosed.isEdgeDeletionClosed h)
     (GraphClass.IsMinorClosed.isEdgeContractionClosed h) G H hGH
@@ -465,7 +467,7 @@ theorem PreservedUnderCompl.of_cl_isMinorClosed (h : IsMinorClosed (cl 𝓕)) :
 is minor-closed; and this holds whenever `𝓕` itself is closed under deleting and contracting
 edges (`SimpleGraph.GraphClass.IsEdgeContractionClosed.preservedUnderCompl`). -/
 theorem preservedUnderCompl_iff_cl_isMinorClosed (𝓕 : GraphClass) :
-    PreservedUnderCompl 𝓕 ↔ IsMinorClosed (cl 𝓕) :=
+    PreservedUnderCompl (homIndistinguishability 𝓕) ↔ IsMinorClosed (cl 𝓕) :=
   ⟨fun h => (GraphClass.PreservedUnderCompl.cl_isMinorClosed h), PreservedUnderCompl.of_cl_isMinorClosed⟩
 
 end GraphClass

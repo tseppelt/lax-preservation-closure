@@ -82,7 +82,7 @@ components turns `hom(F, G + H)` into a sum, over the subsets of the components,
 `F`, hence in `𝓕`, so both sides are determined by `≡[𝓕]`.
 -/
 theorem preservedUnderDisjointUnion_of_isSummandClosed (𝓕 : GraphClass) :
-    IsSummandClosed 𝓕 → PreservedUnderDisjointUnion 𝓕 :=
+    IsSummandClosed 𝓕 → PreservedUnderDisjointUnion (homIndistinguishability 𝓕) :=
   fun h => SimpleGraph.GraphClass.IsSummandClosed.preservedUnderDisjointUnion h
 
 /--
@@ -96,7 +96,7 @@ combinations places every sub-union in `cl 𝓕`.  Backwards, (1) ⇒ (2) applie
 suffices, since `≡[𝓕]` and `≡[cl 𝓕]` are the same relation.
 -/
 theorem preservedUnderDisjointUnion_iff_cl_isSummandClosed (𝓕 : GraphClass) :
-    PreservedUnderDisjointUnion 𝓕 ↔ IsSummandClosed (cl 𝓕) :=
+    PreservedUnderDisjointUnion (homIndistinguishability 𝓕) ↔ IsSummandClosed (cl 𝓕) :=
   SimpleGraph.GraphClass.preservedUnderDisjointUnion_iff_cl_isSummandClosed 𝓕
 
 /--
@@ -109,7 +109,7 @@ obtained from `F` by deleting a set of edges and contracting another, all of whi
 of `F`.
 -/
 theorem preservedUnderCompl_of_isMinorClosed (𝓕 : GraphClass) :
-    IsMinorClosed 𝓕 → PreservedUnderCompl 𝓕 := fun h =>
+    IsMinorClosed 𝓕 → PreservedUnderCompl (homIndistinguishability 𝓕) := fun h =>
   SimpleGraph.GraphClass.IsEdgeContractionClosed.preservedUnderCompl
     (SimpleGraph.GraphClass.IsMinorClosed.isEdgeDeletionClosed h)
     (SimpleGraph.GraphClass.IsMinorClosed.isEdgeContractionClosed h)
@@ -125,7 +125,7 @@ is closed under deleting an edge and under contracting an edge, and these two op
 already generate all minors.  Backwards, (1) ⇒ (2) applied to `cl 𝓕`.
 -/
 theorem preservedUnderCompl_iff_cl_isMinorClosed (𝓕 : GraphClass) :
-    PreservedUnderCompl 𝓕 ↔ IsMinorClosed (cl 𝓕) :=
+    PreservedUnderCompl (homIndistinguishability 𝓕) ↔ IsMinorClosed (cl 𝓕) :=
   SimpleGraph.GraphClass.preservedUnderCompl_iff_cl_isMinorClosed 𝓕
 
 end Lax871432Proofs

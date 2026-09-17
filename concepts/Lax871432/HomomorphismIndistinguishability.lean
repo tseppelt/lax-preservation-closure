@@ -1,6 +1,7 @@
 import Mathlib.SetTheory.Cardinal.NatCard
 import Lax199508.GraphClasses
 import Lax871432.HomomorphismCounts
+import Lax871432.IsomorphismRelaxations
 
 /-!
 ---
@@ -10,6 +11,10 @@ type: definition
 Two graphs $G$ and $H$ are *homomorphism indistinguishable over a class $\mathcal{F}$*,
 written $G \equiv_{\mathcal{F}} H$, if $\hom(F, G) = \hom(F, H)$ for every
 $F \in \mathcal{F}$.
+
+Since $\hom(F, -)$ is an isomorphism invariant, $\equiv_{\mathcal{F}}$ is a graph
+isomorphism relaxation; that is how it enters the theorems below, which are stated for an
+arbitrary relaxation.
 
 # Implementation notes
 
@@ -27,7 +32,7 @@ over an arbitrary finite vertex type by transporting along `Finite.equivFin`; th
 of generality, since every finite graph is isomorphic to a graph on some `Fin n`.
 -/
 
-open Lax871432.HomomorphismCounts
+open Lax871432.HomomorphismCounts Lax871432.IsomorphismRelaxations
 
 namespace Lax871432.HomomorphismIndistinguishability
 
@@ -53,5 +58,24 @@ def HomIndistinguishable (𝓕 : GraphClass) {V W : Type*} [Finite V] [Finite W]
 
 @[inherit_doc]
 scoped notation:50 G " ≡[" 𝓕 "] " H => HomIndistinguishable 𝓕 G H
+
+/-- Homomorphism indistinguishability over `𝓕`, as a graph isomorphism relaxation. -/
+def homIndistinguishability (𝓕 : GraphClass) : Relaxation where
+  Rel := @fun V W hV hW G H => @HomIndistinguishable 𝓕 V W hV hW G H
+  rel_of_iso := by
+    -- Postcomposing with the isomorphism is a bijection between the two hom-sets, so
+    -- isomorphic graphs receive equally many homomorphisms from every graph.
+    rintro V W _ _ G H ⟨e⟩ m F -
+    exact Nat.card_congr
+      { toFun f := e.toHom.comp f
+        invFun f := e.symm.toHom.comp f
+        left_inv _ := by ext a; simp
+        right_inv _ := by ext a; simp }
+  symm := by
+    intro V W _ _ G H h m F hF
+    exact (h F hF).symm
+  trans := by
+    intro U V W _ _ _ G H K h h' m F hF
+    exact (h F hF).trans (h' F hF)
 
 end Lax871432.HomomorphismIndistinguishability

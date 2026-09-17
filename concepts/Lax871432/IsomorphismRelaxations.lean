@@ -1,0 +1,48 @@
+import Mathlib.Combinatorics.SimpleGraph.Maps
+
+/-!
+---
+title: Graph isomorphism relaxations
+type: definition
+---
+A *graph isomorphism relaxation* is an equivalence relation on finite simple graphs that is
+coarser than isomorphism: isomorphic graphs are related, and the relation is symmetric and
+transitive.
+
+The equivalence relations comparing graphs that occur in practice are all of this form:
+isomorphism itself, cospectrality, quantum isomorphism, equivalence with respect to a fragment
+of logic, and homomorphism indistinguishability over a graph class. The properties studied
+here — being preserved under disjoint unions, or under taking complements — are properties of
+such a relation alone, and mention no graph class. That they can be traded against closure
+properties of a graph class is the content of the theorems below.
+
+# Implementation notes
+
+Reflexivity is not a separate field: it is `rel_of_iso` applied to the identity isomorphism.
+Isomorphism invariance is likewise not assumed separately; it follows from `rel_of_iso`
+together with symmetry and transitivity.
+
+The vertex types range over `Type` rather than over an arbitrary universe, matching the
+quantifiers in the homomorphism distinguishing closure. This is no loss of generality: every
+finite graph is isomorphic to a graph on some `Fin n`, and a relaxation relates isomorphic
+graphs.
+-/
+
+namespace Lax871432.IsomorphismRelaxations
+
+/-- A *graph isomorphism relaxation*: an equivalence relation on finite simple graphs which
+relates any two isomorphic graphs, and is therefore invariant under isomorphism. -/
+structure Relaxation where
+  /-- The relation itself. -/
+  Rel : ∀ ⦃V W : Type⦄ [Finite V] [Finite W], SimpleGraph V → SimpleGraph W → Prop
+  /-- Isomorphic graphs are related; in particular the relation is reflexive. -/
+  rel_of_iso : ∀ {V W : Type} [Finite V] [Finite W] {G : SimpleGraph V} {H : SimpleGraph W},
+    Nonempty (G ≃g H) → Rel G H
+  /-- The relation is symmetric. -/
+  symm : ∀ {V W : Type} [Finite V] [Finite W] {G : SimpleGraph V} {H : SimpleGraph W},
+    Rel G H → Rel H G
+  /-- The relation is transitive. -/
+  trans : ∀ {U V W : Type} [Finite U] [Finite V] [Finite W] {G : SimpleGraph U}
+    {H : SimpleGraph V} {K : SimpleGraph W}, Rel G H → Rel H K → Rel G K
+
+end Lax871432.IsomorphismRelaxations
