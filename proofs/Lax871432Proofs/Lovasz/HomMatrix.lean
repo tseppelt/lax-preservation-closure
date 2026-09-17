@@ -3,6 +3,7 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.LovaszTheorem
 import Lax871432Proofs.Hom.Count
 import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
@@ -39,8 +40,9 @@ of structured data*, Theorem 4.2:
 
 ## Main declarations
 
-* `SimpleGraph.GraphFamily`: a finite indexed family of graphs on at most `n` vertices.
-* `SimpleGraph.homMatrix`, `surjMatrix`, `injMatrix`, `autDiag`: the four matrices.
+* `SimpleGraph.surjMatrix`, `injMatrix`, `autDiag`: the three auxiliary matrices.  The family
+  itself and its homomorphism matrix are `Lax871432.LovaszTheorem.GraphFamily` and
+  `Lax871432.LovaszTheorem.homMatrix` of the concept package.
 * `SimpleGraph.homMatrix_factorization`: `M = S * D⁻¹ * I`.
 * `SimpleGraph.homMatrix_isUnit`: **Lovász's lemma**.
 -/
@@ -48,7 +50,7 @@ of structured data*, Theorem 4.2:
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
-open Lax871432.HomomorphismCounts
+open Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
 
 open Function
 
@@ -56,27 +58,9 @@ namespace SimpleGraph
 
 /-! ### Graph families -/
 
-/-- An *indexed graph family* of order `n`: a family of simple graphs indexed by `ι`, the
-`i`-th of which has vertex set `Fin (size i)` for some `size i ≤ n`. -/
-structure GraphFamily (n : ℕ) (ι : Type*) where
-  /-- The number of vertices of the `i`-th graph. -/
-  size : ι → ℕ
-  /-- Every graph in the family has at most `n` vertices. -/
-  size_le : ∀ i, size i ≤ n
-  /-- The `i`-th graph of the family. -/
-  graph : ∀ i, SimpleGraph (Fin (size i))
-
 namespace GraphFamily
 
-variable {n : ℕ} {ι : Type*} (F : GraphFamily n ι)
-
-/-- Two indices carry isomorphic graphs. -/
-def Iso (i j : ι) : Prop := Nonempty (F.graph i ≃g F.graph j)
-
-/-- The graphs in the family are pairwise non-isomorphic. -/
-def PairwiseNonIso : Prop := Pairwise fun i j => ¬ F.Iso i j
-
-variable {F}
+variable {n : ℕ} {ι : Type*} {F : GraphFamily n ι}
 
 @[refl] theorem Iso.refl (i : ι) : F.Iso i i := ⟨RelIso.refl _⟩
 
@@ -89,12 +73,6 @@ theorem PairwiseNonIso.eq (hF : F.PairwiseNonIso) {i j : ι} (h : F.Iso i j) : i
   by_contra hne
   exact hF hne h
 
-variable (F)
-
-/-- The family represents every isomorphism class of graphs on at most `n` vertices. -/
-def IsExhaustive : Prop :=
-  ∀ m ≤ n, ∀ G : SimpleGraph (Fin m), ∃ i, Nonempty (G ≃g F.graph i)
-
 end GraphFamily
 
 variable {n : ℕ} {ι : Type*}
@@ -104,10 +82,6 @@ variable {n : ℕ} {ι : Type*}
 section Matrices
 
 variable (F : GraphFamily n ι)
-
-/-- The homomorphism-count matrix `M i j = hom(F i, F j)`. -/
-noncomputable def homMatrix : Matrix ι ι ℚ :=
-  Matrix.of fun i j => (homCount (F.graph i) (F.graph j) : ℚ)
 
 /-- The matrix counting strongly surjective homomorphisms, `S i j = surj(F i, F j)`. -/
 noncomputable def surjMatrix : Matrix ι ι ℚ :=
@@ -168,7 +142,7 @@ theorem imageIndex_spec (hF : F.IsExhaustive) {i j : ι} (f : F.graph i →g F.g
 theorem imageIndex_comp (hni : F.PairwiseNonIso) (hF : F.IsExhaustive) {i j k : ι}
     {h : F.graph i →g F.graph k} (hh : (Hom.IsStrongSurjective h)) {g : F.graph k →g F.graph j}
     (hg : Injective g) : imageIndex F hF (g.comp h) = k := by
-  refine hni.eq (⟨?_⟩ : F.Iso (imageIndex F hF (g.comp h)) k)
+  refine GraphFamily.PairwiseNonIso.eq hni (⟨?_⟩ : F.Iso (imageIndex F hF (g.comp h)) k)
   exact (imageIndex_spec F hF (g.comp h)).some.symm.trans
     ((Subgraph.isoCoeOfEq (Hom.range_comp_of_isStrongSurjective g hh)).trans
       ((Hom.isoImageGraph g) hg).symm)
@@ -350,7 +324,7 @@ def GraphFamily.IsCompatibleOrder (F : GraphFamily n ι) [LinearOrder ι] : Prop
 /-- Every finite graph family admits a compatible linear order: order lexicographically by
 number of vertices, then by number of edges, then by an arbitrary tie-break. -/
 theorem GraphFamily.exists_isCompatibleOrder [Finite ι] (F : GraphFamily n ι) :
-    ∃ _ : LinearOrder ι, F.IsCompatibleOrder := by
+    ∃ _ : LinearOrder ι, GraphFamily.IsCompatibleOrder F := by
   classical
   haveI : Fintype ι := Fintype.ofFinite ι
   set e := Fintype.equivFin ι with he
@@ -374,7 +348,7 @@ variable (F : GraphFamily n ι) [LinearOrder ι]
 /-- **`S` is lower triangular**: there is no strongly surjective homomorphism `F i →g F j`
 when `i < j`, since such a homomorphism forces `F j` to have at most as many vertices as
 `F i`, and equality would make `F i` and `F j` isomorphic. -/
-theorem surjMatrix_blockTriangular (hni : F.PairwiseNonIso) (hord : F.IsCompatibleOrder) :
+theorem surjMatrix_blockTriangular (hni : F.PairwiseNonIso) (hord : GraphFamily.IsCompatibleOrder F) :
     (surjMatrix F).BlockTriangular OrderDual.toDual := by
   intro i j hij
   have hij' : i < j := hij
@@ -385,12 +359,12 @@ theorem surjMatrix_blockTriangular (hni : F.PairwiseNonIso) (hord : F.IsCompatib
     simpa using Nat.card_le_card_of_surjective _ hf.surjective
   rcases hord i j hij' with h | ⟨h, -⟩
   · omega
-  · exact absurd (hni.eq (nonempty_iso_of_isStrongSurjective hf (by simp [h]))) hij'.ne
+  · exact absurd (GraphFamily.PairwiseNonIso.eq hni (nonempty_iso_of_isStrongSurjective hf (by simp [h]))) hij'.ne
 
 /-- **`I` is upper triangular**: there is no injective homomorphism `F i →g F j` when
 `j < i`, since such a homomorphism forces `F i` to have at most as many vertices and edges as
 `F j`, and equality in both would make `F i` and `F j` isomorphic. -/
-theorem injMatrix_blockTriangular (hni : F.PairwiseNonIso) (hord : F.IsCompatibleOrder) :
+theorem injMatrix_blockTriangular (hni : F.PairwiseNonIso) (hord : GraphFamily.IsCompatibleOrder F) :
     (injMatrix F).BlockTriangular id := by
   intro i j (hij : j < i)
   suffices h : IsEmpty {f : F.graph i →g F.graph j // Injective f} by
@@ -401,7 +375,7 @@ theorem injMatrix_blockTriangular (hni : F.PairwiseNonIso) (hord : F.IsCompatibl
   rcases hord j i hij with h | ⟨h, he⟩
   · omega
   · have hle := card_edgeSet_le_of_injective hf
-    exact absurd (hni.eq (nonempty_iso_of_injective hf (by simp [h]) (le_antisymm hle he)))
+    exact absurd (GraphFamily.PairwiseNonIso.eq hni (nonempty_iso_of_injective hf (by simp [h]) (le_antisymm hle he)))
       hij.ne'
 
 end Triangularity
@@ -436,14 +410,14 @@ theorem autDiag_isUnit : IsUnit (autDiag F) := by
 variable [LinearOrder ι]
 
 /-- `S` is invertible: it is lower triangular with positive diagonal. -/
-theorem surjMatrix_isUnit (hni : F.PairwiseNonIso) (hord : F.IsCompatibleOrder) :
+theorem surjMatrix_isUnit (hni : F.PairwiseNonIso) (hord : GraphFamily.IsCompatibleOrder F) :
     IsUnit (surjMatrix F) := by
   rw [Matrix.isUnit_iff_isUnit_det,
     Matrix.det_of_isLowerTriangular _ (surjMatrix_blockTriangular F hni hord), isUnit_iff_ne_zero]
   exact ne_of_gt (Finset.prod_pos fun i _ => surjMatrix_diag_pos F i)
 
 /-- `I` is invertible: it is upper triangular with positive diagonal. -/
-theorem injMatrix_isUnit (hni : F.PairwiseNonIso) (hord : F.IsCompatibleOrder) :
+theorem injMatrix_isUnit (hni : F.PairwiseNonIso) (hord : GraphFamily.IsCompatibleOrder F) :
     IsUnit (injMatrix F) := by
   rw [Matrix.isUnit_iff_isUnit_det,
     Matrix.det_of_isUpperTriangular (injMatrix_blockTriangular F hni hord), isUnit_iff_ne_zero]
@@ -452,7 +426,7 @@ theorem injMatrix_isUnit (hni : F.PairwiseNonIso) (hord : F.IsCompatibleOrder) :
 /-- **Lovász's homomorphism matrix lemma**, given a compatible order.  See
 `SimpleGraph.homMatrix_isUnit` for the version that constructs the order. -/
 theorem homMatrix_isUnit_of_isCompatibleOrder (hni : F.PairwiseNonIso) (hF : F.IsExhaustive)
-    (hord : F.IsCompatibleOrder) : IsUnit (homMatrix F) := by
+    (hord : GraphFamily.IsCompatibleOrder F) : IsUnit (homMatrix F) := by
   rw [homMatrix_factorization F hni hF]
   exact ((surjMatrix_isUnit F hni hord).mul
     (Matrix.isUnit_nonsing_inv_iff.2 (autDiag_isUnit F))).mul (injMatrix_isUnit F hni hord)
@@ -464,7 +438,7 @@ graphs on at most `n` vertices representing every isomorphism class, the matrix 
 homomorphism counts is invertible. -/
 theorem homMatrix_isUnit [Fintype ι] [DecidableEq ι] (F : GraphFamily n ι)
     (hni : F.PairwiseNonIso) (hF : F.IsExhaustive) : IsUnit (homMatrix F) := by
-  obtain ⟨_, hord⟩ := F.exists_isCompatibleOrder
+  obtain ⟨_, hord⟩ := GraphFamily.exists_isCompatibleOrder F
   exact homMatrix_isUnit_of_isCompatibleOrder F hni hF hord
 
 end SimpleGraph

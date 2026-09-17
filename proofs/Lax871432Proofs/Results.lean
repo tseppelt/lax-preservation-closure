@@ -27,6 +27,7 @@ namespace Lax871432Proofs
 
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts Lax871432.HomomorphismIndistinguishability
+open Lax871432.LovaszTheorem
 open Lax871432.DistinguishingClosure
 open Lax871432.ClosureProperties Lax871432.PreservationProperties
 open Lax871432.IsomorphismRelaxations
@@ -48,6 +49,24 @@ theorem lovasz {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : Simpl
     (∀ (m : ℕ) (K : SimpleGraph (Fin m)), homCount K G = homCount K H) ↔ Nonempty (G ≃g H) :=
   (SimpleGraph.tfae_homCount_eq (le_max_left (Nat.card V) (Nat.card W))
     (le_max_right (Nat.card V) (Nat.card W))).out 0 2
+
+/--
+---
+conclusion: Lax871432.LovaszTheorem.homMatrix_isUnit
+---
+Lovász's homomorphism matrix lemma.  Every homomorphism `F i →g F j` factors as a strongly
+surjective homomorphism onto its image followed by an injective one; the image is isomorphic
+to a unique member `F k` of the family, and each homomorphism admits exactly `aut(F k)`
+factorisations through `F k`.  Counting gives `M = S · D⁻¹ · I` with `S` the matrix of
+strongly surjective counts, `D` the diagonal of automorphism counts and `I` the matrix of
+injective counts.  Ordering the family by number of vertices, then by number of edges, makes
+`S` lower and `I` upper triangular, both with positive diagonal, so all three factors are
+invertible and hence so is `M`.
+-/
+theorem homMatrix_isUnit {n : ℕ} {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (F : GraphFamily n ι) (hni : F.PairwiseNonIso) (hF : F.IsExhaustive) :
+    IsUnit (homMatrix F) :=
+  SimpleGraph.homMatrix_isUnit F hni hF
 
 /--
 ---
@@ -84,7 +103,7 @@ theorem determines_of_determines_sum (R : GraphIsoRelaxation) (hprod : Preserved
         ∑ i, α i * (homCount (L i) G : ℚ) = ∑ i, α i * (homCount (L i) H : ℚ))
     (i : ι) : Determines R (L i) := by
   classical
-  let M : SimpleGraph.GraphFamily (Finset.univ.sup size) ι :=
+  let M : GraphFamily (Finset.univ.sup size) ι :=
     { size := size
       size_le := fun i => Finset.le_sup (Finset.mem_univ i)
       graph := L }

@@ -60,7 +60,7 @@ in the class; both quantify over all simple graphs isomorphic to it instead.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
-open Lax871432.HomomorphismCounts
+open Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
 open scoped Lax871432.HomomorphismIndistinguishability
 open Lax871432.ClosureProperties Lax871432.PreservationProperties
@@ -163,7 +163,7 @@ theorem exists_graphFamily_of_pos {ι : Type} [Fintype ι] {n : ℕ} {size : ι 
   haveI : Fintype (Quotient (boundedGraphSetoid n)) := Fintype.ofFinite _
   -- The isomorphism class of `L i` inside the family of all representatives.
   have hiso : ∀ i, ∃ k, Nonempty (L i ≃g R.graph k) := fun i =>
-    R.exists_iso hRex (L i) (by simpa using hsize i)
+    GraphFamily.exists_iso R hRex (L i) (by simpa using hsize i)
   set ρ : ι → Quotient (boundedGraphSetoid n) := fun i => (hiso i).choose with hρdef
   have hρ : ∀ i, Nonempty (L i ≃g R.graph (ρ i)) := fun i => (hiso i).choose_spec
   -- Keep only the classes that actually occur, and add up their coefficients.
@@ -173,7 +173,7 @@ theorem exists_graphFamily_of_pos {ι : Type} [Fintype ι] {n : ℕ} {size : ι 
       graph := fun k => R.graph k.1 },
     fun k => ∑ i, if ρ i = k.1 then α i else 0, ?_, ?_,
     fun i => ⟨⟨ρ i, ⟨i, rfl⟩⟩, hρ i⟩, ?_⟩
-  · exact fun k k' hne hiso' => hne (Subtype.ext (hRni.eq hiso'))
+  · exact fun k k' hne hiso' => hne (Subtype.ext (GraphFamily.PairwiseNonIso.eq hRni hiso'))
   · intro k
     obtain ⟨i₀, hi₀⟩ := k.2
     have hpos : (0 : ℚ) < ∑ i, if ρ i = k.1 then α i else 0 := by
@@ -222,7 +222,7 @@ theorem exists_graphFamily {ι : Type} [Fintype ι] {n : ℕ} {size : ι → ℕ
   have hRex : R.IsExhaustive := repFamily_isExhaustive n
   haveI : Fintype (Quotient (boundedGraphSetoid n)) := Fintype.ofFinite _
   have hiso : ∀ i, ∃ k, Nonempty (L i ≃g R.graph k) := fun i =>
-    R.exists_iso hRex (L i) (by simpa using hsize i)
+    GraphFamily.exists_iso R hRex (L i) (by simpa using hsize i)
   set r : ι → Quotient (boundedGraphSetoid n) := fun i => (hiso i).choose with hrdef
   have hr : ∀ i, Nonempty (L i ≃g R.graph (r i)) := fun i => (hiso i).choose_spec
   -- The index type is the set of isomorphism classes that actually occur.
@@ -232,7 +232,7 @@ theorem exists_graphFamily {ι : Type} [Fintype ι] {n : ℕ} {size : ι → ℕ
       graph := fun k => R.graph k.1 },
     fun k => ∑ i, if (⟨r i, ⟨i, rfl⟩⟩ : {k // ∃ i, r i = k}) = k then α i else 0,
     fun i => ⟨r i, ⟨i, rfl⟩⟩, ?_, fun i => hr i, fun _ => rfl, ?_⟩
-  · exact fun k k' hne hiso' => hne (Subtype.ext (hRni.eq hiso'))
+  · exact fun k k' hne hiso' => hne (Subtype.ext (GraphFamily.PairwiseNonIso.eq hRni hiso'))
   · intro V _ G
     have hswap : ∀ i : ι, (homCount (L i) G : ℚ) = (homCount (R.graph (r i)) G : ℚ) := by
       intro i; rw [homCount_congr_left (hr i).some G]

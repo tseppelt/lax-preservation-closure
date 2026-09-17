@@ -68,7 +68,7 @@ namespace Lax871432Proofs
 open scoped Lax871432.GraphProducts
 
 open _root_.SimpleGraph
-open Lax871432.HomomorphismCounts
+open Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
 open Lax871432.IsomorphismRelaxations Lax871432.PreservationProperties
 open scoped Lax871432.HomomorphismIndistinguishability
@@ -231,12 +231,12 @@ theorem determines_of_determines_sum {n : ℕ} {ι : Type} [Fintype ι] (R : Gra
   have hMex : M.IsExhaustive := repFamily_isExhaustive n
   -- Reindex `L` inside `M`: each `L j` is isomorphic to a unique member `M (ρ j)`.
   have hiso : ∀ j : ι, ∃ k, Nonempty (L.graph j ≃g M.graph k) := fun j =>
-    M.exists_iso hMex (L.graph j) (by simpa using L.size_le j)
+    GraphFamily.exists_iso M hMex (L.graph j) (by simpa using L.size_le j)
   set ρ : ι → Quotient (boundedGraphSetoid n) := fun j => (hiso j).choose with hρdef
   have hρ : ∀ j, Nonempty (L.graph j ≃g M.graph (ρ j)) := fun j => (hiso j).choose_spec
   have hρinj : Injective ρ := by
     intro a b hab
-    refine hL.eq ⟨?_⟩
+    refine GraphFamily.PairwiseNonIso.eq hL ⟨?_⟩
     have e := (hρ a).some
     rw [hab] at e
     exact e.trans (hρ b).some.symm
@@ -312,7 +312,7 @@ theorem mem_cl_of_determines_of_ne_zero {n : ℕ} {ι : Type} [Fintype ι] (𝓕
         rw [hx, zero_mul]).symm
     rw [h1, Finset.sum_subtype (p := fun i => α i ≠ 0) _ (fun x => by simp)
       (fun i => α i * (homCount (L.graph i) G : ℚ))]
-  have hM : M.PairwiseNonIso := fun k k' hne hiso => hne (Subtype.ext (hL.eq hiso))
+  have hM : M.PairwiseNonIso := fun k k' hne hiso => hne (Subtype.ext (GraphFamily.PairwiseNonIso.eq hL hiso))
   have key : (cl 𝓕).mem _ (M.graph ⟨i, hi⟩) := by
     refine mem_cl_of_determines 𝓕 M hM (fun k => α k.1) (fun k => k.2) ?_ ⟨i, hi⟩
     intro X Y _ _ G H hGH

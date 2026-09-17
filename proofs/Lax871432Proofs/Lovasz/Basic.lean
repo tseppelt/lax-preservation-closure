@@ -37,7 +37,7 @@ statement to any finite graph, in any universe.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
-open Lax871432.HomomorphismCounts
+open Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
 
 open Function
 
@@ -134,13 +134,13 @@ theorem nonempty_iso_of_homCount_eq_of_card_le [Finite V] [Finite W] {n : ℕ}
   set F := repFamily n with hFdef
   have hni : F.PairwiseNonIso := repFamily_pairwiseNonIso n
   have hex : F.IsExhaustive := repFamily_isExhaustive n
-  obtain ⟨i, ⟨φ⟩⟩ := F.exists_iso hex G hV
-  obtain ⟨j, ⟨ψ⟩⟩ := F.exists_iso hex H hW
+  obtain ⟨i, ⟨φ⟩⟩ := GraphFamily.exists_iso F hex G hV
+  obtain ⟨j, ⟨ψ⟩⟩ := GraphFamily.exists_iso F hex H hW
   have hfam : ∀ k, homCount (F.graph k) (F.graph i) = homCount (F.graph k) (F.graph j) := by
     intro k
     rw [← homCount_congr_right (F.graph k) φ, ← homCount_congr_right (F.graph k) ψ]
     exact h (F.size k) (F.size_le k) (F.graph k)
-  exact ⟨φ.trans ((F.iso_of_homCount_eq hni hex hfam).some.trans ψ.symm)⟩
+  exact ⟨φ.trans ((GraphFamily.iso_of_homCount_eq F hni hex hfam).some.trans ψ.symm)⟩
 
 /-- **Lovász's theorem**: two finite graphs receiving the same number of homomorphisms from
 every finite graph are isomorphic. -/
