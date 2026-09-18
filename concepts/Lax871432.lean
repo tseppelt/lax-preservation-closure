@@ -3,6 +3,7 @@ import Lax871432.ComplementCounts
 import Lax871432.ConnectedPartitions
 import Lax871432.Contractions
 import Lax871432.DistinguishingClosure
+import Lax871432.DistinguishingClosureOperator
 import Lax871432.EdgeContractions
 import Lax871432.FullComplementCounts
 import Lax871432.GraphClasses
@@ -11,6 +12,7 @@ import Lax871432.GraphProducts
 import Lax871432.HomomorphismCounts
 import Lax871432.HomomorphismIndistinguishability
 import Lax871432.InducedSubgraphs
+import Lax871432.IntersectionsUnions
 import Lax871432.IsomorphismRelaxations
 import Lax871432.LexicographicProductCounts
 import Lax871432.LinearCombinationLemma

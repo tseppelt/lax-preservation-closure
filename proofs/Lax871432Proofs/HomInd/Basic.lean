@@ -75,16 +75,6 @@ open Function
 
 namespace SimpleGraph
 
-/-! ### Graph classes
-
-`GraphClass` and `HomIndistinguishable` are the concept
-`Lax871432.HomomorphismIndistinguishability`; only the order on graph classes is added here.
--/
-
-/-- One graph class is contained in another. -/
-instance : LE GraphClass :=
-  ⟨fun 𝓕 𝓖 => ∀ ⦃V : Type⦄ [Finite V] (F : SimpleGraph V), 𝓕.Mem F → 𝓖.Mem F⟩
-
 variable {𝓕 𝓖 : GraphClass} {α V W : Type} [Finite α] [Finite V] [Finite W]
   {G : SimpleGraph V} {H : SimpleGraph W}
 
@@ -144,6 +134,11 @@ theorem homCount_eq_of_Mem_cl {K : SimpleGraph α} (h : (cl 𝓕).Mem K) (hGH : 
 theorem GraphClass.le_cl (𝓕 : GraphClass) : 𝓕 ≤ (cl 𝓕) := by
   intro _ _ F hF
   exact ⟨fun G H hGH => (homIndistinguishable_iff_forall_mem 𝓕 G H).1 hGH F hF⟩
+
+/-- `cl` is monotone: a larger class has fewer indistinguishable pairs, so more graphs have
+their homomorphism counts determined. -/
+theorem GraphClass.cl_mono : Monotone cl := fun _ _ hle _ _ _ hK =>
+  ⟨fun G H hGH => hK.homCount_eq G H (HomIndistinguishable.mono hle hGH)⟩
 
 /-- `≡[𝓕]` and `≡[cl 𝓕]` are the same relation: this is the sense in which `cl 𝓕` is the
 largest class with the same homomorphism indistinguishability relation as `𝓕`. -/

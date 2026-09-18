@@ -1,4 +1,5 @@
 import Mathlib.Combinatorics.SimpleGraph.Maps
+import Mathlib.Order.SetNotation
 
 /-!
 ---
@@ -7,6 +8,11 @@ type: definition
 ---
 A *graph class* is a class $\mathcal{F}$ of finite simple graphs which is closed under
 isomorphism: if $F \in \mathcal{F}$ and $F \cong F'$, then $F' \in \mathcal{F}$.
+
+Graph classes are ordered by inclusion, $\mathcal{F} \subseteq \mathcal{F}'$, written
+`𝓕 ≤ 𝓕'`. The intersection $\bigcap_{i \in I} \mathcal{F}_i$ and the union
+$\bigcup_{i \in I} \mathcal{F}_i$ of a family of graph classes are again graph classes,
+written `⨅ i, 𝓕 i` and `⨆ i, 𝓕 i`.
 
 # Implementation notes
 
@@ -36,5 +42,33 @@ structure GraphClass where
   /-- The class is invariant under isomorphism. -/
   mem_congr : ∀ {V W : Type} [Finite V] [Finite W] {F : SimpleGraph V} {F' : SimpleGraph W},
     Nonempty (F ≃g F') → (Mem F ↔ Mem F')
+
+/-- Inclusion of graph classes: `𝓕 ≤ 𝓕'` if every graph in `𝓕` is in `𝓕'`. -/
+instance : PartialOrder GraphClass where
+  le 𝓕 𝓕' := ∀ ⦃V : Type⦄ [Finite V] (F : SimpleGraph V), 𝓕.Mem F → 𝓕'.Mem F
+  le_refl _ _ _ _ hF := hF
+  le_trans _ _ _ h h' _ _ F hF := h' F (h F hF)
+  le_antisymm := by
+    rintro ⟨Mem, _⟩ ⟨Mem', _⟩ h h'
+    have : @Mem = @Mem' := by
+      funext V _ F
+      exact propext ⟨h F, h' F⟩
+    subst this
+    rfl
+
+/-- The intersection of a set of graph classes: the graphs lying in each of them. The
+intersection of a family is written `⨅ i, 𝓕 i`. -/
+instance : InfSet GraphClass where
+  sInf S :=
+    { Mem F := ∀ 𝓕 ∈ S, 𝓕.Mem F
+      mem_congr he :=
+        forall_congr' fun 𝓕 : GraphClass => imp_congr_right fun _ => 𝓕.mem_congr he }
+
+/-- The union of a set of graph classes: the graphs lying in at least one of them. The union
+of a family is written `⨆ i, 𝓕 i`. -/
+instance : SupSet GraphClass where
+  sSup S :=
+    { Mem F := ∃ 𝓕 ∈ S, 𝓕.Mem F
+      mem_congr he := exists_congr fun 𝓕 : GraphClass => and_congr_right' (𝓕.mem_congr he) }
 
 end Lax871432.GraphClasses

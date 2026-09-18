@@ -227,10 +227,18 @@
 		\cl(\mathcal{F}) \coloneqq \{K \text{ simple graph} \mid \forall  \text{ simple graphs } G, H.\quad G \equiv_{\mathcal{F}} H \Rightarrow \hom(K, G) = \hom(K, H) \}.
 	\]
 	Intuitively, $\cl(\mathcal{F})$ is the \enquote{largest} graph class whose homomorphism indistinguishability relation coincides with the one of $\mathcal{F}$.
-	A graph class $\mathcal{F}$ is \emph{homomorphism distinguishing closed} if $\cl(\mathcal{F}) = \mathcal{F}$. Note that $\cl$ is a closure operator in the sense that $\cl(\mathcal{F}) \subseteq \cl(\mathcal{F}')$ if $\mathcal{F} \subseteq \mathcal{F}'$ and $\cl(\cl(\mathcal{F})) = \cl(\mathcal{F})$ for all graph classes $\mathcal{F}$ and $\mathcal{F}'$.
+	A graph class $\mathcal{F}$ is \emph{homomorphism distinguishing closed} if $\cl(\mathcal{F}) = \mathcal{F}$.
+% lax end
+% lax begin Lax871432.DistinguishingClosureOperator
+% lax begin Lax871432Proofs.isClosureOperator
+	Note that $\cl$ is a closure operator in the sense that $\cl(\mathcal{F}) \subseteq \cl(\mathcal{F}')$ if $\mathcal{F} \subseteq \mathcal{F}'$ and $\cl(\cl(\mathcal{F})) = \cl(\mathcal{F})$ for all graph classes $\mathcal{F}$ and $\mathcal{F}'$.
+% lax end
 % lax end
 	Furthermore, the following inclusions hold (and cannot be reversed, cf.\@ \cref{ex1}):
 	
+% lax begin Lax871432.IntersectionsUnions
+% lax begin Lax871432Proofs.cl_iInf_le_iInf_cl
+% lax begin Lax871432Proofs.iSup_cl_le_cl_iSup
 	\begin{lemma} \label{lem:intersection}
 		Let $I$ be an arbitrary index set and let $(\mathcal{F}_i)_{i \in I}$ be a family of graph classes.
 		Then 
@@ -239,6 +247,9 @@
 			\bigcup_{i\in I} \cl(\mathcal{F}_i) \subseteq \cl\left( \bigcup_{i\in I} \mathcal{F}_i \right).
 		\]
 	\end{lemma}
+% lax end
+% lax end
+% lax end
 	\begin{proof}
 		Any intersection of homomorphism distinguishing closed graph classes is homomorphism distinguishing closed \cite[Lemma~6.1]{roberson_oddomorphisms_2022}. Hence, $\bigcap_{i \in I} \cl(\mathcal{F}_i)$ is closed and it suffices to observe that $\bigcap_{i \in I} \mathcal{F}_i \subseteq \bigcap_{i \in I} \cl(\mathcal{F}_i)$.
 		For the second claim, $\mathcal{F}_j \subseteq \bigcup_{i\in I} \mathcal{F}_i$ and hence $\cl(\mathcal{F}_j) \subseteq \cl(\bigcup_{i\in I} \mathcal{F}_i)$ for $j\in I$.

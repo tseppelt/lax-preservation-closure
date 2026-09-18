@@ -10,6 +10,8 @@ import Lax871432.LexicographicProductCounts
 import Lax871432.LoopedGraphCounts
 import Lax871432.MinorsComplements
 import Lax871432.InducedSubgraphs
+import Lax871432.DistinguishingClosureOperator
+import Lax871432.IntersectionsUnions
 import Lax871432.LinearCombinationLemma
 import Lax871432.ProductPreservation
 import Lax871432.LovaszTheorem
@@ -88,6 +90,44 @@ theorem preservedUnderCatProd (𝓕 : GraphClass) :
     PreservedUnderCatProd (homIndRel 𝓕) := by
   intro V W X _ _ _ G H K h
   exact SimpleGraph.HomIndistinguishable.catProd h K
+
+/--
+---
+conclusion: Lax871432.DistinguishingClosureOperator.isClosureOperator
+---
+`cl` is a closure operator.  It is monotone because enlarging `𝓕` can only shrink `≡[𝓕]`, and
+extensive because `≡[𝓕]` determines the homomorphism counts from every member of `𝓕` by
+definition.  It is idempotent because `≡[𝓕]` and `≡[cl 𝓕]` are the same relation.
+-/
+theorem isClosureOperator : ∃ c : ClosureOperator GraphClass, ∀ 𝓕, c 𝓕 = cl 𝓕 :=
+  ⟨.mk' cl SimpleGraph.GraphClass.cl_mono SimpleGraph.GraphClass.le_cl
+    SimpleGraph.GraphClass.cl_cl, fun _ => rfl⟩
+
+/--
+---
+conclusion: Lax871432.IntersectionsUnions.cl_iInf_le_iInf_cl
+---
+`lem:intersection`, first inclusion.  For every `j`, the intersection is contained in `𝓕 j`,
+so its closure is contained in `cl (𝓕 j)` by monotonicity of `cl`.
+-/
+theorem cl_iInf_le_iInf_cl {I : Type*} (𝓕 : I → GraphClass) :
+    cl (⨅ i, 𝓕 i) ≤ ⨅ i, cl (𝓕 i) := by
+  rintro V _ K hK _ ⟨j, rfl⟩
+  have hle : ⨅ i, 𝓕 i ≤ 𝓕 j := fun _ _ _ hF => hF _ ⟨j, rfl⟩
+  exact SimpleGraph.GraphClass.cl_mono hle K hK
+
+/--
+---
+conclusion: Lax871432.IntersectionsUnions.iSup_cl_le_cl_iSup
+---
+`lem:intersection`, second inclusion.  For every `j`, `𝓕 j` is contained in the union, so
+`cl (𝓕 j)` is contained in its closure by monotonicity of `cl`.
+-/
+theorem iSup_cl_le_cl_iSup {I : Type*} (𝓕 : I → GraphClass) :
+    ⨆ i, cl (𝓕 i) ≤ cl (⨆ i, 𝓕 i) := by
+  rintro V _ K ⟨_, ⟨j, rfl⟩, hK⟩
+  have hle : 𝓕 j ≤ ⨆ i, 𝓕 i := fun _ _ _ hF => ⟨_, ⟨j, rfl⟩, hF⟩
+  exact SimpleGraph.GraphClass.cl_mono hle K hK
 
 /--
 ---
