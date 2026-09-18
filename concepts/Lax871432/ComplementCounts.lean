@@ -26,7 +26,8 @@ signed sum of the numbers of homomorphisms into `G` from the graphs obtained fro
 deleting the edges outside a set `S` and contracting those in a subset `L` of `S` — all of
 them minors of `F`. -/
 axiom homCount_compl {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph V)
-    [Fintype F.edgeSet] (G : SimpleGraph W) :
+    (G : SimpleGraph W) :
+    letI : Fintype F.edgeSet := Fintype.ofFinite _
     (homCount F Gᶜ : ℤ) =
       ∑ s : Finset F.edgeSet, (-1 : ℤ) ^ s.card *
         ∑ L ∈ s.powerset,

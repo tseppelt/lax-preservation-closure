@@ -290,12 +290,14 @@ conclusion: Lax871432.ComplementCounts.homCount_compl
 double sum.  The inner sum ranges over the subsets of `s`, the edges of `F_s`.
 -/
 theorem homCount_compl {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph V)
-    [Fintype F.edgeSet] (G : SimpleGraph W) :
+    (G : SimpleGraph W) :
+    letI : Fintype F.edgeSet := Fintype.ofFinite _
     (homCount F Gᶜ : ℤ) =
       ∑ s : Finset F.edgeSet, (-1 : ℤ) ^ s.card *
         ∑ L ∈ s.powerset,
           (LoopGraph.homCount
             (((spanningSubgraph F) ((edgeSetOf F) s)) ⊘ (edgeSetOf F) L) (toLoopGraph G) : ℤ) :=
+  letI : Fintype F.edgeSet := Fintype.ofFinite _
   SimpleGraph.homCount_compl F G
 
 end Lax871432Proofs
