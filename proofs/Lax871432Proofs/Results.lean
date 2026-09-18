@@ -260,10 +260,12 @@ satisfying the events of a set `s` of edges are the homomorphisms out of the spa
 with edge set `s`.
 -/
 theorem homCount_fullCompl {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph V)
-    [Fintype F.edgeSet] (X : LoopGraph W) :
+    (X : LoopGraph W) :
+    letI : Fintype F.edgeSet := Fintype.ofFinite _
     (LoopGraph.homCount (toLoopGraph F) X.fullCompl : ℤ) =
       ∑ s : Finset F.edgeSet, (-1 : ℤ) ^ s.card *
         (LoopGraph.homCount (toLoopGraph ((spanningSubgraph F) ((edgeSetOf F) s))) X : ℤ) :=
+  letI : Fintype F.edgeSet := Fintype.ofFinite _
   SimpleGraph.homCount_fullCompl F X
 
 /--
