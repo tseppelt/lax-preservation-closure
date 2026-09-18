@@ -61,6 +61,12 @@ def Hom.sumEquiv : (G ⊕g H →g K) ≃ (G →g K) × (H →g K) where
   left_inv f := by ext (v | v) <;> rfl
   right_inv _ := rfl
 
+/-- **(5.28)**: `hom(G ⊕g H, K) = hom(G, K) * hom(H, K)`. -/
+theorem homCount_sum_left (G : SimpleGraph V) (H : SimpleGraph W) (K : SimpleGraph U) :
+    homCount (G ⊕g H) K = homCount G K * homCount H K := by
+  rw [homCount, homCount, homCount, ← Nat.card_prod]
+  exact Nat.card_congr Hom.sumEquiv
+
 /-! ### Homomorphisms into a categorical product -/
 
 /-- A homomorphism into a categorical product `G ×g H` is the same thing as a pair of

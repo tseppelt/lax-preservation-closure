@@ -1,7 +1,10 @@
+import Lax871432.CategoricalProductCounts
 import Lax871432.ClosureProperties
 import Lax871432.ComplementCounts
 import Lax871432.ConnectedPartitions
 import Lax871432.Contractions
+import Lax871432.CoproductCounts
+import Lax871432.DisjointUnionCounts
 import Lax871432.DistinguishingClosure
 import Lax871432.DistinguishingClosureOperator
 import Lax871432.EdgeContractions

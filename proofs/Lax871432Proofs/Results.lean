@@ -3,6 +3,9 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.CategoricalProductCounts
+import Lax871432.CoproductCounts
+import Lax871432.DisjointUnionCounts
 import Lax871432.EdgeContractions
 import Lax871432.ComplementCounts
 import Lax871432.FullComplementCounts
@@ -90,6 +93,45 @@ theorem preservedUnderCatProd (𝓕 : GraphClass) :
     PreservedUnderCatProd (homIndRel 𝓕) := by
   intro V W X _ _ _ G H K h
   exact SimpleGraph.HomIndistinguishable.catProd h K
+
+/--
+---
+conclusion: Lax871432.CoproductCounts.homCount_sum_left
+---
+`eq:coproduct`.  Restricting a homomorphism out of `F₁ ⊕g F₂` to the two parts is a bijection
+onto pairs of homomorphisms out of `F₁` and out of `F₂`, since there are no edges between the
+parts.
+-/
+theorem homCount_sum_left {U V W : Type*} [Finite U] [Finite V] [Finite W] (F₁ : SimpleGraph U)
+    (F₂ : SimpleGraph V) (G : SimpleGraph W) :
+    homCount (F₁ ⊕g F₂) G = homCount F₁ G * homCount F₂ G :=
+  SimpleGraph.homCount_sum_left F₁ F₂ G
+
+/--
+---
+conclusion: Lax871432.CategoricalProductCounts.homCount_catProd_right
+---
+`eq:product`.  Composing with the two projections is a bijection from the homomorphisms into
+`G₁ ×g G₂` onto pairs of homomorphisms into `G₁` and into `G₂`: the categorical product is the
+product in the category of graphs and graph homomorphisms.
+-/
+theorem homCount_catProd_right {U V W : Type*} [Finite U] [Finite V] [Finite W]
+    (F : SimpleGraph U) (G₁ : SimpleGraph V) (G₂ : SimpleGraph W) :
+    homCount F (G₁ ×g G₂) = homCount F G₁ * homCount F G₂ :=
+  SimpleGraph.homCount_catProd_right F G₁ G₂
+
+/--
+---
+conclusion: Lax871432.DisjointUnionCounts.homCount_sum_right
+---
+`eq:disjoint`.  The image of a connected graph under a homomorphism is connected, so it lies
+entirely in `G₁` or entirely in `G₂`; hence the homomorphisms into `G₁ ⊕g G₂` are the disjoint
+union of those into `G₁` and those into `G₂`.
+-/
+theorem homCount_sum_right {U V W : Type*} [Finite U] [Finite V] [Finite W] (K : SimpleGraph U)
+    (hK : K.Connected) (G₁ : SimpleGraph V) (G₂ : SimpleGraph W) :
+    homCount K (G₁ ⊕g G₂) = homCount K G₁ + homCount K G₂ :=
+  SimpleGraph.homCount_sum_right_of_connected hK G₁ G₂
 
 /--
 ---

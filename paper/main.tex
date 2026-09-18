@@ -260,13 +260,26 @@
 
 	For graphs $G$ and $H$, write $G + H$ for their \emph{disjoint union} and $\coprod_{i \in [n]} G_i \coloneqq G_1 + \dots + G_n$ for graphs $G_1, \dots, G_n$.
 % lax begin Lax871432.GraphProducts
-	We write $G \times H$ for the \emph{categorical product} of $G$ and $H$, i.e.\@ $V(G \times H) \coloneqq V(G) \times V(H)$ and $gh$ and $g'h'$ are adjacent in $G \times H$ iff $gg' \in E(G)$ and $hh' \in E(H)$. The \emph{lexicographic product} $G \cdot H$ is defined as the graph with vertex set $V(G) \times V(H)$ and edges between $gh$ and $g'h'$ iff $g = g'$ and $hh' \in E(H)$ or $gg' \in E(G)$. It is well-known, cf.\@ e.g.\@ \cite[(5.28)--(5.30)]{lovasz_large_2012}, that
-	for all graphs $F_1, F_2, G_1, G_2$, and all connected graphs $K$, the following equalities hold:
+	We write $G \times H$ for the \emph{categorical product} of $G$ and $H$, i.e.\@ $V(G \times H) \coloneqq V(G) \times V(H)$ and $gh$ and $g'h'$ are adjacent in $G \times H$ iff $gg' \in E(G)$ and $hh' \in E(H)$. The \emph{lexicographic product} $G \cdot H$ is defined as the graph with vertex set $V(G) \times V(H)$ and edges between $gh$ and $g'h'$ iff $g = g'$ and $hh' \in E(H)$ or $gg' \in E(G)$.
 % lax end
+	It is well-known, cf.\@ e.g.\@ \cite[(5.28)--(5.30)]{lovasz_large_2012}, that
+	for all graphs $F_1, F_2, G_1, G_2$, and all connected graphs $K$, the following equalities hold:
 	\begin{align}
+% lax begin Lax871432.CoproductCounts
+% lax begin Lax871432Proofs.homCount_sum_left
 		\hom(F_1 + F_2, G) &= \hom(F_1, G) \hom(F_2, G), \label{eq:coproduct} \\
+% lax end
+% lax end
+% lax begin Lax871432.CategoricalProductCounts
+% lax begin Lax871432Proofs.homCount_catProd_right
 		\hom(F, G_1 \times G_2) &= \hom(F, G_1) \hom(F, G_2), \text{ and }\label{eq:product} \\
+% lax end
+% lax end
+% lax begin Lax871432.DisjointUnionCounts
+% lax begin Lax871432Proofs.homCount_sum_right
 		\hom(K, G_1 + G_2) &= \hom(K, G_1) + \hom(K, G_2). \label{eq:disjoint}
+% lax end
+% lax end
 	\end{align}
 
 		
