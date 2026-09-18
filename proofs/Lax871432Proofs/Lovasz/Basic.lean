@@ -37,7 +37,7 @@ statement to any finite graph, in any universe.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
-open Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
+open Lax871432.GraphFamilies Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
 
 open Function
 

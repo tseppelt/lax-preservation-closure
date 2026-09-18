@@ -31,7 +31,7 @@ namespace Lax871432Proofs
 
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts Lax871432.HomomorphismIndistinguishability
-open Lax871432.LovaszTheorem Lax871432.GraphProducts
+open Lax871432.GraphFamilies Lax871432.LovaszTheorem Lax871432.GraphProducts
 open Lax871432.ConnectedPartitions Lax871432.LoopGraphs
 open scoped Lax871432.LoopGraphs
 open Lax871432.DistinguishingClosure
@@ -93,7 +93,7 @@ theorem preservedUnderCatProd (𝓕 : GraphClass) :
 conclusion: Lax871432.LinearCombinationLemma.determines_of_determines_sum
 ---
 A determined linear combination determines its constituents.  Enlarge the family to a family
-`M` of representatives of *all* graphs on at most `n` vertices, `n` being the supremum of the
+`M` of representatives of *all* graphs on at most `n` vertices, `n` being the bound on the
 sizes of the members, and extend the coefficients by zero.  Multiplying the hypothesis by
 `hom(-, M k)` for each `k` — legitimate because `R` is preserved under categorical products —
 turns it into the statement that a single vector meets the homomorphism matrix of `M` in the
@@ -101,20 +101,13 @@ same way for the two graphs.  That matrix is invertible, so the vectors agree co
 and dividing by the nonzero coefficient gives the claim.
 -/
 theorem determines_of_determines_sum (R : GraphIsoRelaxation) (hprod : PreservedUnderCatProd R)
-    {ι : Type} [Fintype ι] {size : ι → ℕ} (L : ∀ i, SimpleGraph (Fin (size i)))
-    (hL : ∀ i j, i ≠ j → IsEmpty (L i ≃g L j))
+    {n : ℕ} {ι : Type} [Fintype ι] (L : GraphFamily n ι) (hL : L.PairwiseNonIso)
     (α : ι → ℚ) (hα : ∀ i, α i ≠ 0)
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
       R.Rel G H →
-        ∑ i, α i * (homCount (L i) G : ℚ) = ∑ i, α i * (homCount (L i) H : ℚ))
-    (i : ι) : Determines R (L i) := by
-  classical
-  let M : GraphFamily (Finset.univ.sup size) ι :=
-    { size := size
-      size_le := fun i => Finset.le_sup (Finset.mem_univ i)
-      graph := L }
-  have hni : M.PairwiseNonIso := fun i j hij ⟨e⟩ => (hL i j hij).false e
-  exact SimpleGraph.determines_of_determines_sum R hprod M hni α hα (fun G H h => hdet G H h) i
+        ∑ i, α i * (homCount (L.graph i) G : ℚ) = ∑ i, α i * (homCount (L.graph i) H : ℚ))
+    (i : ι) : Determines R (L.graph i) :=
+  SimpleGraph.determines_of_determines_sum R hprod L hL α hα hdet i
 
 /--
 ---

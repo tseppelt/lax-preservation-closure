@@ -65,7 +65,7 @@ namespace Lax871432Proofs
 open scoped Lax871432.GraphProducts
 
 open _root_.SimpleGraph
-open Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
+open Lax871432.GraphFamilies Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
 open Lax871432.IsomorphismRelaxations Lax871432.PreservationProperties
 open scoped Lax871432.HomomorphismIndistinguishability

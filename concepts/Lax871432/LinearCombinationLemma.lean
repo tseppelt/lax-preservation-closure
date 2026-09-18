@@ -1,6 +1,7 @@
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Rat.Defs
 import Lax871432.DistinguishingClosure
+import Lax871432.GraphFamilies
 import Lax871432.PreservationProperties
 
 /-!
@@ -16,7 +17,7 @@ $$\sum_{L \in \mathcal{L}} \alpha_L \hom(L, G) = \sum_{L \in \mathcal{L}} \alpha
 — then it determines each constituent $\hom(L, -)$ separately.
 -/
 
-open Lax871432.DistinguishingClosure Lax871432.HomomorphismCounts
+open Lax871432.DistinguishingClosure Lax871432.GraphFamilies Lax871432.HomomorphismCounts
 open Lax871432.IsomorphismRelaxations Lax871432.PreservationProperties
 
 namespace Lax871432.LinearCombinationLemma
@@ -25,12 +26,11 @@ namespace Lax871432.LinearCombinationLemma
 homomorphism counts, over pairwise non-isomorphic graphs and with nonzero coefficients,
 determines each of its constituents. -/
 axiom determines_of_determines_sum (R : GraphIsoRelaxation) (hprod : PreservedUnderCatProd R)
-    {ι : Type} [Fintype ι] {size : ι → ℕ} (L : ∀ i, SimpleGraph (Fin (size i)))
-    (hL : ∀ i j, i ≠ j → IsEmpty (L i ≃g L j))
+    {n : ℕ} {ι : Type} [Fintype ι] (L : GraphFamily n ι) (hL : L.PairwiseNonIso)
     (α : ι → ℚ) (hα : ∀ i, α i ≠ 0)
     (hdet : ∀ {V W : Type} [Finite V] [Finite W] (G : SimpleGraph V) (H : SimpleGraph W),
       R.Rel G H →
-        ∑ i, α i * (homCount (L i) G : ℚ) = ∑ i, α i * (homCount (L i) H : ℚ))
-    (i : ι) : Determines R (L i)
+        ∑ i, α i * (homCount (L.graph i) G : ℚ) = ∑ i, α i * (homCount (L.graph i) H : ℚ))
+    (i : ι) : Determines R (L.graph i)
 
 end Lax871432.LinearCombinationLemma

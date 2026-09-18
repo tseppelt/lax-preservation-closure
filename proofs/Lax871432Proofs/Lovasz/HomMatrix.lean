@@ -3,6 +3,7 @@ Copyright (c) 2026 Tim Seppelt. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tim Seppelt
 -/
+import Lax871432.GraphFamilies
 import Lax871432.LovaszTheorem
 import Lax871432Proofs.Hom.Count
 import Mathlib.LinearAlgebra.Matrix.Block
@@ -41,7 +42,7 @@ of structured data*, Theorem 4.2:
 ## Main declarations
 
 * `SimpleGraph.surjMatrix`, `injMatrix`, `autDiag`: the three auxiliary matrices.  The family
-  itself and its homomorphism matrix are `Lax871432.LovaszTheorem.GraphFamily` and
+  itself and its homomorphism matrix are `Lax871432.GraphFamilies.GraphFamily` and
   `Lax871432.LovaszTheorem.homMatrix` of the concept package.
 * `SimpleGraph.homMatrix_factorization`: `M = S * D⁻¹ * I`.
 * `SimpleGraph.homMatrix_isUnit`: **Lovász's lemma**.
@@ -50,7 +51,7 @@ of structured data*, Theorem 4.2:
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
-open Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
+open Lax871432.GraphFamilies Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
 
 open Function
 
