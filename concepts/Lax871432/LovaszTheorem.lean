@@ -16,9 +16,7 @@ graph is isomorphic to one of these and $\hom(-, G)$ is an isomorphism invariant
 The theorem is deduced from the invertibility of the *homomorphism matrix* of a family of
 graphs. Let $F_1, \dots, F_N$ be pairwise non-isomorphic graphs on at most $n$ vertices which
 represent every isomorphism class of graphs on at most $n$ vertices. Then the matrix
-$M_{ij} = \hom(F_i, F_j)$ is invertible over $\mathbb{Q}$. This is the form in which the
-theorem is used elsewhere in this submission: it is what makes a determined linear combination
-of homomorphism counts determine each of its constituents.
+$M_{ij} = \hom(F_i, F_j)$ is invertible over $\mathbb{Q}$.
 
 # Implementation notes
 
