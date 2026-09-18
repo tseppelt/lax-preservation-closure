@@ -19,7 +19,7 @@ the implications (1) $\Rightarrow$ (2) $\Leftrightarrow$ (3) hold.
 open Lax871432.ClosureProperties Lax871432.DistinguishingClosure
 open Lax871432.HomomorphismIndistinguishability Lax871432.PreservationProperties
 
-namespace Lax871432.ForbiddenMinors
+namespace Lax871432.MinorsComplements
 
 /-- **(1) $\Rightarrow$ (2).** If `𝓕` is minor-closed then $\equiv_{\mathcal{F}}$ is
 preserved under taking complements. -/
@@ -31,4 +31,4 @@ complements if and only if $\mathrm{cl}(\mathcal{F})$ is minor-closed. -/
 axiom preservedUnderCompl_iff_cl_isMinorClosed (𝓕 : GraphClass) :
     PreservedUnderCompl (homIndRel 𝓕) ↔ IsMinorClosed (cl 𝓕)
 
-end Lax871432.ForbiddenMinors
+end Lax871432.MinorsComplements

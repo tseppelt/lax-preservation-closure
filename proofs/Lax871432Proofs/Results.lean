@@ -8,7 +8,7 @@ import Lax871432.ComplementCounts
 import Lax871432.FullComplementCounts
 import Lax871432.LexicographicProductCounts
 import Lax871432.LoopedGraphCounts
-import Lax871432.ForbiddenMinors
+import Lax871432.MinorsComplements
 import Lax871432.InducedSubgraphs
 import Lax871432.LinearCombinationLemma
 import Lax871432.ProductPreservation
@@ -145,7 +145,7 @@ theorem preservedUnderDisjointUnion_iff_cl_isSummandClosed (𝓕 : GraphClass) :
 
 /--
 ---
-conclusion: Lax871432.ForbiddenMinors.preservedUnderCompl_of_isMinorClosed
+conclusion: Lax871432.MinorsComplements.preservedUnderCompl_of_isMinorClosed
 ---
 `thm:complement`, (1) ⇒ (2).  A minor-closed class is closed under deleting edges and under
 contracting edges, and `hom(F, Ḡ)` is a signed sum of homomorphism counts from the graphs
@@ -160,7 +160,7 @@ theorem preservedUnderCompl_of_isMinorClosed (𝓕 : GraphClass) :
 
 /--
 ---
-conclusion: Lax871432.ForbiddenMinors.preservedUnderCompl_iff_cl_isMinorClosed
+conclusion: Lax871432.MinorsComplements.preservedUnderCompl_iff_cl_isMinorClosed
 ---
 `thm:complement`, (2) ⇔ (3), the main result.  Forwards, the signed sum expressing
 `hom(F, Ḡ)` is determined by `≡[𝓕]`; a coefficient analysis shows that the terms belonging to

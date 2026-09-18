@@ -4,7 +4,6 @@ import Lax871432.ConnectedPartitions
 import Lax871432.Contractions
 import Lax871432.DistinguishingClosure
 import Lax871432.EdgeContractions
-import Lax871432.ForbiddenMinors
 import Lax871432.FullComplementCounts
 import Lax871432.GraphProducts
 import Lax871432.HomomorphismCounts
@@ -16,6 +15,7 @@ import Lax871432.LinearCombinationLemma
 import Lax871432.LoopGraphs
 import Lax871432.LoopedGraphCounts
 import Lax871432.LovaszTheorem
+import Lax871432.MinorsComplements
 import Lax871432.PreservationProperties
 import Lax871432.ProductPreservation
 import Lax871432.RobersonConjecture
