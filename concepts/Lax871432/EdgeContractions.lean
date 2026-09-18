@@ -17,6 +17,7 @@ the implications (1) $\Rightarrow$ (2) $\Leftrightarrow$ (3) hold.
 -/
 
 open Lax871432.ClosureProperties Lax871432.DistinguishingClosure
+open Lax871432.GraphClasses
 open Lax871432.HomomorphismIndistinguishability Lax871432.PreservationProperties
 
 namespace Lax871432.EdgeContractions

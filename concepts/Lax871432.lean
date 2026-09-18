@@ -5,6 +5,7 @@ import Lax871432.Contractions
 import Lax871432.DistinguishingClosure
 import Lax871432.EdgeContractions
 import Lax871432.FullComplementCounts
+import Lax871432.GraphClasses
 import Lax871432.GraphFamilies
 import Lax871432.GraphProducts
 import Lax871432.HomomorphismCounts

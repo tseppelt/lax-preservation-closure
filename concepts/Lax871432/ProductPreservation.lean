@@ -11,6 +11,7 @@ categorical products: if $G \equiv_{\mathcal{F}} H$ then
 $G \times K \equiv_{\mathcal{F}} H \times K$ for every graph $K$.
 -/
 
+open Lax871432.GraphClasses
 open Lax871432.HomomorphismIndistinguishability Lax871432.PreservationProperties
 
 namespace Lax871432.ProductPreservation

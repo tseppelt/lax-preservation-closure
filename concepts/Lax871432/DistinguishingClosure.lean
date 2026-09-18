@@ -15,6 +15,7 @@ closure, i.e. if adding any further graph strictly refines its homomorphism
 indistinguishability relation.
 -/
 
+open Lax871432.GraphClasses
 open Lax871432.HomomorphismCounts Lax871432.HomomorphismIndistinguishability
 open Lax871432.IsomorphismRelaxations
 

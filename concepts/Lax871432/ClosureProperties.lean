@@ -2,7 +2,7 @@ import Mathlib.Combinatorics.SimpleGraph.Sum
 import Mathlib.Data.Finite.Sum
 import Lax68.GraphMinors
 import Lax871432.Contractions
-import Lax871432.HomomorphismIndistinguishability
+import Lax871432.GraphClasses
 
 /-!
 ---
@@ -22,7 +22,7 @@ a member.
 
 -/
 
-open Lax871432.Contractions Lax871432.HomomorphismIndistinguishability
+open Lax871432.Contractions Lax871432.GraphClasses
 
 namespace Lax871432.ClosureProperties
 

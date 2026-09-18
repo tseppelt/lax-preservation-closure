@@ -52,6 +52,7 @@ namespace Lax871432Proofs
 
 open _root_.SimpleGraph
 open Lax871432.HomomorphismCounts
+open Lax871432.GraphClasses
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
 open scoped Lax871432.HomomorphismIndistinguishability
 open Lax871432.ClosureProperties Lax871432.PreservationProperties

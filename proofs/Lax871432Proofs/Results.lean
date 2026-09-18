@@ -30,6 +30,7 @@ combinations, and `PreservationClosure` for the two theorems of the paper.
 namespace Lax871432Proofs
 
 open _root_.SimpleGraph
+open Lax871432.GraphClasses
 open Lax871432.HomomorphismCounts Lax871432.HomomorphismIndistinguishability
 open Lax871432.GraphFamilies Lax871432.LovaszTheorem Lax871432.GraphProducts
 open Lax871432.ConnectedPartitions Lax871432.LoopGraphs

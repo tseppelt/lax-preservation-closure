@@ -12,7 +12,7 @@ further graph to $\mathcal{F}$ strictly refines $\equiv_{\mathcal{F}}$.
 -/
 
 open Lax871432.ClosureProperties Lax871432.DistinguishingClosure
-open Lax871432.HomomorphismIndistinguishability
+open Lax871432.GraphClasses
 
 namespace Lax871432.RobersonConjecture
 

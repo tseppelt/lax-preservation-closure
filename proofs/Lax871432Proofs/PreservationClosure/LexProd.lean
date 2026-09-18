@@ -24,6 +24,7 @@ open _root_.SimpleGraph
 open Lax871432.ConnectedPartitions
 open Lax871432.ClosureProperties Lax871432.DistinguishingClosure
 open Lax871432.GraphProducts Lax871432.HomomorphismCounts
+open Lax871432.GraphClasses
 open Lax871432.HomomorphismIndistinguishability Lax871432.IsomorphismRelaxations
 open Lax871432.PreservationProperties
 

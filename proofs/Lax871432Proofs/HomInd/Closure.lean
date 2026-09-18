@@ -64,6 +64,7 @@ open _root_.SimpleGraph
 open Lax871432.LoopGraphs
 open scoped Lax871432.LoopGraphs
 open Lax871432.GraphFamilies Lax871432.HomomorphismCounts Lax871432.LovaszTheorem
+open Lax871432.GraphClasses
 open Lax871432.HomomorphismIndistinguishability Lax871432.DistinguishingClosure
 open scoped Lax871432.HomomorphismIndistinguishability
 open Lax871432.ClosureProperties Lax871432.PreservationProperties
