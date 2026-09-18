@@ -6,31 +6,51 @@ import Mathlib.SetTheory.Cardinal.Finite
 title: Graphs with loops
 type: definition
 ---
-Homomorphism counts into a complement are expanded in two steps, and both steps pass through
-graphs in which loops are allowed. For a graph $X$, the *full complement* $\widehat{X}$
-replaces every edge by a non-edge *and* every loop by a non-loop; for a simple graph $G$, the
-*looped graph* $G^\circ$ is obtained by adding a loop at every vertex. The complement of a
-simple graph factors through these as $\overline{G} = \widehat{G^\circ}$, which is what makes
-the two-step expansion possible.
+A *loop graph* is a graph in which loops are allowed: a symmetric, not necessarily
+irreflexive, relation on a vertex type. Simple graphs are the loopless case, and a loop graph
+without loops is a simple graph again. A homomorphism of loop graphs sends adjacent vertices
+to adjacent vertices, so a loop is sent to a loop or to an edge, and $\hom(X, Y)$ counts these
+maps as for simple graphs. Besides homomorphisms and isomorphisms, loop graphs carry here the
+*full complement* $\widehat{X}$, which replaces every edge by a non-edge *and* every loop by a
+non-loop, the sub-loop-graph induced on a set of vertices, and the edge set, which for a loop
+graph may contain a pair $vv$, one for each loop.
 
-The second step also needs quotients that may acquire loops. For a simple graph $F$ and a set
-$L \subseteq E(F)$ of edges, the *contraction quotient* $F \oslash L$ has as vertices the
-connected components of the spanning subgraph with edge set $L$, and joins two of them when
-some edge of $E(F) \setminus L$ joins a vertex of the one to a vertex of the other. It is a
-graph obtained from $F$ by contracting the edges of $L$ whenever it is loopless; in general it
-is not, which is why loops must be allowed here.
+Loops arise from two constructions on simple graphs. The *looped graph* $G^\circ$ is obtained
+from a simple graph $G$ by adding a loop at every vertex; the complement then factors as
+$\overline{G} = \widehat{G^\circ}$, which is what makes a two-step expansion of homomorphism
+counts into a complement possible.
+
+The other is a quotient. For a simple graph $F$ and a set $L$ of unordered pairs of vertices,
+the *contraction quotient* $F \oslash L$ has as vertices the connected components of the graph
+on $V(F)$ with edge set $L$, and joins two of them when some edge of $E(F) \setminus L$ joins
+a vertex of the one to a vertex of the other. It is a graph obtained from $F$ by contracting
+the edges of $L$ whenever it is loopless; in general it is not, carrying a loop at a component
+for every edge of $E(F) \setminus L$ with both endpoints inside it, which is why loops must be
+allowed here.
+
+Two operations on simple graphs accompany these: the *spanning subgraph* $F_s$, which keeps
+all vertices of $F$ and those of its edges that lie in a set $s$, and the passage from a set
+of edges of $F$ to the underlying set of unordered pairs.
 
 # Implementation notes
 
-A `LoopGraph` is a symmetric relation on the vertex type, with no irreflexivity requirement;
-`SimpleGraph` is the irreflexive case, and `toLoopGraph` is the inclusion. Homomorphisms of
-loop graphs are maps preserving the relation, so a loop is sent to a loop or to an edge, and
-`LoopGraph.homCount` extends `homCount` along `toLoopGraph`: the two hom-types are
-definitionally equal.
+A `LoopGraph` is a structure carrying an adjacency relation and a proof that it is symmetric,
+with no irreflexivity field; `SimpleGraph` is the irreflexive case, `toLoopGraph` the
+inclusion and `toSimpleGraph` the passage back, given a proof of `IsLoopless`. Homomorphisms
+and isomorphisms, written `→lg` and `≃lg`, are those of the adjacency relations, so `F →g G`
+and `toLoopGraph F →lg toLoopGraph G` are definitionally equal and `LoopGraph.homCount`
+extends `homCount` along `toLoopGraph` with no transport needed.
 
-`spanningSubgraph F s` keeps the edges of `F` that lie in `s` and all of the vertices, and
-`edgeSetOf F s` turns a finite set of edges of `F` into the corresponding set of unordered
-pairs; together they let the deletion part of the expansion be indexed by `Finset F.edgeSet`.
+`spanningSubgraph F s` takes an arbitrary set `s` of unordered pairs, and `edgeSetOf F s`
+turns a finite set of edges of `F` into the corresponding set of pairs; together they let the
+deletion part of the expansion be indexed by `Finset F.edgeSet`.
+
+`contractionQuotient F L` likewise takes an arbitrary set `L` of pairs; its vertex type is the
+connected components of `SimpleGraph.fromEdgeSet L`, which discards the diagonal pairs of `L`.
+
+Only as much API is developed as the expansion of $\hom(F, \overline{G})$ needs. Loop graphs
+enter that expansion through the contraction quotients on its right-hand side; every other
+statement of the package is about simple graphs only.
 -/
 
 namespace Lax871432.LoopGraphs
