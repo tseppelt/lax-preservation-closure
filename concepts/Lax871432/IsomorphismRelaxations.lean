@@ -8,17 +8,6 @@ type: definition
 A *graph isomorphism relaxation* is an equivalence relation on finite simple graphs that is
 coarser than isomorphism: isomorphic graphs are related, and the relation is symmetric and
 transitive.
-
-# Implementation notes
-
-Reflexivity is not a separate field: it is `rel_of_iso` applied to the identity isomorphism.
-Isomorphism invariance is likewise not assumed separately; it follows from `rel_of_iso`
-together with symmetry and transitivity.
-
-The vertex types range over `Type` rather than over an arbitrary universe, matching the
-quantifiers in the homomorphism distinguishing closure. This is no loss of generality: every
-finite graph is isomorphic to a graph on some `Fin n`, and a relaxation relates isomorphic
-graphs.
 -/
 
 namespace Lax871432.IsomorphismRelaxations
