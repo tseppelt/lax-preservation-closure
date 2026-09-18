@@ -64,11 +64,6 @@ variable {n : ℕ} {ι : Type*} {F : GraphFamily n ι}
 
 @[refl] theorem Iso.refl (i : ι) : F.Iso i i := ⟨RelIso.refl _⟩
 
-theorem Iso.symm {i j : ι} (h : F.Iso i j) : F.Iso j i := ⟨h.some.symm⟩
-
-theorem Iso.trans {i j k : ι} (h : F.Iso i j) (h' : F.Iso j k) : F.Iso i k :=
-  ⟨h.some.trans h'.some⟩
-
 theorem PairwiseNonIso.eq (hF : F.PairwiseNonIso) {i j : ι} (h : F.Iso i j) : i = j := by
   by_contra hne
   exact hF hne h

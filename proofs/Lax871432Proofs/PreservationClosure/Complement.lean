@@ -169,14 +169,6 @@ theorem eq_univ_and_card_eq_one_of_iso_contract {V : Type*} [Finite V] {F : Simp
 
 namespace GraphClass
 
-/-- Complementation is an involution, so preservation under complements is automatically an
-equivalence. -/
-theorem PreservedUnderCompl.iff (hp : PreservedUnderCompl (homIndRel 𝓕)) {V W : Type} [Finite V] [Finite W]
-    (G : SimpleGraph V) (H : SimpleGraph W) : (G ≡[𝓕] H) ↔ (Gᶜ ≡[𝓕] Hᶜ) := by
-  refine ⟨hp G H, fun h => ?_⟩
-  have hc := hp Gᶜ Hᶜ h
-  rwa [compl_compl, compl_compl] at hc
-
 /-- **`thm:complement`, (1) ⇒ (2)**: if `𝓕` is closed under deleting and contracting edges then
 `≡[𝓕]` is preserved under taking complements.
 
@@ -202,8 +194,9 @@ theorem IsEdgeContractionClosed.preservedUnderCompl (hd : IsEdgeDeletionClosed �
         hc ((edgeSetOf_subset_edgeSet_spanningSubgraph F) hL)
           (hd.mem_spanningSubgraph F _ hF) _ ⟨RelIso.refl _⟩
       have heq := (homIndistinguishable_iff_forall_mem 𝓕 G H).1 hGH (X.toSimpleGraph hloop) hmem
-      rw [← homCount_toLoopGraph, ← homCount_toLoopGraph] at heq
-      simpa using heq
+      rw [← homCount_toLoopGraph, ← homCount_toLoopGraph,
+        LoopGraph.toSimpleGraph_toLoopGraph X hloop] at heq
+      exact heq
     · rw [LoopGraph.homCount_eq_zero_of_not_isLoopless hloop (toLoopGraph_isLoopless G),
         LoopGraph.homCount_eq_zero_of_not_isLoopless hloop (toLoopGraph_isLoopless H)]
   rw [← Nat.cast_inj (R := ℤ), homCount_compl F G, homCount_compl F H]
@@ -445,14 +438,6 @@ theorem PreservedUnderCompl.cl_isMinorClosed (hp : PreservedUnderCompl (homIndRe
   isMinorClosed_of_atomic_single (GraphClass.PreservedUnderCompl.cl_isEdgeDeletionClosed hp)
     (IsEdgeDeletionClosed.cl_isSubgraphClosed (GraphClass.PreservedUnderCompl.cl_isEdgeDeletionClosed hp)).2
     (GraphClass.PreservedUnderCompl.cl_isSingleEdgeContractionClosed hp)
-
-/-- **`thm:complement`, (2) ⇒ (3), edge contraction**: contracting any set of edges, which
-follows from minor-closedness. -/
-theorem PreservedUnderCompl.cl_isEdgeContractionClosed (hp : PreservedUnderCompl (homIndRel 𝓕)) :
-    IsEdgeContractionClosed (cl 𝓕) := by
-  have h : IsMinorClosed (cl 𝓕) := (GraphClass.PreservedUnderCompl.cl_isMinorClosed hp)
-  intro V _ F L hL hF W _ K he
-  exact h K (isMinor_of_iso_contractionQuotient hL he.some) hF
 
 /-- **`thm:complement`, (3) ⇒ (2)**: this follows from (1) ⇒ (2) applied to `cl 𝓕`, since
 `≡[𝓕]` and `≡[cl 𝓕]` coincide. -/

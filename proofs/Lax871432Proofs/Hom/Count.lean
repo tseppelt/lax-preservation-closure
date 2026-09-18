@@ -106,22 +106,6 @@ structure Hom.IsStrongSurjective (f : G →g H) : Prop where
 
 namespace Hom
 
-lemma isStrongSurjective_iff_range_eq_top {f : G →g H} :
-    (Hom.IsStrongSurjective f) ↔ (Hom.range f) = ⊤ := by
-  constructor
-  · intro hf
-    refine Subgraph.ext ?_ (funext fun u => funext fun v => propext ?_)
-    · rw [Hom.range_verts, Subgraph.verts_top, Set.range_eq_univ]
-      exact hf.surjective
-    · rw [Hom.range_adj, Subgraph.top_adj]
-      exact ⟨fun ⟨a, b, hab, ha, hb⟩ => ha ▸ hb ▸ f.map_rel' hab, fun h => hf.exists_adj h⟩
-  · intro hf
-    constructor
-    · rw [← Set.range_eq_univ, ← Hom.range_verts, hf, Subgraph.verts_top]
-    · intro u v huv
-      have : (Hom.range f).Adj u v := by rw [hf]; exact Subgraph.top_adj.2 huv
-      exact Hom.range_adj f |>.1 this
-
 @[simp]
 lemma isStrongSurjective_id (G : SimpleGraph V) : (Hom.IsStrongSurjective (Hom.id : G →g G)) :=
   ⟨surjective_id, fun _ _ h => ⟨_, _, h, rfl, rfl⟩⟩
@@ -146,8 +130,6 @@ lemma Iso.isStrongSurjective (e : G ≃g H) : (Hom.IsStrongSurjective e.toHom) w
   surjective := e.toEquiv.surjective
   exists_adj u v huv :=
     ⟨e.symm u, e.symm v, e.symm.map_adj_iff.2 huv, e.apply_symm_apply u, e.apply_symm_apply v⟩
-
-lemma Iso.injective_toHom (e : G ≃g H) : Injective e.toHom := e.toEquiv.injective
 
 /-- Equal subgraphs have isomorphic coercions. -/
 def Subgraph.isoCoeOfEq {S T : G.Subgraph} (h : S = T) : S.coe ≃g T.coe := by
@@ -182,18 +164,6 @@ theorem Hom.range_comp_of_isStrongSurjective {X : Type*} {K : SimpleGraph X} (g 
     exact ⟨a, b, hab, by simp [ha, hc], by simp [hb, hd]⟩
 
 /-! ### Edge counts under homomorphisms -/
-
-/-- A strongly surjective homomorphism induces a surjection on edge sets. -/
-theorem card_edgeSet_le_of_isStrongSurjective [Finite V] {f : G →g H}
-    (hf : (Hom.IsStrongSurjective f)) : Nat.card H.edgeSet ≤ Nat.card G.edgeSet := by
-  refine Nat.card_le_card_of_surjective
-    (fun e : G.edgeSet => (⟨Sym2.map f e.1, f.map_mem_edgeSet e.2⟩ : H.edgeSet)) ?_
-  rintro ⟨e, he⟩
-  induction e using Sym2.ind with
-  | h u v =>
-    rw [mem_edgeSet] at he
-    obtain ⟨a, b, hab, ha, hb⟩ := hf.exists_adj he
-    exact ⟨⟨s(a, b), by rwa [mem_edgeSet]⟩, Subtype.ext (by simp [ha, hb])⟩
 
 /-- An injective homomorphism induces an injection on edge sets. -/
 theorem card_edgeSet_le_of_injective [Finite W] {f : G →g H} (hf : Injective f) :
@@ -246,23 +216,6 @@ noncomputable def injCount (G : SimpleGraph V) (H : SimpleGraph W) : ℕ :=
 /-- `autCount G` is the number of automorphisms of `G`. -/
 noncomputable def autCount (G : SimpleGraph V) : ℕ := Nat.card (G ≃g G)
 
-lemma homCount_eq_card [Fintype (G →g H)] : homCount G H = Fintype.card (G →g H) :=
-  Nat.card_eq_fintype_card
-
-/-- `injCount` agrees with Mathlib's `SimpleGraph.labelledCopyCount`, which counts the
-labelled copies of `G` inside `H`. -/
-lemma injCount_eq_labelledCopyCount [Fintype V] [Fintype W] :
-    injCount G H = H.labelledCopyCount G := by
-  classical
-  rw [injCount, labelledCopyCount, Nat.card_eq_fintype_card]
-  exact Fintype.card_congr ⟨fun f => ⟨f.1, f.2⟩, fun f => ⟨f.1, f.2⟩, fun _ => rfl, fun _ => rfl⟩
-
-lemma surjCount_le_homCount [Finite V] [Finite W] : surjCount G H ≤ homCount G H :=
-  Nat.card_le_card_of_injective _ Subtype.val_injective
-
-lemma injCount_le_homCount [Finite V] [Finite W] : injCount G H ≤ homCount G H :=
-  Nat.card_le_card_of_injective _ Subtype.val_injective
-
 /-- A homomorphism count is positive exactly when a homomorphism exists. -/
 lemma homCount_pos_iff [Finite V] [Finite W] : 0 < homCount G H ↔ Nonempty (G →g H) := by
   rw [homCount, Nat.card_pos_iff]
@@ -294,11 +247,6 @@ theorem homCount_congr_right (K : SimpleGraph U) (e : G ≃g H) :
       invFun f := e.symm.toHom.comp f
       left_inv f := by ext a; simp
       right_inv f := by ext a; simp }
-
-/-- Homomorphism counts only depend on the isomorphism types of both arguments. -/
-theorem homCount_congr {V' W' : Type*} {G' : SimpleGraph V'} {H' : SimpleGraph W'}
-    (e₁ : G ≃g G') (e₂ : H ≃g H') : homCount G H = homCount G' H' :=
-  (homCount_congr_left e₁ H).trans (homCount_congr_right G' e₂)
 
 end SimpleGraph
 

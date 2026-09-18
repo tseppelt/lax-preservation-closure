@@ -65,10 +65,6 @@ theorem sigma_adj_mk {G : ∀ i, SimpleGraph (V i)} {i : ι} {a b : V i} :
   obtain rfl : b = d := eq_of_heq (Sigma.mk.injEq .. ▸ hq).2
   exact hcd
 
-theorem sigma_adj_iff {G : ∀ i, SimpleGraph (V i)} {p q : Σ i, V i} :
-    (SimpleGraph.sigma G).Adj p q ↔
-      ∃ (i : ι) (a b : V i), (G i).Adj a b ∧ p = ⟨i, a⟩ ∧ q = ⟨i, b⟩ := Iff.rfl
-
 /-- Adjacent vertices of a disjoint union lie in the same part. -/
 theorem fst_eq_of_sigma_adj {G : ∀ i, SimpleGraph (V i)} {p q : Σ i, V i}
     (h : (SimpleGraph.sigma G).Adj p q) : p.1 = q.1 := by
@@ -79,10 +75,6 @@ theorem fst_eq_of_sigma_adj {G : ∀ i, SimpleGraph (V i)} {p q : Σ i, V i}
 def Hom.sigmaIncl (G : ∀ i, SimpleGraph (V i)) (i : ι) : G i →g SimpleGraph.sigma G where
   toFun a := ⟨i, a⟩
   map_rel' h := sigma_adj_mk.2 h
-
-@[simp]
-theorem Hom.sigmaIncl_apply (G : ∀ i, SimpleGraph (V i)) (i : ι) (a : V i) :
-    Hom.sigmaIncl G i a = ⟨i, a⟩ := rfl
 
 /-- The disjoint union of the subfamily of `G` indexed by the set `s`. -/
 abbrev sigmaOn (s : Set ι) (G : ∀ i, SimpleGraph (V i)) : SimpleGraph (Σ i : s, V i) :=
@@ -120,10 +112,6 @@ def Iso.sigmaConnectedComponent {α : Type*} (F : SimpleGraph α) :
       exact sigma_adj_mk.2 ((c.toSimpleGraph_adj x.property y.property).2 h)
     · rintro ⟨c, ⟨x, hx⟩, ⟨y, hy⟩, hadj, rfl, rfl⟩
       exact (c.toSimpleGraph_adj hx hy).1 hadj
-
-theorem nonempty_iso_sigma_connectedComponent {α : Type*} (F : SimpleGraph α) :
-    Nonempty (F ≃g SimpleGraph.sigma fun c : F.ConnectedComponent => c.toSimpleGraph) :=
-  ⟨(Iso.sigmaConnectedComponent F).symm⟩
 
 /-! ### Reindexing and splitting -/
 
@@ -192,11 +180,6 @@ def Hom.sigmaOnIncl (s : Set ι) (G : ∀ i, SimpleGraph (V i)) :
     sigmaOn s G →g SimpleGraph.sigma G where
   toFun p := ⟨p.1, p.2⟩
   map_rel' := by rintro _ _ ⟨k, c, d, hcd, rfl, rfl⟩; exact sigma_adj_mk.2 hcd
-
-theorem nonempty_hom_sigmaOn_sigma (s : Set ι) (G : ∀ i, SimpleGraph (V i)) :
-    Nonempty (sigmaOn s G →g SimpleGraph.sigma G) :=
-  ⟨Hom.sigmaOnIncl s G⟩
-
 
 end SimpleGraph
 

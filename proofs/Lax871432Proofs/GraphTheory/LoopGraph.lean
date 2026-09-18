@@ -53,20 +53,8 @@ variable {U V W : Type*}
 
 namespace LoopGraph
 
-/-- Adjacency in a loop graph is symmetric. -/
-protected theorem Adj.symm {X : LoopGraph V} {u v : V} (h : X.Adj u v) : X.Adj v u :=
-  X.symm.symm _ _ h
-
-@[simp]
-theorem toSimpleGraph_adj (X : LoopGraph V) (h : X.IsLoopless) (u v : V) :
-    (X.toSimpleGraph h).Adj u v ↔ X.Adj u v := Iff.rfl
-
 @[simp]
 theorem fullCompl_adj (X : LoopGraph V) (u v : V) : X.fullCompl.Adj u v ↔ ¬ X.Adj u v := Iff.rfl
-
-@[simp]
-theorem induce_adj (X : LoopGraph V) (s : Set V) (a b : s) :
-    (X.induce s).Adj a b ↔ X.Adj a b := Iff.rfl
 
 theorem mem_edgeSet {X : LoopGraph V} {a b : V} : s(a, b) ∈ X.edgeSet ↔ X.Adj a b :=
   Sym2.fromRel_prop
@@ -105,7 +93,6 @@ theorem toLoopGraph_isLoopless (G : SimpleGraph V) : (toLoopGraph G).IsLoopless 
 
 /-- Passing from a loopless loop graph to the underlying simple graph and back changes
 nothing. -/
-@[simp]
 theorem _root_.Lax871432Proofs.LoopGraph.toSimpleGraph_toLoopGraph (X : LoopGraph V) (h : X.IsLoopless) :
     (toLoopGraph (X.toSimpleGraph h)) = X := rfl
 
@@ -114,18 +101,6 @@ theorem looped_adj (G : SimpleGraph V) (u v : V) : (looped G).Adj u v ↔ G.Adj 
   Iff.rfl
 
 end SimpleGraph
-
-namespace LoopGraph
-
-open scoped LoopGraph
-
-/-- The full complement is an involution. -/
-@[simp]
-theorem fullCompl_fullCompl (X : LoopGraph V) : X.fullCompl.fullCompl = X := by
-  ext u v
-  simp
-
-end LoopGraph
 
 namespace SimpleGraph
 

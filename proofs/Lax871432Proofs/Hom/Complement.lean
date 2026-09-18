@@ -72,15 +72,6 @@ theorem mem_edgeSetOf_iff (F : SimpleGraph V) (L : Finset F.edgeSet) (e : F.edge
     (e : Sym2 V) ∈ (edgeSetOf F) L ↔ e ∈ L := by
   simp [Lax871432.LoopGraphs.edgeSetOf, Subtype.val_injective.eq_iff]
 
-/-- A vertex map is a homomorphism `F_s → X` exactly when it sends every edge of `F` lying in
-`s` to an adjacent pair of `X`.  This is the reformulation of the left-hand side of (5.23)
-that the inclusion–exclusion argument is applied to. -/
-theorem hom_spanningSubgraph_iff {F : SimpleGraph V} {s : Set (Sym2 V)} {X : LoopGraph W}
-    (f : V → W) :
-    (∀ ⦃u v⦄, ((spanningSubgraph F) s).Adj u v → X.Adj (f u) (f v)) ↔
-      ∀ ⦃u v⦄, F.Adj u v → s(u, v) ∈ s → X.Adj (f u) (f v) :=
-  ⟨fun h _ _ h1 h2 => h ⟨h1, h2⟩, fun h _ _ h1 => h h1.1 h1.2⟩
-
 /-- **Equation (5.23)**: the number of homomorphisms from a simple graph `F` into a full
 complement `X̂`, by inclusion–exclusion over the edges of `F`.
 
@@ -201,7 +192,6 @@ def homLoopedOfContraction (F : SimpleGraph V) (G : SimpleGraph W)
     · refine Or.inl (p.2.map_rel ⟨x, y, hxy, fun hm => hc ?_, rfl, rfl⟩)
       exact connectedComponentMk_eq_of_mem p.1 hxy ((mem_edgeSetOf_iff F p.1 _).1 hm)
 
-@[simp]
 theorem homLoopedOfContraction_apply (F : SimpleGraph V) (G : SimpleGraph W)
     (p : Σ L : Finset F.edgeSet, ((F ⊘ (edgeSetOf F) L) →lg (toLoopGraph G))) (x : V) :
     homLoopedOfContraction F G p x =
@@ -216,7 +206,9 @@ theorem mem_iff_homLoopedOfContraction_eq (F : SimpleGraph V) (G : SimpleGraph W
     (hxy : F.Adj x y) :
     (⟨s(x, y), hxy⟩ : F.edgeSet) ∈ L ↔
       homLoopedOfContraction F G ⟨L, ψ⟩ x = homLoopedOfContraction F G ⟨L, ψ⟩ y := by
-  refine ⟨fun hL => by simp [connectedComponentMk_eq_of_mem L hxy hL], fun heq => ?_⟩
+  refine ⟨fun hL => by
+    rw [homLoopedOfContraction_apply, homLoopedOfContraction_apply,
+      connectedComponentMk_eq_of_mem L hxy hL], fun heq => ?_⟩
   by_contra hL
   have hadj : (F ⊘ (edgeSetOf F) L).Adj
       ((fromEdgeSet ((edgeSetOf F) L)).connectedComponentMk x)

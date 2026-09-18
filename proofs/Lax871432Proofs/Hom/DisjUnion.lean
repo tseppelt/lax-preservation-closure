@@ -53,33 +53,6 @@ noncomputable def Hom.piConnectedComponentEquiv (F : SimpleGraph α) (G : Simple
     subst hc
     rfl
 
-/-- **Component decomposition of homomorphism counts**: `hom(F, G) = ∏_c hom(c, G)`, the
-product ranging over the connected components `c` of `F`. -/
-theorem homCount_eq_prod_connectedComponent (F : SimpleGraph α) (G : SimpleGraph W)
-    [Fintype F.ConnectedComponent] :
-    homCount F G = ∏ c : F.ConnectedComponent, homCount c.toSimpleGraph G := by
-  rw [homCount, Nat.card_congr (Hom.piConnectedComponentEquiv F G), Nat.card_pi]
-  rfl
-
-/-- Distributing a product of binary sums over all `Bool`-valued choice functions. -/
-private theorem prod_add_eq_sum_prod_bool {ι : Type*} [Fintype ι] [DecidableEq ι] (a b : ι → ℕ) :
-    ∏ i, (a i + b i) = ∑ s : ι → Bool, ∏ i, if s i then a i else b i := by
-  have h : ∀ i : ι, a i + b i = ∑ j : Bool, if j then a i else b i := fun i => by simp
-  rw [Finset.prod_congr rfl fun i _ => h i, Finset.prod_univ_sum, Fintype.piFinset_univ]
-
-/-- **Homomorphism counts into a disjoint union**: splitting `F` into connected components and
-choosing, for each component, which summand it maps into. -/
-theorem homCount_sum_right [Finite α] [Finite β] [Finite γ]
-    (F : SimpleGraph α) (G : SimpleGraph β) (H : SimpleGraph γ)
-    [Fintype F.ConnectedComponent] [DecidableEq F.ConnectedComponent] :
-    homCount F (G ⊕g H) =
-      ∑ s : F.ConnectedComponent → Bool, ∏ c : F.ConnectedComponent,
-        if s c then homCount c.toSimpleGraph G else homCount c.toSimpleGraph H := by
-  rw [homCount_eq_prod_connectedComponent]
-  rw [Finset.prod_congr rfl fun c _ =>
-    homCount_sum_right_of_connected c.connected_toSimpleGraph G H]
-  exact prod_add_eq_sum_prod_bool _ _
-
 /-! ### `eq:disjunion` -/
 
 /-- **`eq:disjunion`**: the number of homomorphisms from a disjoint union of connected graphs
@@ -106,13 +79,6 @@ theorem homCount_sum_right_eq_sum_powerset {α β γ : Type*} [Finite α] [Finit
           homCount (sigmaOn (↑tᶜ) fun c : F.ConnectedComponent => c.toSimpleGraph) H := by
   rw [homCount_congr_left (Iso.sigmaConnectedComponent F).symm (G ⊕g H)]
   exact homCount_sigma_sum_right (fun c => c.connected_toSimpleGraph) G H
-
-/-- Every union of connected components of `F` admits a homomorphism into `F`. -/
-theorem homCount_sigmaOn_connectedComponent_pos {α : Type*} [Finite α] (F : SimpleGraph α)
-    (s : Set F.ConnectedComponent) :
-    0 < homCount (sigmaOn s fun c : F.ConnectedComponent => c.toSimpleGraph) F :=
-  homCount_pos_iff.2
-    ⟨(Iso.sigmaConnectedComponent F).toHom.comp (Hom.sigmaOnIncl s _)⟩
 
 end SimpleGraph
 

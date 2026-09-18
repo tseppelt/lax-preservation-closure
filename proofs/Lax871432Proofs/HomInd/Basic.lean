@@ -84,9 +84,6 @@ namespace SimpleGraph
 instance : LE GraphClass :=
   ⟨fun 𝓕 𝓖 => ∀ ⦃V : Type⦄ [Finite V] (F : SimpleGraph V), 𝓕.Mem F → 𝓖.Mem F⟩
 
-theorem le_def {𝓕 𝓖 : GraphClass} :
-    𝓕 ≤ 𝓖 ↔ ∀ ⦃V : Type⦄ [Finite V] (F : SimpleGraph V), 𝓕.Mem F → 𝓖.Mem F := Iff.rfl
-
 variable {𝓕 𝓖 : GraphClass} {α V W : Type} [Finite α] [Finite V] [Finite W]
   {G : SimpleGraph V} {H : SimpleGraph W}
 
@@ -115,17 +112,6 @@ theorem homIndistinguishable_iff_forall_mem (𝓕 : GraphClass) (G : SimpleGraph
 @[refl]
 theorem HomIndistinguishable.refl (𝓕 : GraphClass) (G : SimpleGraph V) : G ≡[𝓕] G :=
   fun _ _ _ => rfl
-
-theorem HomIndistinguishable.symm (h : G ≡[𝓕] H) : H ≡[𝓕] G :=
-  fun _ F hF => (h F hF).symm
-
-theorem HomIndistinguishable.trans {U : Type} [Finite U] {K : SimpleGraph U}
-    (h : G ≡[𝓕] H) (h' : H ≡[𝓕] K) : G ≡[𝓕] K :=
-  fun _ F hF => (h F hF).trans (h' F hF)
-
-/-- Isomorphic graphs are homomorphism indistinguishable over every class. -/
-theorem HomIndistinguishable.of_iso (𝓕 : GraphClass) (e : G ≃g H) : G ≡[𝓕] H :=
-  fun _ F _ => homCount_congr_right F e
 
 /-- A larger class distinguishes more graphs. -/
 theorem HomIndistinguishable.mono (hle : 𝓕 ≤ 𝓖) (h : G ≡[𝓖] H) : G ≡[𝓕] H :=
@@ -157,11 +143,6 @@ theorem homCount_eq_of_Mem_cl {K : SimpleGraph α} (h : (cl 𝓕).Mem K) (hGH : 
 theorem GraphClass.le_cl (𝓕 : GraphClass) : 𝓕 ≤ (cl 𝓕) := by
   intro _ _ F hF
   exact ⟨fun G H hGH => (homIndistinguishable_iff_forall_mem 𝓕 G H).1 hGH F hF⟩
-
-/-- `cl` is monotone. -/
-theorem GraphClass.cl_mono (h : 𝓕 ≤ 𝓖) : (cl 𝓕) ≤ (cl 𝓖) := by
-  intro _ _ K hK
-  exact ⟨fun G H hGH => hK.homCount_eq G H (HomIndistinguishable.mono h hGH)⟩
 
 /-- `≡[𝓕]` and `≡[cl 𝓕]` are the same relation: this is the sense in which `cl 𝓕` is the
 largest class with the same homomorphism indistinguishability relation as `𝓕`. -/

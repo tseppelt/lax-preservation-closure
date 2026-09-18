@@ -69,11 +69,6 @@ variable {F : SimpleGraph V} (𝓡 : ConnPart F)
 theorem proj_eq_iff {u v : V} : 𝓡.proj u = 𝓡.proj v ↔ 𝓡.setoid u v :=
   Quotient.eq (r := 𝓡.setoid)
 
-@[simp]
-theorem quotientGraph_adj {a b : Quotient 𝓡.setoid} :
-    𝓡.quotientGraph.Adj a b ↔ a ≠ b ∧ ∃ x y, F.Adj x y ∧ 𝓡.proj x = a ∧ 𝓡.proj y = b :=
-  Iff.rfl
-
 /-- The projection is a homomorphism onto the quotient wherever it does not collapse. -/
 theorem quotientGraph_adj_of_adj {u v : V} (h : F.Adj u v) (hne : 𝓡.proj u ≠ 𝓡.proj v) :
     𝓡.quotientGraph.Adj (𝓡.proj u) (𝓡.proj v) := ⟨hne, u, v, h, rfl, rfl⟩

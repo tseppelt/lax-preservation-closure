@@ -112,13 +112,6 @@ def IsEdgeContractionClosed (𝓕 : GraphClass) : Prop :=
     ∀ {W : Type} [Finite W] (K : SimpleGraph W),
       Nonempty ((toLoopGraph K) ≃lg (F ⊘ L)) → 𝓕.Mem K
 
-/-- The single-edge instance of `SimpleGraph.GraphClass.IsEdgeContractionClosed`. -/
-theorem IsEdgeContractionClosed.mem_singleton (h : IsEdgeContractionClosed 𝓕) {V : Type}
-    [Finite V] {F : SimpleGraph V} {u v : V} (huv : F.Adj u v) (hF : 𝓕.Mem F) {W : Type}
-    [Finite W] (K : SimpleGraph W)
-    (he : Nonempty ((toLoopGraph K) ≃lg (F ⊘ ({s(u, v)} : Set (Sym2 V))))) : 𝓕.Mem K :=
-  h (Set.singleton_subset_iff.2 (F.mem_edgeSet.2 huv)) hF K he
-
 /-- A graph class is *closed under contracting a single edge* if contracting one edge of a
 member gives a member.  This is the form of edge-contraction closure that the proof of
 `thm:complement` establishes for `cl 𝓕`; by
@@ -128,11 +121,6 @@ def IsSingleEdgeContractionClosed (𝓕 : GraphClass) : Prop :=
   ∀ {V : Type} [Finite V] {F : SimpleGraph V} {u v : V}, F.Adj u v → 𝓕.Mem F →
     ∀ {W : Type} [Finite W] (K : SimpleGraph W),
       Nonempty ((toLoopGraph K) ≃lg (F ⊘ ({s(u, v)} : Set (Sym2 V)))) → 𝓕.Mem K
-
-theorem IsEdgeContractionClosed.isSingleEdgeContractionClosed
-    (h : IsEdgeContractionClosed 𝓕) : IsSingleEdgeContractionClosed 𝓕 := by
-  intro V _ F u v huv hF W _ K he
-  exact h.mem_singleton huv hF K he
 
 /-- A graph class is *closed under taking subgraphs* if it is closed under deleting edges and
 vertices. -/
@@ -318,15 +306,6 @@ theorem GraphClass.IsEdgeDeletionClosed.cl_isSubgraphClosed (h : IsEdgeDeletionC
 
 namespace GraphClass
 
-/-- Closure under deleting edges and vertices and under contracting edges implies
-minor-closedness, since every minor arises from such operations
-(`SimpleGraph.isMinor_iff_exists_induce_spanningSubgraph_contraction`). -/
-theorem isMinorClosed_of_atomic (hd : IsEdgeDeletionClosed 𝓕) (hv : IsVertexDeletionClosed 𝓕)
-    (hc : IsEdgeContractionClosed 𝓕) : IsMinorClosed 𝓕 := by
-  intro V W _ _ F K hKF hF
-  obtain ⟨s, t, L, hL, he⟩ := isMinor_iff_exists_induce_spanningSubgraph_contraction.1 hKF
-  exact hc hL (hd.mem_spanningSubgraph _ t (hv F s hF)) K he
-
 /-- **Minor-closedness from single-edge contraction.**  Closure under deleting edges and
 vertices and under contracting a *single* edge already implies minor-closedness.
 
@@ -378,16 +357,10 @@ theorem isMinorClosed_of_atomic_single (hd : IsEdgeDeletionClosed 𝓕)
 theorem IsMinorClosed.isEdgeDeletionClosed (h : IsMinorClosed 𝓕) : IsEdgeDeletionClosed 𝓕 :=
   fun F s hF => h _ (isMinor_deleteEdges F s) hF
 
-theorem IsMinorClosed.isVertexDeletionClosed (h : IsMinorClosed 𝓕) : IsVertexDeletionClosed 𝓕 :=
-  fun F s hF => h _ (isMinor_induce F s) hF
-
 theorem IsMinorClosed.isEdgeContractionClosed (h : IsMinorClosed 𝓕) :
     IsEdgeContractionClosed 𝓕 := by
   intro V _ F L hL hF W _ K he
   exact h K (isMinor_of_iso_contractionQuotient hL he.some) hF
-
-theorem IsMinorClosed.isSubgraphClosed (h : IsMinorClosed 𝓕) : IsSubgraphClosed 𝓕 :=
-  ⟨(GraphClass.IsMinorClosed.isEdgeDeletionClosed h), (GraphClass.IsMinorClosed.isVertexDeletionClosed h)⟩
 
 /-! ### Summands -/
 

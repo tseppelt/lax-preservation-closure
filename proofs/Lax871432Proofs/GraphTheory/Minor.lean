@@ -79,13 +79,6 @@ theorem spanningSubgraph_adj (F : SimpleGraph V) (s : Set (Sym2 V)) (u v : V) :
 
 /-! ### Contraction quotients -/
 
-@[simp]
-theorem contractionQuotient_adj (F : SimpleGraph V) (L : Set (Sym2 V))
-    {c d : (fromEdgeSet L).ConnectedComponent} :
-    (F ⊘ L).Adj c d ↔ ∃ x y, F.Adj x y ∧ s(x, y) ∉ L ∧
-      (fromEdgeSet L).connectedComponentMk x = c ∧
-      (fromEdgeSet L).connectedComponentMk y = d := Iff.rfl
-
 /-! ### Minors -/
 
 /-! Minor models and the minor relation are the concept `Lax68.GraphMinors`. -/
@@ -102,14 +95,6 @@ variable {V W : Type*} {F : SimpleGraph V}
 
 theorem spanningSubgraph_le (F : SimpleGraph V) (s : Set (Sym2 V)) :
     (spanningSubgraph F) s ≤ F := fun _ _ h => h.1
-
-@[simp]
-theorem spanningSubgraph_univ (F : SimpleGraph V) : (spanningSubgraph F) Set.univ = F := by
-  ext u v; simp
-
-@[simp]
-theorem spanningSubgraph_empty (F : SimpleGraph V) : (spanningSubgraph F) ∅ = ⊥ := by
-  ext u v; simp
 
 theorem edgeSet_spanningSubgraph (F : SimpleGraph V) (s : Set (Sym2 V)) :
     ((spanningSubgraph F) s).edgeSet = F.edgeSet ∩ s := by
@@ -140,11 +125,6 @@ theorem card_edgeSet_spanningSubgraph (F : SimpleGraph V) (s : Finset F.edgeSet)
 theorem spanningSubgraph_eq_deleteEdges (F : SimpleGraph V) (s : Set (Sym2 V)) :
     (spanningSubgraph F) s = F.deleteEdges sᶜ := by
   ext u v; simp [deleteEdges_adj]
-
-/-- Deleting a single edge is the spanning subgraph on the complement of that edge. -/
-theorem deleteEdges_singleton (F : SimpleGraph V) (e : Sym2 V) :
-    F.deleteEdges {e} = (spanningSubgraph F) {e}ᶜ := by
-  rw [spanningSubgraph_eq_deleteEdges, compl_compl]
 
 /-- The pairs selected by `L` are edges of the spanning subgraph selected by any larger `s`.
 This is the hypothesis needed to contract `L` inside `F_s`. -/
@@ -389,18 +369,6 @@ theorem card_connectedComponent_lt [Finite V] {L : Set (Sym2 V)} {x y : V} (hne 
     exact hne (hinj (ConnectedComponent.eq.2
       (Adj.reachable ((fromEdgeSet_adj ..).2 ⟨hxy, hne⟩))))
 
-/-- Contracting the edge `uv` maps the remaining edges of `F` *onto* the edges of the
-quotient, so the quotient has at least one edge fewer.  Equality holds exactly when no vertex
-forms a triangle with `uv`; see
-`SimpleGraph.card_edgeSet_contractionQuotient_singleton_of_isEmpty`.
-
-This is the half of `obs:edges-contract` used in the proof of `thm:complement`. -/
-theorem card_edgeSet_contractionQuotient_singleton_le [Finite V] {u v : V} (h : F.Adj u v) :
-    Nat.card (F ⊘ ({s(u, v)} : Set (Sym2 V))).edgeSet + 1 ≤ Nat.card F.edgeSet := by
-  have hle := Nat.card_le_card_of_surjective _ (contractEdgeMap_surjective h)
-  have := card_edgeSet_sub_one h
-  omega
-
 /-- If no vertex forms a triangle with `uv` then distinct edges of `F` other than `uv` stay
 distinct after contracting `uv`: two edges could only be identified by collapsing `u` with `v`,
 which needs a common neighbour. -/
@@ -545,82 +513,10 @@ def MinorModel.ofLE {K : SimpleGraph V} (h : K ≤ F) : MinorModel K F where
   disjoint hvw := Set.disjoint_singleton.2 hvw
   adjacent hvw := ⟨_, rfl, _, rfl, h hvw⟩
 
-@[refl]
-theorem IsMinor.refl (F : SimpleGraph V) : IsMinor F F := ⟨MinorModel.ofLE le_rfl⟩
-
 /-- The inclusion of one induced subgraph into a larger one. -/
 private def inclHom {A B : Set V} (h : A ⊆ B) : F.induce A →g F.induce B where
   toFun := Set.inclusion h
   map_rel' := id
-
-/-- The union of the branch sets of a minor model over a *connected* set of indices is
-connected: within one branch set connectivity is given, and adjacent indices have their branch
-sets joined by an edge. -/
-private theorem connected_biUnion_branch {K : SimpleGraph W} (C : MinorModel K F) (T : Set W)
-    (hT : (K.induce T).Connected) : (F.induce (⋃ k ∈ T, C.branchSet k)).Connected := by
-  set S : Set V := ⋃ k ∈ T, C.branchSet k with hSdef
-  have hsub : ∀ {k : W}, k ∈ T → C.branchSet k ⊆ S := fun hk => Set.subset_biUnion_of_mem hk
-  have hmem : ∀ {k : W} {x : V}, k ∈ T → x ∈ C.branchSet k → x ∈ S := fun hk hx => hsub hk hx
-  -- Reachability inside a single branch set.
-  have hin : ∀ {k : W} (hk : k ∈ T) {x y : V} (hx : x ∈ C.branchSet k) (hy : y ∈ C.branchSet k),
-      (F.induce S).Reachable ⟨x, hmem hk hx⟩ ⟨y, hmem hk hy⟩ := by
-    intro k hk x y hx hy
-    obtain ⟨p⟩ := (C.connected k).preconnected ⟨x, hx⟩ ⟨y, hy⟩
-    exact ⟨p.map (inclHom (hsub hk))⟩
-  -- Reachability along a walk of indices.
-  have key : ∀ {a b : T} (_ : (K.induce T).Walk a b) {x y : V}
-      (hx : x ∈ C.branchSet (a : W)) (hy : y ∈ C.branchSet (b : W)),
-      (F.induce S).Reachable ⟨x, hmem a.2 hx⟩ ⟨y, hmem b.2 hy⟩ := by
-    intro a b p
-    induction p with
-    | @nil a => intro x y hx hy; exact hin a.2 hx hy
-    | @cons a c b hac _ ih =>
-      intro x y hx hy
-      obtain ⟨u, hu, w, hw, huw⟩ := C.adjacent hac
-      exact ((hin a.2 hx hu).trans
-        (Adj.reachable (show (F.induce S).Adj ⟨u, hmem a.2 hu⟩ ⟨w, hmem c.2 hw⟩ from
-          huw))).trans (ih hw hy)
-  -- Assemble.
-  obtain ⟨k₀⟩ := hT.nonempty
-  obtain ⟨⟨x₀, hx₀⟩⟩ := (C.connected (k₀ : W)).nonempty
-  haveI : Nonempty ↥S := ⟨⟨x₀, hmem k₀.2 hx₀⟩⟩
-  refine ⟨fun p q => ?_⟩
-  obtain ⟨x, hx⟩ := p
-  obtain ⟨y, hy⟩ := q
-  obtain ⟨k, hk, hxk⟩ := Set.mem_iUnion₂.1 hx
-  obtain ⟨l, hl, hyl⟩ := Set.mem_iUnion₂.1 hy
-  exact key (hT.preconnected ⟨k, hk⟩ ⟨l, hl⟩).some hxk hyl
-
-theorem IsMinor.trans {X : Type*} {K : SimpleGraph W} {J : SimpleGraph X}
-    (h : IsMinor J K) (h' : IsMinor K F) : IsMinor J F := by
-  obtain ⟨B⟩ := h
-  obtain ⟨C⟩ := h'
-  refine ⟨{ branchSet := fun j => ⋃ k ∈ B.branchSet j, C.branchSet k
-            connected := fun j => connected_biUnion_branch C _ (B.connected j)
-            disjoint := ?_
-            adjacent := ?_ }⟩
-  · intro j j' hjj'
-    rw [Set.disjoint_left]
-    rintro x hx hx'
-    obtain ⟨k, hk, hxk⟩ := Set.mem_iUnion₂.1 hx
-    obtain ⟨l, hl, hxl⟩ := Set.mem_iUnion₂.1 hx'
-    have hkl : k ≠ l := fun hkl => (B.disjoint hjj').le_bot ⟨hk, hkl ▸ hl⟩
-    exact (C.disjoint hkl).le_bot ⟨hxk, hxl⟩
-  · intro j j' hjj'
-    obtain ⟨k, hk, l, hl, hkl⟩ := B.adjacent hjj'
-    obtain ⟨x, hx, y, hy, hxy⟩ := C.adjacent hkl
-    exact ⟨x, Set.mem_biUnion hk hx, y, Set.mem_biUnion hl hy, hxy⟩
-
-/-- A subgraph on the same vertex set is a minor. -/
-theorem isMinor_spanningSubgraph (F : SimpleGraph V) (s : Set (Sym2 V)) :
-    IsMinor ((spanningSubgraph F) s) F := ⟨MinorModel.ofLE (spanningSubgraph_le F s)⟩
-
-/-- An induced subgraph is a minor. -/
-theorem isMinor_induce (F : SimpleGraph V) (s : Set V) : IsMinor (F.induce s) F :=
-  ⟨{ branchSet v := {(v : V)}
-     connected v := connected_induce_singleton F v
-     disjoint hvw := Set.disjoint_singleton.2 fun h => hvw (Subtype.ext h)
-     adjacent hvw := ⟨_, rfl, _, rfl, hvw⟩ }⟩
 
 /-- A graph obtained by deleting edges is a minor. -/
 theorem isMinor_deleteEdges (F : SimpleGraph V) (s : Set (Sym2 V)) :
@@ -655,16 +551,6 @@ simple graph. -/
 noncomputable def contractEdge (F : SimpleGraph V) (u v : V) :
     SimpleGraph (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).ConnectedComponent :=
   (F ⊘ ({s(u, v)} : Set (Sym2 V))).toSimpleGraph (contractionQuotient_singleton_isLoopless u v)
-
-@[simp]
-theorem contractEdge_adj (F : SimpleGraph V) (u v : V)
-    {c d : (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).ConnectedComponent} :
-    ((contractEdge F) u v).Adj c d ↔ ∃ x y, F.Adj x y ∧ s(x, y) ∉ ({s(u, v)} : Set (Sym2 V)) ∧
-      (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).connectedComponentMk x = c ∧
-      (fromEdgeSet ({s(u, v)} : Set (Sym2 V))).connectedComponentMk y = d := Iff.rfl
-
-theorem toLoopGraph_contractEdge (F : SimpleGraph V) (u v : V) :
-    (toLoopGraph ((contractEdge F) u v)) = F ⊘ ({s(u, v)} : Set (Sym2 V)) := rfl
 
 /-- A connected induced subgraph with two distinct vertices contains an edge. -/
 theorem exists_adj_of_connected_of_ne {s : Set V} (h : (F.induce s).Connected) {x y : ↥s}
@@ -771,122 +657,6 @@ theorem MinorModel.exists_iso_of_forall_subsingleton {K : SimpleGraph W} (C : Mi
     rw [hbranch v, Set.mem_singleton_iff] at hx
     rw [hbranch w, Set.mem_singleton_iff] at hy
     exact ⟨by rw [hx, hy] at hxy; exact hxy, v, w, hvw, rfl⟩
-
-/-- **Every minor is produced by the three atomic operations**: from a minor model of `K` in
-`F` one reads off a set `s` of vertices to keep, a set `t` of edges to keep and a set `L` of
-edges to contract, such that `K` is the resulting contraction quotient.
-
-The vertices kept are the union of the branch sets, the edges kept are those joining two
-vertices of one branch set together with those joining branch sets of adjacent vertices of `K`,
-and the edges contracted are the former. -/
-theorem MinorModel.exists_eq_contractionQuotient {K : SimpleGraph W} (C : MinorModel K F) :
-    ∃ (s : Set V) (t L : Set (Sym2 ↥s)),
-      L ⊆ ((spanningSubgraph (F.induce s)) t).edgeSet ∧
-        Nonempty ((toLoopGraph K) ≃lg ((spanningSubgraph (F.induce s)) t ⊘ L)) := by
-  classical
-  set s : Set V := ⋃ w, C.branchSet w with hsdef
-  have hmem : ∀ {w : W} {x : V}, x ∈ C.branchSet w → x ∈ s := fun hx => Set.mem_iUnion.2 ⟨_, hx⟩
-  -- Every kept vertex lies in exactly one branch set; `idx` names its index.
-  have hex : ∀ x : ↥s, ∃ w, (x : V) ∈ C.branchSet w := fun x => Set.mem_iUnion.1 x.2
-  set idx : ↥s → W := fun x => (hex x).choose with hidxdef
-  have hidx : ∀ x : ↥s, (x : V) ∈ C.branchSet (idx x) := fun x => (hex x).choose_spec
-  have hidx_eq : ∀ (x : ↥s) (w : W), (x : V) ∈ C.branchSet w → idx x = w := fun x w hx => by
-    by_contra hne
-    exact (C.disjoint hne).le_bot ⟨hidx x, hx⟩
-  set F₁ := F.induce s with hF₁def
-  -- The edges inside a branch set, and the edges realising an adjacency of `K`.
-  set L : Set (Sym2 ↥s) :=
-    Sym2.fromRel (r := fun x y => F₁.Adj x y ∧ idx x = idx y)
-      ⟨fun _ _ h => ⟨h.1.symm, h.2.symm⟩⟩ with hLdef
-  set C' : Set (Sym2 ↥s) :=
-    Sym2.fromRel (r := fun x y => F₁.Adj x y ∧ K.Adj (idx x) (idx y))
-      ⟨fun _ _ h => ⟨h.1.symm, h.2.symm⟩⟩ with hC'def
-  have hLmem : ∀ x y : ↥s, s(x, y) ∈ L ↔ F₁.Adj x y ∧ idx x = idx y := fun _ _ =>
-    Sym2.fromRel_prop
-  have hC'mem : ∀ x y : ↥s, s(x, y) ∈ C' ↔ F₁.Adj x y ∧ K.Adj (idx x) (idx y) := fun _ _ =>
-    Sym2.fromRel_prop
-  -- The classes of `fromEdgeSet L` are exactly the branch sets.
-  have hwalk : ∀ (w : W) (a b : ↥(C.branchSet w)), (F.induce (C.branchSet w)).Walk a b →
-      (fromEdgeSet L).Reachable ⟨a.1, hmem a.2⟩ ⟨b.1, hmem b.2⟩ := by
-    intro w a b p
-    induction p with
-    | nil => exact Reachable.refl _
-    | @cons a' b' _ hab _ ih =>
-      refine Reachable.trans (Adj.reachable ?_) ih
-      rw [fromEdgeSet_adj]
-      refine ⟨(hLmem _ _).2 ⟨hab, (hidx_eq _ w a'.2).trans (hidx_eq _ w b'.2).symm⟩, fun hc => ?_⟩
-      exact hab.ne (Subtype.ext (congrArg (Subtype.val : ↥s → V) hc))
-  have hreach : ∀ (w : W) (x y : ↥s), (x : V) ∈ C.branchSet w → (y : V) ∈ C.branchSet w →
-      (fromEdgeSet L).Reachable x y := fun w x y hx hy => by
-    obtain ⟨p⟩ := (C.connected w).preconnected ⟨x.1, hx⟩ ⟨y.1, hy⟩
-    exact hwalk w _ _ p
-  have hconst : ∀ x y : ↥s, (fromEdgeSet L).Reachable x y → idx x = idx y := by
-    rintro x y ⟨p⟩
-    induction p with
-    | nil => rfl
-    | @cons a b c hab _ ih =>
-      rw [fromEdgeSet_adj] at hab
-      exact ((hLmem _ _).1 hab.1).2.trans ih
-  -- Hence they are indexed by the vertices of `K`.
-  have hpt : ∀ w : W, ∃ x : ↥s, idx x = w := fun w => by
-    obtain ⟨a⟩ := (C.connected w).nonempty
-    exact ⟨⟨a.1, hmem a.2⟩, hidx_eq _ w a.2⟩
-  set pt : W → ↥s := fun w => (hpt w).choose with hptdef
-  have hptspec : ∀ w, idx (pt w) = w := fun w => (hpt w).choose_spec
-  set ι : (fromEdgeSet L).ConnectedComponent ≃ W :=
-    { toFun := ConnectedComponent.lift idx fun x y p _ => hconst x y ⟨p⟩
-      invFun := fun w => connectedComponentMk _ (pt w)
-      left_inv := by
-        refine ConnectedComponent.ind fun x => ?_
-        refine ConnectedComponent.eq.2 (hreach (idx x) _ _ ?_ (hidx x))
-        rw [← hptspec (idx x)]
-        exact hidx (pt (idx x))
-      right_inv := hptspec } with hιdef
-  have hιmk : ∀ x : ↥s, ι (connectedComponentMk _ x) = idx x := fun _ => rfl
-  refine ⟨s, L ∪ C', L, ?_, ⟨⟨ι.symm, ?_⟩⟩⟩
-  · -- The contracted edges are edges of the kept graph.
-    intro e he
-    induction e using Sym2.ind with
-    | h x y => exact ⟨((hLmem x y).1 he).1, Or.inl he⟩
-  · -- Two classes are adjacent exactly when the corresponding vertices of `K` are.
-    intro a b
-    constructor
-    · rintro ⟨x, y, ⟨hxy, hxyt⟩, hnL, hx, hy⟩
-      have hax : idx x = a := by rw [← hιmk, hx, ι.apply_symm_apply]
-      have hby : idx y = b := by rw [← hιmk, hy, ι.apply_symm_apply]
-      rcases hxyt with h | h
-      · exact absurd h hnL
-      · rw [← hax, ← hby]; exact ((hC'mem x y).1 h).2
-    · intro hab
-      obtain ⟨p, hp, q, hq, hpq⟩ := C.adjacent hab
-      refine ⟨⟨p, hmem hp⟩, ⟨q, hmem hq⟩, ⟨hpq, Or.inr ((hC'mem _ _).2 ⟨hpq, ?_⟩)⟩, ?_, ?_, ?_⟩
-      · rw [hidx_eq _ a hp, hidx_eq _ b hq]; exact hab
-      · rw [hLmem]
-        rintro ⟨-, hidxeq⟩
-        rw [hidx_eq _ a hp, hidx_eq _ b hq] at hidxeq
-        exact hab.ne hidxeq
-      · exact ι.injective (by rw [hιmk, ι.apply_symm_apply, hidx_eq _ a hp])
-      · exact ι.injective (by rw [hιmk, ι.apply_symm_apply, hidx_eq _ b hq])
-
-/-- **The model definition agrees with the operational one**: `K` is a minor of `F` exactly
-when it is isomorphic to a contraction quotient of a spanning subgraph of an induced subgraph
-of `F` — that is, exactly when `K` is obtained from `F` by deleting vertices, deleting edges
-and contracting edges.
-
-The hypothesis `L ⊆ ((F.induce s).spanningSubgraph t).edgeSet` is essential: contracting a set
-of pairs that are not edges would merge vertices lying in different components, which is not a
-minor operation.
-
-This is the bridge between `SimpleGraph.IsMinor` and the closure properties of
-`HomInd/Closure.lean`. -/
-theorem isMinor_iff_exists_induce_spanningSubgraph_contraction {K : SimpleGraph W} :
-    IsMinor K F ↔ ∃ (s : Set V) (t L : Set (Sym2 ↥s)),
-      L ⊆ ((spanningSubgraph (F.induce s)) t).edgeSet ∧
-        Nonempty ((toLoopGraph K) ≃lg ((spanningSubgraph (F.induce s)) t ⊘ L)) := by
-  refine ⟨fun ⟨C⟩ => (MinorModel.exists_eq_contractionQuotient C), ?_⟩
-  rintro ⟨s, t, L, hL, ⟨e⟩⟩
-  exact IsMinor.trans (isMinor_of_iso_contractionQuotient hL e)
-    (IsMinor.trans (isMinor_spanningSubgraph _ t) (isMinor_induce F s))
 
 end SimpleGraph
 

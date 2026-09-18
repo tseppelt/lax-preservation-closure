@@ -61,12 +61,6 @@ def Hom.sumEquiv : (G ⊕g H →g K) ≃ (G →g K) × (H →g K) where
   left_inv f := by ext (v | v) <;> rfl
   right_inv _ := rfl
 
-/-- **(5.28)**: `hom(G ⊕g H, K) = hom(G, K) * hom(H, K)`. -/
-theorem homCount_sum_left (G : SimpleGraph V) (H : SimpleGraph W) (K : SimpleGraph U) :
-    homCount (G ⊕g H) K = homCount G K * homCount H K := by
-  rw [homCount, homCount, homCount, ← Nat.card_prod]
-  exact Nat.card_congr Hom.sumEquiv
-
 /-! ### Homomorphisms into a categorical product -/
 
 /-- A homomorphism into a categorical product `G ×g H` is the same thing as a pair of
@@ -101,11 +95,17 @@ theorem Hom.sumInclusion_injective [Nonempty U] :
   have v₀ := Classical.arbitrary U
   rintro (g | g) (h | h) hgh
   · exact congrArg Sum.inl <| DFunLike.ext _ _ fun v => by
-      simpa using DFunLike.congr_fun hgh v
-  · exact absurd (DFunLike.congr_fun hgh v₀) (by simp)
-  · exact absurd (DFunLike.congr_fun hgh v₀) (by simp)
+      have := DFunLike.congr_fun hgh v
+      rwa [Hom.sumInclusion_inl_apply, Hom.sumInclusion_inl_apply, Sum.inl.injEq] at this
+  · have h' := DFunLike.congr_fun hgh v₀
+    rw [Hom.sumInclusion_inl_apply, Hom.sumInclusion_inr_apply] at h'
+    exact absurd h' (by simp)
+  · have h' := DFunLike.congr_fun hgh v₀
+    rw [Hom.sumInclusion_inr_apply, Hom.sumInclusion_inl_apply] at h'
+    exact absurd h' (by simp)
   · exact congrArg Sum.inr <| DFunLike.ext _ _ fun v => by
-      simpa using DFunLike.congr_fun hgh v
+      have := DFunLike.congr_fun hgh v
+      rwa [Hom.sumInclusion_inr_apply, Hom.sumInclusion_inr_apply, Sum.inr.injEq] at this
 
 theorem Hom.sumInclusion_surjective (hK : K.Connected) :
     Surjective (Hom.sumInclusion (G := G) (H := H) (K := K)) := by
@@ -139,7 +139,6 @@ theorem homCount_sum_right_of_connected [Finite U] [Finite V] [Finite W] (hK : K
 /-! ### Edgeless graphs and isolated vertices -/
 
 /-- A homomorphism out of an edgeless graph is an arbitrary vertex map. -/
-@[simps]
 def Hom.botEquiv {α : Type*} (G : SimpleGraph V) : ((⊥ : SimpleGraph α) →g G) ≃ (α → V) where
   toFun f := ⇑f
   invFun f := ⟨f, fun h => absurd h (by simp)⟩

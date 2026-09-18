@@ -52,15 +52,6 @@ easy implication of Lovász's theorem. -/
 theorem homCount_eq_of_iso (e : G ≃g H) (K : SimpleGraph U) : homCount K G = homCount K H :=
   homCount_congr_right K e
 
-/-- Homomorphism counts from all graphs of the form `SimpleGraph (Fin m)` determine
-homomorphism counts from every finite graph, in any universe. -/
-theorem homCount_eq_of_forall_fin [Finite U] (K : SimpleGraph U)
-    (h : ∀ (m : ℕ) (L : SimpleGraph (Fin m)), homCount L G = homCount L H) :
-    homCount K G = homCount K H := by
-  rw [homCount_congr_left (Iso.map (Finite.equivFin U) K) G,
-    homCount_congr_left (Iso.map (Finite.equivFin U) K) H]
-  exact h _ _
-
 /-! ### The family of representatives of isomorphism classes -/
 
 /-- Graphs on at most `n` vertices, packaged as a sigma type. -/
@@ -141,14 +132,6 @@ theorem nonempty_iso_of_homCount_eq_of_card_le [Finite V] [Finite W] {n : ℕ}
     rw [← homCount_congr_right (F.graph k) φ, ← homCount_congr_right (F.graph k) ψ]
     exact h (F.size k) (F.size_le k) (F.graph k)
   exact ⟨φ.trans ((GraphFamily.iso_of_homCount_eq F hni hex hfam).some.trans ψ.symm)⟩
-
-/-- **Lovász's theorem**: two finite graphs receiving the same number of homomorphisms from
-every finite graph are isomorphic. -/
-theorem nonempty_iso_of_homCount_eq [Finite V] [Finite W]
-    (h : ∀ (m : ℕ) (K : SimpleGraph (Fin m)), homCount K G = homCount K H) :
-    Nonempty (G ≃g H) :=
-  nonempty_iso_of_homCount_eq_of_card_le (le_max_left _ _) (le_max_right _ _)
-    fun _ _ K => h _ K
 
 /-- **Lovász's theorem**, as the three-way equivalence of
 

@@ -35,12 +35,6 @@ open Function
 
 variable {U V W : Type*}
 
-namespace LoopGraph
-
-open scoped LoopGraph
-
-end LoopGraph
-
 namespace SimpleGraph
 
 /-- Homomorphism counts between simple graphs agree with those between the corresponding loop
@@ -63,14 +57,6 @@ theorem homCount_congr_left (e : X ≃lg Y) (Z : LoopGraph W) : LoopGraph.homCou
       invFun f := f.comp e.toRelEmbedding.toRelHom
       left_inv f := by ext a; exact congrArg f (e.symm_apply_apply a)
       right_inv f := by ext a; exact congrArg f (e.apply_symm_apply a) }
-
-/-- Homomorphism counts of loop graphs are invariant under isomorphism of the target. -/
-theorem homCount_congr_right (X : LoopGraph U) (e : Y ≃lg Z) : LoopGraph.homCount X Y = LoopGraph.homCount X Z :=
-  Nat.card_congr
-    { toFun f := e.toRelEmbedding.toRelHom.comp f
-      invFun f := e.symm.toRelEmbedding.toRelHom.comp f
-      left_inv f := by ext a; exact e.symm_apply_apply (f a)
-      right_inv f := by ext a; exact e.apply_symm_apply (f a) }
 
 /-- A loop graph with a loop admits no homomorphism into a loopless one, so the corresponding
 homomorphism count vanishes.  This is what makes the terms of `SimpleGraph.homCount_looped`

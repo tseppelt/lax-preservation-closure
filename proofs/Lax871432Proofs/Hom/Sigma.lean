@@ -48,16 +48,11 @@ def Hom.sigmaEquiv (G : ∀ i, SimpleGraph (V i)) (K : SimpleGraph W) :
   left_inv _ := DFunLike.ext _ _ fun _ => rfl
   right_inv _ := funext fun _ => DFunLike.ext _ _ fun _ => rfl
 
-theorem nonempty_equiv_hom_sigma (G : ∀ i, SimpleGraph (V i)) (K : SimpleGraph W) :
-    Nonempty ((SimpleGraph.sigma G →g K) ≃ ∀ i, (G i →g K)) :=
-  ⟨Hom.sigmaEquiv G K⟩
-
 /-- **(5.28), indexed form**: `hom(∐ i, Gᵢ, K) = ∏ i, hom(Gᵢ, K)`. -/
 theorem homCount_sigma [Fintype ι] (G : ∀ i, SimpleGraph (V i)) (K : SimpleGraph W) :
     homCount (SimpleGraph.sigma G) K = ∏ i, homCount (G i) K := by
   rw [homCount, Nat.card_congr (Hom.sigmaEquiv G K), Nat.card_pi]
   rfl
-
 
 /-- The homomorphism count out of a subfamily union indexed by a `Finset`. -/
 theorem homCount_sigmaOn_coe (s : Finset ι) (G : ∀ i, SimpleGraph (V i)) (K : SimpleGraph W) :
@@ -66,7 +61,6 @@ theorem homCount_sigmaOn_coe (s : Finset ι) (G : ∀ i, SimpleGraph (V i)) (K :
   rw [homCount_sigma]
   simp only [Finset.coe_sort_coe, Finset.univ_eq_attach]
   exact Finset.prod_attach s fun i => homCount (G i) K
-
 
 /-- Every sub-union of the parts of `∐ i, D i` maps into `∐ i, D i`, so its homomorphism count
 there is positive. -/
