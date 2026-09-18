@@ -271,9 +271,11 @@ of edges of `F` whose endpoints it identifies and a homomorphism `F ⊘ L → G`
 is sent to a genuine edge of `G`.  Summing over `L` gives the identity.
 -/
 theorem homCount_looped {V W : Type*} [Finite V] [Finite W] (F : SimpleGraph V)
-    [Fintype F.edgeSet] (G : SimpleGraph W) :
+    (G : SimpleGraph W) :
+    letI : Fintype F.edgeSet := Fintype.ofFinite _
     LoopGraph.homCount (toLoopGraph F) (looped G) =
       ∑ L : Finset F.edgeSet, LoopGraph.homCount (F ⊘ (edgeSetOf F) L) (toLoopGraph G) :=
+  letI : Fintype F.edgeSet := Fintype.ofFinite _
   SimpleGraph.homCount_looped F G
 
 /--
