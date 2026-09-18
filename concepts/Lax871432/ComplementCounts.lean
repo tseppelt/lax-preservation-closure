@@ -10,8 +10,9 @@ type: theorem
 For finite simple graphs $F$ and $G$,
 $$\hom(F, \overline{G}) = \sum_{S \subseteq E(F)} (-1)^{|S|}
   \sum_{L \subseteq S} \hom(F_S \oslash L, G),$$
-where $F_S$ is the spanning subgraph of $F$ with edge set $S$
-and $F \oslash L$ is the graph obtained from $F_S$ by contracting the edges in $L$.
+where $F_S$ is the spanning subgraph of $F$ with edge set $S$ and $F_S \oslash L$ is the
+contraction quotient of $F_S$ by $L$: the graph obtained from $F_S$ by contracting the edges
+in $L$ when it is loopless, and a graph with loops otherwise.
 
 -/
 

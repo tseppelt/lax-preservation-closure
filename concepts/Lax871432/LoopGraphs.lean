@@ -9,11 +9,11 @@ type: definition
 A *loop graph* is a graph in which loops are allowed: a symmetric, not necessarily
 irreflexive, relation on a vertex type. Simple graphs are the loopless case, and a loop graph
 without loops is a simple graph again. A homomorphism of loop graphs sends adjacent vertices
-to adjacent vertices, so a loop is sent to a loop or to an edge, and $\hom(X, Y)$ counts these
-maps as for simple graphs. Besides homomorphisms and isomorphisms, loop graphs carry here the
-*full complement* $\widehat{X}$, which replaces every edge by a non-edge *and* every loop by a
-non-loop, the sub-loop-graph induced on a set of vertices, and the edge set, which for a loop
-graph may contain a pair $vv$, one for each loop.
+to adjacent vertices, so a loop is sent to a loop and an edge to an edge or to a loop, and
+$\hom(X, Y)$ counts these maps as for simple graphs. Besides homomorphisms and isomorphisms,
+loop graphs carry here the *full complement* $\widehat{X}$, which replaces every edge by a
+non-edge *and* every loop by a non-loop, the sub-loop-graph induced on a set of vertices, and
+the edge set, which for a loop graph may contain a pair $vv$, one for each loop.
 
 Loops arise from two constructions on simple graphs. The *looped graph* $G^\circ$ is obtained
 from a simple graph $G$ by adding a loop at every vertex; the complement then factors as
@@ -70,7 +70,7 @@ structure LoopGraph (V : Type*) where
 namespace LoopGraph
 
 /-- A homomorphism of loop graphs is a map preserving adjacency; loops are therefore sent to
-loops or to edges. -/
+loops, and edges to edges or to loops. -/
 abbrev Hom (X : LoopGraph V) (Y : LoopGraph W) := X.Adj →r Y.Adj
 
 /-- An isomorphism of loop graphs. -/
